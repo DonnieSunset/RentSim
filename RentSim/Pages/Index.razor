@@ -4,7 +4,20 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<Field>
+    <FieldLabel>Enter Years</FieldLabel>
+    <TextEdit Placeholder="123" />
+</Field>
+
+<Field>
+    <FieldLabel>Interest Rate</FieldLabel>
+    <TextEdit Placeholder="123" />
+</Field>
+
+<Field>
+    <FieldLabel>Start Capital</FieldLabel>
+    <TextEdit  @ref="blubb" Placeholder="123" @onkeypress="@(async () => await HandleRedraw())" />
+</Field>
 
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 
@@ -12,6 +25,7 @@ Welcome to your new app.
 
 @code{
     LineChart<double> lineChart;
+    TextEdit blubb;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -23,6 +37,7 @@ Welcome to your new app.
 
     async Task HandleRedraw()
     {
+        Labels.SetValue(blubb.Text, 0);
         await lineChart.Clear();
 
         await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
