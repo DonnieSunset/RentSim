@@ -5,11 +5,11 @@
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @ref="@FieldAgeCurrent" @onchange="OnChangeHandler"/>
+        <TextEdit @bind-Text="@FieldAgeCurrent" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @ref="@FieldAgeStopWork" @onchange="OnChangeHandler"/>
+        <TextEdit @bind-Text="@FieldAgeStopWork"  />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -17,7 +17,7 @@
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @ref="@FieldEndAge"/>
+        <TextEdit />
     </FieldBody>
 </Field>
 
@@ -41,15 +41,15 @@
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @ref="@FieldStocks" @onchange="OnChangeHandler"/>
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldStocks" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Interest Rate (%):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @ref="@FieldStocksInterestRate" @onchange="OnChangeHandler" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksInterestRate" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @ref="@FieldStocksSaveAmount" @onchange="OnChangeHandler" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksSaveAmount"/>
     </FieldBody>
 </Field>
 
@@ -82,27 +82,23 @@
 
 <LineChart @ref="lineChart" TItem="double" />
 
-@code
- {
-    //[Parameter]
-    //public TextEdit FieldEndAge { get; set; }
-
-
+@code{
+    string RentStartAge = "666";
 }
 
 @functions {
 
     async Task LoaderDefault()
     {
-        FieldAgeCurrent.Text = "41";
-        FieldAgeStopWork.Text = "60";
-        FieldStocks.Text = "60000";
-        FieldStocksInterestRate.Text = "7";
-        FieldStocksSaveAmount.Text = "700";
+        FieldAgeCurrent = "41";
+        FieldAgeStopWork = "60";
+        FieldStocks = "60000";
+        FieldStocksInterestRate = "7";
+        FieldStocksSaveAmount = "700";
 
-        FieldEndAge.Text = "2021";
+        //FieldEndAge.Text = "2021";
+        //RentStartAge = "777";
 
-        
 
         //await InvokeAsync(StateHasChanged);
 
@@ -117,21 +113,20 @@
 @code{
     LineChart<double> lineChart;
 
-    TextEdit FieldRefCash;
+    string FieldRefCash;
 
-    TextEdit FieldAgeCurrent;
-    TextEdit FieldAgeStopWork;
-    TextEdit FieldStocks;
-    TextEdit FieldStocksInterestRate;
-    TextEdit FieldStocksSaveAmount;
+    string FieldAgeCurrent;
+    string FieldAgeStopWork;
+    string FieldStocks;
+    string FieldStocksInterestRate;
+    string FieldStocksSaveAmount;
 
-    TextEdit FieldEndAge;
 
-    void OnChangeHandler(ChangeEventArgs e)
-    {
-       // FieldEndAge.Text = e.Value.ToString();
+    //void OnChangeHandler(ChangeEventArgs e)
+    //{
+    //    // FieldEndAge.Text = e.Value.ToString();
 
-    }
+    //}
 
     //string fieldRefCash = "1999";
 
