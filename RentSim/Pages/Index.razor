@@ -1,43 +1,154 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<Divider DividerType="DividerType.Dotted" Text="Timeline Data"></Divider>
 
-Welcome to your new app.
-
-<Field>
-    <FieldLabel>Enter Years</FieldLabel>
-    <TextEdit Placeholder="123" />
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @ref="@FieldAgeCurrent" @onchange="OnChangeHandler"/>
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @ref="@FieldAgeStopWork" @onchange="OnChangeHandler"/>
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @ref="@FieldEndAge"/>
+    </FieldBody>
 </Field>
 
-<Field>
-    <FieldLabel>Interest Rate</FieldLabel>
-    <TextEdit Placeholder="123" />
+<Divider DividerType="DividerType.Dotted" Text="Initial Assets"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" />
+    </FieldBody>
 </Field>
 
-<Field>
-    <FieldLabel>Start Capital</FieldLabel>
-    <TextEdit  @ref="blubb" Placeholder="123" @onkeypress="@(async () => await HandleRedraw())" />
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @ref="@FieldStocks" @onchange="OnChangeHandler"/>
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Interest Rate (%):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @ref="@FieldStocksInterestRate" @onchange="OnChangeHandler" />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @ref="@FieldStocksSaveAmount" @onchange="OnChangeHandler" />
+    </FieldBody>
 </Field>
+
+<Divider DividerType="DividerType.Dotted" Text="Rent Approximations"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Gross State Rent (-> arbeiten bis renteneintrittsalter):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.Dotted"></Divider>
 
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
+<Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>
+
 
 <LineChart @ref="lineChart" TItem="double" />
 
+@code
+ {
+    //[Parameter]
+    //public TextEdit FieldEndAge { get; set; }
+
+
+}
+
+@functions {
+
+    async Task LoaderDefault()
+    {
+        FieldAgeCurrent.Text = "41";
+        FieldAgeStopWork.Text = "60";
+        FieldStocks.Text = "60000";
+        FieldStocksInterestRate.Text = "7";
+        FieldStocksSaveAmount.Text = "700";
+
+        FieldEndAge.Text = "2021";
+
+        
+
+        //await InvokeAsync(StateHasChanged);
+
+        //HandleRedraw();
+
+        //FieldRefCash.Text = "2000";
+
+        //await Task.Delay(0);
+    }
+}
+
 @code{
     LineChart<double> lineChart;
-    TextEdit blubb;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    TextEdit FieldRefCash;
+
+    TextEdit FieldAgeCurrent;
+    TextEdit FieldAgeStopWork;
+    TextEdit FieldStocks;
+    TextEdit FieldStocksInterestRate;
+    TextEdit FieldStocksSaveAmount;
+
+    TextEdit FieldEndAge;
+
+    void OnChangeHandler(ChangeEventArgs e)
     {
-        if (firstRender)
-        {
-            await HandleRedraw();
-        }
+       // FieldEndAge.Text = e.Value.ToString();
+
     }
+
+    //string fieldRefCash = "1999";
+
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    FieldRefCash.Text = "2000";
+    //    await Task.Delay(0);
+    //}
+
+
 
     async Task HandleRedraw()
     {
-        Labels.SetValue(blubb.Text, 0);
+        //Labels.SetValue(fieldRefCash, 0);
+        //StateContainer.Property = "1236";
+
         await lineChart.Clear();
 
         await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
