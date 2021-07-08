@@ -1,4 +1,6 @@
-﻿@page "/"
+﻿@using Processing;
+
+@page "/"
 
 <Divider DividerType="DividerType.Dotted" Text="Timeline Data"></Divider>
 
@@ -79,12 +81,8 @@
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 <Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>
 
+<LineChart @ref="lineChart" TItem="double"/>
 
-<LineChart @ref="lineChart" TItem="double" />
-
-@code{
-    string RentStartAge = "666";
-}
 
 @functions {
 
@@ -106,14 +104,14 @@
 
         //FieldRefCash.Text = "2000";
 
-        //await Task.Delay(0);
+        await Task.Delay(0);
     }
 }
 
 @code{
     LineChart<double> lineChart;
 
-    string FieldRefCash;
+    //string FieldRefCash;
 
     string FieldAgeCurrent;
     string FieldAgeStopWork;
@@ -144,33 +142,61 @@
         //Labels.SetValue(fieldRefCash, 0);
         //StateContainer.Property = "1236";
 
-        await lineChart.Clear();
+        Input input = new Input();
+        input.ageCurrent = Int32.Parse(FieldAgeCurrent);
+        input.ageStopWork = Int32.Parse(FieldAgeStopWork);
+        input.stocks = Int32.Parse(FieldStocks);
+        input.stocksInterestRate = Int32.Parse(FieldStocksInterestRate);
+        input.stocksSaveAmount = Int32.Parse(FieldStocksSaveAmount);
 
-        await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
-    }
+        ResultSet rSet = new ResultSet();
+        var result = rSet.Process(input);
 
-    LineChartDataset<double> GetLineChartDataset()
-    {
-        return new LineChartDataset<double>
+
+
+        string[] labels = Enumerable.Range(input.ageCurrent, input.ageStopWork - input.ageCurrent + 1)
+            .ToArray()
+            .Select(x => x.ToString())
+            .ToArray(); ;
+
+        LineChartDataset<double> data = new LineChartDataset<double>
         {
-            Label = "# of randoms",
-            Data = RandomizeData(),
+            Label = "Blubb",
+            Data = result.Select(x => x.stocksYearBegin).ToList(),
             BackgroundColor = backgroundColors,
             BorderColor = borderColors,
             Fill = true,
             PointRadius = 2,
-            BorderDash = new List<int> { }
+            BorderDash = new List<int> { },
         };
+
+        await lineChart.Clear();
+        await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
     }
 
-    string[] Labels = { "Red", "Blue", "Yellow", "Green", "Purple", "Orange" };
+    //LineChartDataset<double> GetLineChartDataset()
+    //{
+    //    return new LineChartDataset<double>
+    //    {
+    //        Label = "# of randoms",
+    //        Data = RandomizeData(),
+    //        BackgroundColor = backgroundColors,
+    //        BorderColor = borderColors,
+    //        Fill = true,
+    //        PointRadius = 2,
+    //        BorderDash = new List<int> { }
+    //    };
+    //}
+
+    //string[] Labels = { "Red", "Blue", "Yellow", "Green", "Purple", "Orange" };
+    //string[] Labels = Enumerable.Range(start, end - start).ToArray();
     List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
     List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
 
-    List<double> RandomizeData()
-    {
-        var r = new Random(DateTime.Now.Millisecond);
+    //List<double> RandomizeData()
+    //{
+    //    var r = new Random(DateTime.Now.Millisecond);
 
-        return new List<double> { r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble() };
-    }
+    //    return new List<double> { r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble(), r.Next(3, 50) * r.NextDouble() };
+    //}
 }
