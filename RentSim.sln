@@ -5,7 +5,14 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentSim", "RentSim\RentSim.csproj", "{B87D664B-79E8-4F46-B6D7-433B8744676E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Processing", "Processing\Processing.csproj", "{2B091A0F-80BA-4DE5-8701-A2900B3A9B06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Processing", "Processing\Processing.csproj", "{2B091A0F-80BA-4DE5-8701-A2900B3A9B06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Processing_uTest", "UnitTestProject1\Processing_uTest.csproj", "{D60E823B-F407-4124-A2E0-6731ACDF712E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{8DD291FE-549E-42FA-A18B-0FF36AA02B25}"
+	ProjectSection(SolutionItems) = preProject
+		Default.runsettings = Default.runsettings
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{2B091A0F-80BA-4DE5-8701-A2900B3A9B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B091A0F-80BA-4DE5-8701-A2900B3A9B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B091A0F-80BA-4DE5-8701-A2900B3A9B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D60E823B-F407-4124-A2E0-6731ACDF712E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D60E823B-F407-4124-A2E0-6731ACDF712E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D60E823B-F407-4124-A2E0-6731ACDF712E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D60E823B-F407-4124-A2E0-6731ACDF712E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

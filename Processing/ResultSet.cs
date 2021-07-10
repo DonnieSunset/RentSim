@@ -12,18 +12,11 @@ namespace Processing
         public int ageStopWork;
 
         public int stocks;
-        public int stocksInterestRate;
-        public int stocksSaveAmount;
+        public int stocksGrowthRate;
+        public int stocksMonthlyInvestAmount;
     }
 
-    public class Snapshot
-    {
-        public int age;
-        public double stocksYearBegin;
-        public double stocksInvests;
-        public double stocksInterests;
-        public double stocksYearEnd;
-    }
+ 
 
     public class ResultSet
     {
@@ -41,14 +34,16 @@ namespace Processing
 
             var resultSet = new List<Snapshot>();
 
-            for (int i = _input.ageCurrent; i < _input.ageStopWork; i++)
+            for (int i = _input.ageCurrent; i <= _input.ageStopWork; i++)
             {
-                _curSnap = new Snapshot();
+                _curSnap = new Snapshot(_input);
                 _curSnap.age = i;
                 _curSnap.stocksYearBegin = i == _input.ageCurrent ? _input.stocks : _lastSnap.stocksYearEnd;
-                _curSnap.stocksInvests = _input.stocksSaveAmount * 12;
-                _curSnap.stocksInterests = (_curSnap.stocksYearBegin + _curSnap.stocksInvests) * _input.stocksInterestRate / 100;
-                _curSnap.stocksYearEnd = _curSnap.stocksYearBegin + _curSnap.stocksInvests + _curSnap.stocksInterests;
+                _curSnap.stocksYearEnd = _curSnap.stocksYearBegin;
+
+                _curSnap
+                    .ApplyStockInvests()
+                    .ApplyStocksGrowth();
 
                 resultSet.Add(_curSnap);
                 _lastSnap = _curSnap;

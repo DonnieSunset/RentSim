@@ -132,8 +132,8 @@
         input.ageCurrent = Int32.Parse(FieldAgeCurrent);
         input.ageStopWork = Int32.Parse(FieldAgeStopWork);
         input.stocks = Int32.Parse(FieldStocks);
-        input.stocksInterestRate = Int32.Parse(FieldStocksInterestRate);
-        input.stocksSaveAmount = Int32.Parse(FieldStocksSaveAmount);
+        input.stocksGrowthRate = Int32.Parse(FieldStocksInterestRate);
+        input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
         ResultSet rSet = new ResultSet();
         var result = rSet.Process(input);
