@@ -10,7 +10,7 @@ namespace Processing_uTest
         [DataRow(7f, 0.56541454f)]
         public void InterestPerYearToInterestPerMonth_validInterest_validResult(double interestPerYear, double interestPerMonth)
         {
-            var testee = new Snapshot(null);
+            var testee = new RentSimResultRow(null);
 
             double result = testee.InterestPerYearToInterestPerMonth(interestPerYear);
 

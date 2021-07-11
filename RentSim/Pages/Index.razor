@@ -88,37 +88,39 @@
     </Column>
 </Row>
 
-<DataGrid TItem="Snapshot"
-          Data="@snapshots"
+
+
+
+
+
+
+<DataGrid TItem="RentSimResultRow"
+          Data="@resultRows"
           ReadData="@OnReadData"
-          TotalItems="@totalSnapshots">
-    <DataGridCommandColumn TItem="Snapshot" />
-    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.age)" Caption="Age" Sortable="false" />
-    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksYearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+          TotalItems="@totalRows">
+    <DataGridCommandColumn TItem="RentSimResultRow" />
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age"/>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksYearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksYearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksInvests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksInvests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksInvests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksGrowth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksGrowth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksGrowth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksYearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksYearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksYearEnd)) </DisplayTemplate>
     </DataGridColumn>
 </DataGrid>
 
 @code
 {
-    int totalSnapshots;
+    int totalRows;
 
-    async Task OnReadData(DataGridReadDataEventArgs<Snapshot> e)
+    async Task OnReadData(DataGridReadDataEventArgs<RentSimResultRow> e)
     {
-        // this can be call to anything, in this case we're calling a fictional api
-        //var response = await Http.GetJsonAsync<Employee[]>($"some-api/employees?page={e.Page}&pageSize={e.PageSize}");
-
-        //employeeList = response.Data; // an actual data for the current page
-        totalSnapshots = snapshots.Count; // this is used to tell datagrid how many items are available so that pagination will work
+        totalRows = resultRows.Count; // this is used to tell datagrid how many items are available so that pagination will work
 
         // always call StateHasChanged!
         StateHasChanged();
@@ -150,7 +152,7 @@
 @code{
     LineChart<double> lineChart;
     ResultSet rSet = new ResultSet();
-    List<Snapshot> snapshots = new List<Snapshot>();
+    List<RentSimResultRow> resultRows = new List<RentSimResultRow>();
 
     //string FieldRefCash;
 
@@ -173,7 +175,7 @@
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
 
-        snapshots = rSet.Process(input);
+        resultRows = rSet.Process(input);//.OrderByDescending(x => x.age).ToList();
 
 
 
@@ -185,7 +187,7 @@
         LineChartDataset<double> data = new LineChartDataset<double>
         {
             Label = "Blubb",
-            Data = snapshots.Select(x => x.stocksYearBegin).ToList(),
+            Data = resultRows.Select(x => x.stocksYearBegin).ToList(),
             BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
             BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
             Fill = true,

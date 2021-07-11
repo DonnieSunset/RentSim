@@ -27,16 +27,16 @@ namespace Processing
 
         //public List<Snapshot> Total;
 
-        public List<Snapshot> Process(Input _input)
+        public List<RentSimResultRow> Process(Input _input)
         {
-            Snapshot _curSnap = null;
-            Snapshot _lastSnap = null;
+            RentSimResultRow _curSnap = null;
+            RentSimResultRow _lastSnap = null;
 
-            var resultSet = new List<Snapshot>();
+            var resultSet = new List<RentSimResultRow>();
 
             for (int i = _input.ageCurrent; i <= _input.ageStopWork; i++)
             {
-                _curSnap = new Snapshot(_input);
+                _curSnap = new RentSimResultRow(_input);
                 _curSnap.age = i;
                 _curSnap.stocksYearBegin = i == _input.ageCurrent ? _input.stocks : _lastSnap.stocksYearEnd;
                 _curSnap.stocksYearEnd = _curSnap.stocksYearBegin;

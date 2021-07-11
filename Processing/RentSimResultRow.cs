@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Processing
 {
-    public class Snapshot
+    public class RentSimResultRow
     {
         public Input input;
 
-        public Snapshot(Input _input)
+        public RentSimResultRow(Input _input)
         {
             input = _input;
 
@@ -25,14 +25,14 @@ namespace Processing
 
         public double stocksGrowthMonthly;
 
-        public Snapshot ApplyStockInvests()
+        public RentSimResultRow ApplyStockInvests()
         {
             this.stocksInvests = input.stocksMonthlyInvestAmount * 12;
             this.stocksYearEnd += this.stocksInvests;
             return this;
         }
 
-        public Snapshot ApplyStocksGrowth()
+        public RentSimResultRow ApplyStocksGrowth()
         {
             this.stocksGrowth = stocksYearEnd * ((double)input.stocksGrowthRate / 100f);
             this.stocksYearEnd += this.stocksGrowth;
