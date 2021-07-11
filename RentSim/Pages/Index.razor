@@ -1,4 +1,5 @@
 ﻿@using Processing;
+@using System.Globalization;
 
 @page "/"
 
@@ -11,7 +12,7 @@
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @bind-Text="@FieldAgeStopWork"  />
+        <TextEdit @bind-Text="@FieldAgeStopWork" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -47,11 +48,11 @@
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Interest Rate (%):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksInterestRate" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksGrowthRate" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksSaveAmount"/>
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksSaveAmount" />
     </FieldBody>
 </Field>
 
@@ -87,6 +88,45 @@
     </Column>
 </Row>
 
+<DataGrid TItem="Snapshot"
+          Data="@snapshots"
+          ReadData="@OnReadData"
+          TotalItems="@totalSnapshots">
+    <DataGridCommandColumn TItem="Snapshot" />
+    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.age)" Caption="Age" Sortable="false" />
+    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksYearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksInvests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksGrowth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="Snapshot" Field="@nameof(Snapshot.stocksYearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as Snapshot)?.stocksYearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+</DataGrid>
+
+@code
+{
+    int totalSnapshots;
+
+    async Task OnReadData(DataGridReadDataEventArgs<Snapshot> e)
+    {
+        // this can be call to anything, in this case we're calling a fictional api
+        //var response = await Http.GetJsonAsync<Employee[]>($"some-api/employees?page={e.Page}&pageSize={e.PageSize}");
+
+        //employeeList = response.Data; // an actual data for the current page
+        totalSnapshots = snapshots.Count; // this is used to tell datagrid how many items are available so that pagination will work
+
+        // always call StateHasChanged!
+        StateHasChanged();
+
+        await Task.Delay(0);
+    }
+}
+
 
 @functions {
 
@@ -95,32 +135,29 @@
         FieldAgeCurrent = "41";
         FieldAgeStopWork = "60";
         FieldStocks = "60000";
-        FieldStocksInterestRate = "7";
+        FieldStocksGrowthRate = "7";
         FieldStocksSaveAmount = "700";
 
-        //FieldEndAge.Text = "2021";
-        //RentStartAge = "777";
-
-
-        //await InvokeAsync(StateHasChanged);
-
-        //HandleRedraw();
-
-        //FieldRefCash.Text = "2000";
-
         await Task.Delay(0);
+    }
+
+    public string BeautifyToCurrency(double? num)
+    {
+        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", num);
     }
 }
 
 @code{
     LineChart<double> lineChart;
+    ResultSet rSet = new ResultSet();
+    List<Snapshot> snapshots = new List<Snapshot>();
 
     //string FieldRefCash;
 
     string FieldAgeCurrent;
     string FieldAgeStopWork;
     string FieldStocks;
-    string FieldStocksInterestRate;
+    string FieldStocksGrowthRate;
     string FieldStocksSaveAmount;
 
     async Task HandleRedraw()
@@ -132,11 +169,11 @@
         input.ageCurrent = Int32.Parse(FieldAgeCurrent);
         input.ageStopWork = Int32.Parse(FieldAgeStopWork);
         input.stocks = Int32.Parse(FieldStocks);
-        input.stocksGrowthRate = Int32.Parse(FieldStocksInterestRate);
+        input.stocksGrowthRate = Int32.Parse(FieldStocksGrowthRate);
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
-        ResultSet rSet = new ResultSet();
-        var result = rSet.Process(input);
+
+        snapshots = rSet.Process(input);
 
 
 
@@ -148,7 +185,7 @@
         LineChartDataset<double> data = new LineChartDataset<double>
         {
             Label = "Blubb",
-            Data = result.Select(x => x.stocksYearBegin).ToList(),
+            Data = snapshots.Select(x => x.stocksYearBegin).ToList(),
             BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
             BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
             Fill = true,
