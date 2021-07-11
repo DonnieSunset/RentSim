@@ -14,17 +14,17 @@ namespace Processing
         public ResultSet(Input _input)
         {
             input = _input;
-            stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.stocksGrowthRate);
+            stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.stocksGrowthRate);
         }
 
-        public List<RentSimResultRow> Process()
+        public List<RentSimResultRow> ProcessStocks()
         {
             RentSimResultRow _curSnap = null;
             RentSimResultRow _lastSnap = null;
 
             var resultSet = new List<RentSimResultRow>();
 
-            for (int i = input.ageCurrent; i <= input.ageStopWork; i++)
+            for (int i = input.ageCurrent; i < input.ageStopWork; i++)
             {
                 _curSnap = new RentSimResultRow(input);
                 _curSnap.age = i;

@@ -13,8 +13,11 @@ namespace Processing
         public RentSimResultRow(Input _input)
         {
             input = _input;
+        }
 
-            stocksGrowthMonthly = stocksGrowth / 12;
+        // For testability
+        internal RentSimResultRow()
+        {
         }
 
         public int age;
@@ -23,22 +26,19 @@ namespace Processing
         public double stocksGrowth;
         public double stocksYearEnd;
 
-        public double stocksGrowthMonthly;
-
         public RentSimResultRow ApplyStockInvests(double invest)
         {
-            this.stocksInvests = invest;
+            this.stocksInvests += invest;
             this.stocksYearEnd += invest;
             return this;
         }
 
         public RentSimResultRow ApplyStocksGrowth(double growthRate)
         {
-            this.stocksGrowth = stocksYearEnd * (growthRate / 100f);
-            this.stocksYearEnd += this.stocksGrowth;
+            double thisMonthGrowth = stocksYearEnd * (growthRate / 100d);
+            this.stocksGrowth += thisMonthGrowth;
+            this.stocksYearEnd += thisMonthGrowth;
             return this;
         }
-
-
     }
 }

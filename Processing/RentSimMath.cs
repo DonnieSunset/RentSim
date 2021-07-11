@@ -11,9 +11,17 @@ namespace Processing
         public static double InterestPerYearToInterestPerMonth(double interestPerYear)
         {
             //https://www.haushaltsfinanzen.de/finanzmathematik/konformer_zinssatz.php?Konformer-Zinssatz-mit-online-Rechner
-            double interestPerMonth = Math.Pow(1f + (interestPerYear / 100f), 1f / 12f) - 1;
+            double interestPerMonth = Math.Pow(1d + (interestPerYear / 100d), 1d / 12d) - 1;
 
             return interestPerMonth * 100;
+        }
+
+        public static double InterestPerYearToInterestPerMonthRelative(double interestPerYear)
+        {
+            //https://www.haushaltsfinanzen.de/finanzmathematik/konformer_zinssatz.php?Konformer-Zinssatz-mit-online-Rechner
+            double interestPerMonth = interestPerYear / 12d;
+
+            return interestPerMonth;
         }
     }
 }

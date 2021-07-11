@@ -175,9 +175,9 @@
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
         rSet = new ResultSet(input);
-        resultRows = rSet.Process();//.OrderByDescending(x => x.age).ToList();
+        resultRows = rSet.ProcessStocks();//.OrderByDescending(x => x.age).ToList();
 
-
+        //todo: add end amount of last result row to show it in chart
 
         string[] labels = Enumerable.Range(input.ageCurrent, input.ageStopWork - input.ageCurrent + 1)
             .ToArray()
