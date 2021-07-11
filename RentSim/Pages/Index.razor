@@ -46,7 +46,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldStocks" />
     </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Interest Rate (%):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksGrowthRate" />
     </FieldBody>
@@ -151,7 +151,7 @@
 
 @code{
     LineChart<double> lineChart;
-    ResultSet rSet = new ResultSet();
+    ResultSet rSet;
     List<RentSimResultRow> resultRows = new List<RentSimResultRow>();
 
     //string FieldRefCash;
@@ -174,8 +174,8 @@
         input.stocksGrowthRate = Int32.Parse(FieldStocksGrowthRate);
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
-
-        resultRows = rSet.Process(input);//.OrderByDescending(x => x.age).ToList();
+        rSet = new ResultSet(input);
+        resultRows = rSet.Process();//.OrderByDescending(x => x.age).ToList();
 
 
 

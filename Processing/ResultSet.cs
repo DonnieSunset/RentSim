@@ -6,44 +6,37 @@ using System.Threading.Tasks;
 
 namespace Processing
 {
-    public class Input
-    {
-        public int ageCurrent;
-        public int ageStopWork;
-
-        public int stocks;
-        public int stocksGrowthRate;
-        public int stocksMonthlyInvestAmount;
-    }
-
- 
-
     public class ResultSet
     {
-        //public ResultSet()
-        //{
-        //    Total = new List<Snapshot>();
-        //}
+        private Input input;
+        private double stocksGrowthRatePerMonth;
 
-        //public List<Snapshot> Total;
+        public ResultSet(Input _input)
+        {
+            input = _input;
+            stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.stocksGrowthRate);
+        }
 
-        public List<RentSimResultRow> Process(Input _input)
+        public List<RentSimResultRow> Process()
         {
             RentSimResultRow _curSnap = null;
             RentSimResultRow _lastSnap = null;
 
             var resultSet = new List<RentSimResultRow>();
 
-            for (int i = _input.ageCurrent; i <= _input.ageStopWork; i++)
+            for (int i = input.ageCurrent; i <= input.ageStopWork; i++)
             {
-                _curSnap = new RentSimResultRow(_input);
+                _curSnap = new RentSimResultRow(input);
                 _curSnap.age = i;
-                _curSnap.stocksYearBegin = i == _input.ageCurrent ? _input.stocks : _lastSnap.stocksYearEnd;
+                _curSnap.stocksYearBegin = i == input.ageCurrent ? input.stocks : _lastSnap.stocksYearEnd;
                 _curSnap.stocksYearEnd = _curSnap.stocksYearBegin;
 
-                _curSnap
-                    .ApplyStockInvests()
-                    .ApplyStocksGrowth();
+                for (int month = 1; month <= 12; month++)
+                {
+                    _curSnap
+                        .ApplyStockInvests(input.stocksMonthlyInvestAmount)
+                        .ApplyStocksGrowth(this.stocksGrowthRatePerMonth);
+                }
 
                 resultSet.Add(_curSnap);
                 _lastSnap = _curSnap;

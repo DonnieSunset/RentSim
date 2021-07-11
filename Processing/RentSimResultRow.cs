@@ -25,26 +25,20 @@ namespace Processing
 
         public double stocksGrowthMonthly;
 
-        public RentSimResultRow ApplyStockInvests()
+        public RentSimResultRow ApplyStockInvests(double invest)
         {
-            this.stocksInvests = input.stocksMonthlyInvestAmount * 12;
-            this.stocksYearEnd += this.stocksInvests;
+            this.stocksInvests = invest;
+            this.stocksYearEnd += invest;
             return this;
         }
 
-        public RentSimResultRow ApplyStocksGrowth()
+        public RentSimResultRow ApplyStocksGrowth(double growthRate)
         {
-            this.stocksGrowth = stocksYearEnd * ((double)input.stocksGrowthRate / 100f);
+            this.stocksGrowth = stocksYearEnd * (growthRate / 100f);
             this.stocksYearEnd += this.stocksGrowth;
             return this;
         }
 
-        public double InterestPerYearToInterestPerMonth(double interestPerYear)
-        {
-            //https://www.haushaltsfinanzen.de/finanzmathematik/konformer_zinssatz.php?Konformer-Zinssatz-mit-online-Rechner
-            double interestPerMonth = Math.Pow(1f + (interestPerYear / 100f), 1f / 12f) - 1;
 
-            return interestPerMonth * 100;
-        }
     }
 }
