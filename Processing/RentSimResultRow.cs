@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Processing
+﻿namespace Processing
 {
     public class Asset
     {
@@ -33,26 +27,27 @@ namespace Processing
 
     public class RentSimResultRow
     {
-        //public Input input;
-
         public int age;
 
-        public Asset cash;
-        public Asset stocks;
-        public Asset metals;
+        public Asset cash = new Asset();
+        public Asset stocks = new Asset();
+        public Asset metals = new Asset();
+        
+        public Asset total = new Asset();
 
         public RentSimResultRow(Input _input)
         {
-            cash = stocks = metals = new Asset();
-            stocks.yearBegin = stocks.yearEnd =_input.stocks;
+            stocks.yearBegin = stocks.yearEnd = _input.stocks;
+            cash.yearBegin = cash.yearEnd = _input.cash;
+            metals.yearBegin = metals.yearEnd = _input.metals;
         }
 
         // For testability
         internal RentSimResultRow()
         {
-            cash = stocks = metals = new Asset();
             stocks.yearEnd = stocks.yearBegin;
-            //sad
+            cash.yearEnd = cash.yearBegin;
+            metals.yearEnd = metals.yearBegin;
         }
     }
 }

@@ -29,15 +29,15 @@
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldCash"/>
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldCashGrowthRate"/>
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" />
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldCashSaveAmount"/>
     </FieldBody>
 </Field>
 
@@ -53,6 +53,21 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksSaveAmount" />
+    </FieldBody>
+</Field>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldMetals" />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldMetalsGrowthRate" />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldMetalsSaveAmount" />
     </FieldBody>
 </Field>
 
@@ -86,9 +101,10 @@
     <Column ColumnSize="ColumnSize.Is4">
         <LineChart @ref="lineChart" TItem="double" />
     </Column>
+    <Column ColumnSize="ColumnSize.Is4">
+        <BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions"/>
+    </Column>
 </Row>
-
-
 
 
 
@@ -99,7 +115,8 @@
           ReadData="@OnReadData"
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="RentSimResultRow" />
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age"/>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age" />
+
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
         <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
@@ -112,6 +129,46 @@
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
         <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
+
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.invests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.growth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.invests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.growth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.invests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.growth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+
 </DataGrid>
 
 @code
@@ -136,9 +193,18 @@
     {
         FieldAgeCurrent = "41";
         FieldAgeStopWork = "60";
+
         FieldStocks = "60000";
         FieldStocksGrowthRate = "7";
         FieldStocksSaveAmount = "700";
+
+        FieldCash = "60000";
+        FieldCashGrowthRate = "0";
+        FieldCashSaveAmount = "350";
+
+        FieldMetals = "20000";
+        FieldMetalsGrowthRate = "1";
+        FieldMetalsSaveAmount = "0";
 
         await Task.Delay(0);
     }
@@ -151,6 +217,8 @@
 
 @code{
     LineChart<double> lineChart;
+    BarChart<double> barChart;
+    BarChartOptions dataBarChartOptions;
     ResultSet rSet;
     List<RentSimResultRow> resultRows = new List<RentSimResultRow>();
 
@@ -158,9 +226,18 @@
 
     string FieldAgeCurrent;
     string FieldAgeStopWork;
+
     string FieldStocks;
     string FieldStocksGrowthRate;
     string FieldStocksSaveAmount;
+
+    string FieldCash;
+    string FieldCashGrowthRate;
+    string FieldCashSaveAmount;
+
+    string FieldMetals;
+    string FieldMetalsGrowthRate;
+    string FieldMetalsSaveAmount;
 
     async Task HandleRedraw()
     {
@@ -170,9 +247,18 @@
         Input input = new Input();
         input.ageCurrent = Int32.Parse(FieldAgeCurrent);
         input.ageStopWork = Int32.Parse(FieldAgeStopWork);
+
         input.stocks = Int32.Parse(FieldStocks);
         input.stocksGrowthRate = Int32.Parse(FieldStocksGrowthRate);
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
+
+        input.cash = Int32.Parse(FieldCash);
+        input.cashGrowthRate = Int32.Parse(FieldCashGrowthRate);
+        input.cashMonthlyInvestAmount = Int32.Parse(FieldCashSaveAmount);
+
+        input.metals = Int32.Parse(FieldMetals);
+        input.metalsGrowthRate = Int32.Parse(FieldMetalsGrowthRate);
+        input.metalsMonthlyInvestAmount = Int32.Parse(FieldMetalsSaveAmount);
 
         rSet = new ResultSet(input);
         resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
@@ -186,16 +272,36 @@
 
         LineChartDataset<double> data = new LineChartDataset<double>
         {
-            Label = "Blubb",
-            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
             BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
+            Label = "Blubb",
             BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
             Fill = true,
             PointRadius = 2,
             BorderDash = new List<int> { },
+            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
+        };
+
+        BarChartDataset<double> dataBarChart = new BarChartDataset<double>
+        {
+            BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
+            Label = "Blubb",
+            BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
+            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
+        };
+
+        dataBarChartOptions = new BarChartOptions()
+        {
+            Scales = new Scales {
+                XAxes = new List<Axis> { new Axis { Stacked = true, Display = false} },
+                YAxes = new List<Axis> { new Axis { Stacked = true, Display = false} },
+            },
         };
 
         await lineChart.Clear();
         await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
+
+        await barChart.Clear();
+        await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChart, dataBarChart);
+
     }
 }

@@ -14,5 +14,13 @@ namespace Processing
         public int stocks;
         public int stocksGrowthRate;
         public int stocksMonthlyInvestAmount;
+
+        public int cash;
+        public int cashGrowthRate;
+        public int cashMonthlyInvestAmount;
+
+        public int metals;
+        public int metalsGrowthRate;
+        public int metalsMonthlyInvestAmount;
     }
 }

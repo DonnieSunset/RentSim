@@ -10,11 +10,15 @@ namespace Processing
     {
         private Input input;
         private double stocksGrowthRatePerMonth;
+        private double cashGrowthRatePerMonth;
+        private double metalsGrowthRatePerMonth;
 
         public ResultSet(Input _input)
         {
             input = _input;
             stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.stocksGrowthRate);
+            cashGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
+            metalsGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.metalsGrowthRate);
         }
 
         //idee: zweistufiger approcach: erste stufe ist zeimlich lineatr nicht in jahren denken, sondern einfach kontinuierluich jeden monat
@@ -37,14 +41,24 @@ namespace Processing
             {
                 _curSnap.age = i;
 
-                foreach (var asset in new Asset[] { _curSnap.stocks })
+                for (int month = 1; month <= 12; month++)
                 {
-                    for (int month = 1; month <= 12; month++)
-                    {
-                        asset
-                            .ApplyInvests(input.stocksMonthlyInvestAmount)
-                            .ApplyGrowth(this.stocksGrowthRatePerMonth);
-                    }
+                    _curSnap.stocks
+                        .ApplyInvests(input.stocksMonthlyInvestAmount)
+                        .ApplyGrowth(this.stocksGrowthRatePerMonth);
+                    
+                    _curSnap.cash
+                       .ApplyInvests(input.cashMonthlyInvestAmount)
+                       .ApplyGrowth(this.cashGrowthRatePerMonth);
+
+                    _curSnap.metals
+                       .ApplyInvests(input.metalsMonthlyInvestAmount)
+                       .ApplyGrowth(this.metalsGrowthRatePerMonth);
+
+                    _curSnap.total.yearBegin = _curSnap.stocks.yearBegin + _curSnap.cash.yearBegin + _curSnap.metals.yearBegin;
+                    _curSnap.total.invests = _curSnap.stocks.invests + _curSnap.cash.invests + _curSnap.metals.invests;
+                    _curSnap.total.growth = _curSnap.stocks.growth + _curSnap.cash.growth + _curSnap.metals.growth;
+                    _curSnap.total.yearEnd = _curSnap.stocks.yearEnd + _curSnap.cash.yearEnd + _curSnap.metals.yearEnd;
                 }
 
                 resultSet.Add(_curSnap);
