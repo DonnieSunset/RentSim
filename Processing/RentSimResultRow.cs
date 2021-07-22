@@ -6,39 +6,53 @@ using System.Threading.Tasks;
 
 namespace Processing
 {
+    public class Asset
+    {
+        public double yearBegin;
+        public double invests;
+        public double growth;
+        public double yearEnd;
+
+        public Asset ApplyInvests(double invest)
+        {
+            this.invests += invest;
+            this.yearEnd += invest;
+            return this;
+        }
+
+        public Asset ApplyGrowth(double growthRate)
+        {
+            double thisMonthGrowth = yearEnd * (growthRate / 100d);
+            this.growth += thisMonthGrowth;
+            this.yearEnd += thisMonthGrowth;
+            return this;
+        }
+    }
+
+
+
     public class RentSimResultRow
     {
-        public Input input;
+        //public Input input;
+
+        public int age;
+
+        public Asset cash;
+        public Asset stocks;
+        public Asset metals;
 
         public RentSimResultRow(Input _input)
         {
-            input = _input;
+            cash = stocks = metals = new Asset();
+            stocks.yearBegin = stocks.yearEnd =_input.stocks;
         }
 
         // For testability
         internal RentSimResultRow()
         {
-        }
-
-        public int age;
-        public double stocksYearBegin;
-        public double stocksInvests;
-        public double stocksGrowth;
-        public double stocksYearEnd;
-
-        public RentSimResultRow ApplyStockInvests(double invest)
-        {
-            this.stocksInvests += invest;
-            this.stocksYearEnd += invest;
-            return this;
-        }
-
-        public RentSimResultRow ApplyStocksGrowth(double growthRate)
-        {
-            double thisMonthGrowth = stocksYearEnd * (growthRate / 100d);
-            this.stocksGrowth += thisMonthGrowth;
-            this.stocksYearEnd += thisMonthGrowth;
-            return this;
+            cash = stocks = metals = new Asset();
+            stocks.yearEnd = stocks.yearBegin;
+            //sad
         }
     }
 }

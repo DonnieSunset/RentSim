@@ -100,17 +100,17 @@
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="RentSimResultRow" />
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age"/>
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksYearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksYearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocksYearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksInvests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksInvests)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.invests)" Caption="stocksInvests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksGrowth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksGrowth)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.growth)" Caption="stocksGrowth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocksYearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocksYearEnd)) </DisplayTemplate>
+    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocksYearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
 </DataGrid>
 
@@ -175,7 +175,7 @@
         input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
 
         rSet = new ResultSet(input);
-        resultRows = rSet.ProcessStocks();//.OrderByDescending(x => x.age).ToList();
+        resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
         //todo: add end amount of last result row to show it in chart
 
@@ -187,7 +187,7 @@
         LineChartDataset<double> data = new LineChartDataset<double>
         {
             Label = "Blubb",
-            Data = resultRows.Select(x => x.stocksYearBegin).ToList(),
+            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
             BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
             BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
             Fill = true,
