@@ -3,7 +3,7 @@
 
 @page "/"
 
-<Divider DividerType="DividerType.Dotted" Text="Timeline Data"></Divider>
+<Divider DividerType="DividerType.TextContent" Text="Timeline Data"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
@@ -22,9 +22,22 @@
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit />
     </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+    </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
+    <FieldBody>
+        <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
+            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
+            <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
+        </RadioGroup>
+    </FieldBody>
+
 </Field>
 
-<Divider DividerType="DividerType.Dotted" Text="Initial Assets"></Divider>
+<Divider DividerType="DividerType.TextContent" Text="Initial Assets"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
@@ -39,15 +52,6 @@
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldCashSaveAmount" />
     </FieldBody>
-
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <FieldLabel>Interest Rate Type:</FieldLabel>
-        <RadioGroup TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
-        </RadioGroup>
-    </FieldBody>
-
 </Field>
 
 <Field Horizontal="true">
@@ -80,7 +84,7 @@
     </FieldBody>
 </Field>
 
-<Divider DividerType="DividerType.Dotted" Text="Rent Approximations"></Divider>
+<Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Gross State Rent (-> arbeiten bis renteneintrittsalter):</FieldLabel>
@@ -101,7 +105,7 @@
     </FieldBody>
 </Field>
 
-<Divider DividerType="DividerType.Dotted"></Divider>
+<Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 <Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>
@@ -129,52 +133,52 @@
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age" />
 
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.total.yearBegin)" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.total.yearBegin)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearBegin)" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.cash.yearBegin)" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.cash.yearBegin)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.metals.yearBegin)" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.metals.yearBegin)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
 
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.total.invests)" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.total.invests)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.invests)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.invests)" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.cash.invests)" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.cash.invests)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.invests)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.metals.invests)" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.metals.invests)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.invests)) </DisplayTemplate>
     </DataGridColumn>
 
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.growth)" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.cash.growth)" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.cash.growth)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.growth)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.metals.growth)" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.metals.growth)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.growth)) </DisplayTemplate>
     </DataGridColumn>
 
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.total.yearEnd)" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.total.yearEnd)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.stocks.yearEnd)" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.cash.yearEnd)" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.cash.yearEnd)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.metals.yearEnd)" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrency((context as RentSimResultRow)?.metals.yearEnd)) </DisplayTemplate>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
 
 </DataGrid>
@@ -219,10 +223,16 @@
         await Task.Delay(0);
     }
 
-    public string BeautifyToCurrency(double? num)
+    public string BeautifyToCurrenctWith2Decimals(double? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", num);
     }
+
+    public string BeautifyToCurrenctWith0Decimals(double? num)
+    {
+        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
+    }
+
 }
 
 @code{
@@ -298,23 +308,39 @@
 
         LineChartDataset<double> data = new LineChartDataset<double>
         {
-            BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
+            BackgroundColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 0.5f) },
             Label = "Total",
-            BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
+            BorderColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 1f) },
             Fill = true,
             PointRadius = 2,
             BorderDash = new List<int> { },
             Data = resultRows.Select(x => x.total.yearBegin).ToList(),
         };
 
-        BarChartDataset<double> dataBarChart = new BarChartDataset<double>
+        BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
         {
-            BackgroundColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f) },
-            Label = "Blubb",
-            BorderColor = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f) },
-            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRows.Count).ToList<string>(),
+            Label = "Cash",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRows.Count).ToList<string>(),
+            Data = resultRows.Select(x => x.cash.yearBegin).ToList(),
         };
 
+        BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
+        {
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRows.Count).ToList<string>(),
+            Label = "Stocks",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count).ToList<string>(),
+            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
+        };
+        //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
+
+        BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
+        {
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count).ToList<string>(),
+            Label = "Metals",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), resultRows.Count).ToList<string>(),
+            Data = resultRows.Select(x => x.metals.yearBegin).ToList(),
+        };
 
 
         dataBarChartOptions = new BarChartOptions()
@@ -339,7 +365,7 @@
         await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
 
         await barChart.Clear();
-        await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChart, dataBarChart);
+        await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
 
     }
 }
