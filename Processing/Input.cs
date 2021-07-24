@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace Processing
 {
+    public enum InterestRateType
+    {
+        Konform,
+        Relativ
+    }
+
     public class Input
     {
         public int ageCurrent;
         public int ageStopWork;
+
+        public InterestRateType interestRateType = InterestRateType.Konform;
 
         public int stocks;
         public int stocksGrowthRate;

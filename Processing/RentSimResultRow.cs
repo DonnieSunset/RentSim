@@ -42,6 +42,24 @@
             metals.yearBegin = metals.yearEnd = _input.metals;
         }
 
+        public void CalculateTotal()
+        {
+            total.yearBegin = stocks.yearBegin + cash.yearBegin + metals.yearBegin;
+            total.invests = stocks.invests + cash.invests + metals.invests;
+            total.growth = stocks.growth + cash.growth + metals.growth;
+            total.yearEnd = stocks.yearEnd + cash.yearEnd + metals.yearEnd;
+        }
+
+        public RentSimResultRow CreateFollowUpRow()
+        { 
+            return new  RentSimResultRow()
+            {
+                stocks = new Asset() { yearBegin = this.stocks.yearEnd, yearEnd = this.stocks.yearEnd },
+                cash = new Asset() { yearBegin = this.cash.yearEnd, yearEnd = this.cash.yearEnd },
+                metals = new Asset() { yearBegin = this.metals.yearEnd, yearEnd = this.metals.yearEnd },
+            };
+        }
+
         // For testability
         internal RentSimResultRow()
         {

@@ -16,9 +16,21 @@ namespace Processing
         public ResultSet(Input _input)
         {
             input = _input;
-            stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.stocksGrowthRate);
-            cashGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
-            metalsGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.metalsGrowthRate);
+
+            if (input.interestRateType == InterestRateType.Relativ)
+            {
+                stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.stocksGrowthRate);
+                cashGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
+                metalsGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.metalsGrowthRate);
+            }
+            else if (input.interestRateType == InterestRateType.Konform)
+            {
+                stocksGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.stocksGrowthRate);
+                cashGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.cashGrowthRate);
+                metalsGrowthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.metalsGrowthRate);
+            }
+            else
+                throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
         }
 
         //idee: zweistufiger approcach: erste stufe ist zeimlich lineatr nicht in jahren denken, sondern einfach kontinuierluich jeden monat
@@ -55,23 +67,16 @@ namespace Processing
                        .ApplyInvests(input.metalsMonthlyInvestAmount)
                        .ApplyGrowth(this.metalsGrowthRatePerMonth);
 
-                    _curSnap.total.yearBegin = _curSnap.stocks.yearBegin + _curSnap.cash.yearBegin + _curSnap.metals.yearBegin;
-                    _curSnap.total.invests = _curSnap.stocks.invests + _curSnap.cash.invests + _curSnap.metals.invests;
-                    _curSnap.total.growth = _curSnap.stocks.growth + _curSnap.cash.growth + _curSnap.metals.growth;
-                    _curSnap.total.yearEnd = _curSnap.stocks.yearEnd + _curSnap.cash.yearEnd + _curSnap.metals.yearEnd;
+                    _curSnap.CalculateTotal();
                 }
 
                 resultSet.Add(_curSnap);
-                _curSnap = new RentSimResultRow()
-                {
-                    stocks = new Asset() { yearBegin =_curSnap.stocks.yearEnd, yearEnd = _curSnap.stocks.yearEnd },
-                    cash = new Asset() { yearBegin = _curSnap.cash.yearEnd, yearEnd = _curSnap.cash.yearEnd },
-                    metals = new Asset() { yearBegin = _curSnap.metals.yearEnd, yearEnd = _curSnap.metals.yearEnd },
-                };
+                _curSnap = _curSnap.CreateFollowUpRow();
             }
 
             //add the last (non processed) result set to the list in order to indicate the beginning of the last++ year
             _curSnap.age = resultSet.Last().age + 1;
+            _curSnap.CalculateTotal();
             resultSet.Add(_curSnap);
 
             return resultSet;

@@ -16,6 +16,9 @@ namespace Processing_uTest
             {
                 ageCurrent = 41,
                 ageStopWork = 60,
+
+                interestRateType = InterestRateType.Relativ,
+
                 stocks = 60000,
                 stocksGrowthRate = 7,
                 stocksMonthlyInvestAmount = 700
