@@ -29,7 +29,7 @@
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
     <FieldBody>
-        <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
+        <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
             <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
             <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
         </RadioGroup>
@@ -107,6 +107,27 @@
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings StopWork Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge"/>
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1">
+        <TextEdit />
+    </FieldBody>
+</Field>
+
+
+
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 <Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>
 
@@ -116,7 +137,7 @@
     </Column>
     <Column ColumnSize="ColumnSize.Is4">
         @*<BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />*@
-       @* <BarChart @ref="barChart" TItem="double" OptionsJsonString="@myStackedOptions" />*@
+        @* <BarChart @ref="barChart" TItem="double" OptionsJsonString="@myStackedOptions" />*@
         <BarChart @ref="barChart" TItem="double" OptionsObject="@myScales" />
     </Column>
 </Row>
@@ -220,6 +241,8 @@
         FieldMetalsGrowthRate = "1";
         FieldMetalsSaveAmount = "0";
 
+        FieldResultsTotalSavingStopWorkAge = "0";
+
         await Task.Delay(0);
     }
 
@@ -236,7 +259,7 @@
 }
 
 @code{
-    InterestRateType interestRateType;
+    InterestRateType interestRateType = InterestRateType.Relativ;
 
     async void OnInterestRateCheckedValueChanged(InterestRateType value)
     {
@@ -273,6 +296,8 @@
     string FieldMetalsGrowthRate;
     string FieldMetalsSaveAmount;
 
+    string FieldResultsTotalSavingStopWorkAge;
+
     async Task HandleRedraw()
     {
         //Labels.SetValue(fieldRefCash, 0);
@@ -299,12 +324,17 @@
         rSet = new ResultSet(input);
         resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
+        //results
+        int index = Int32.Parse(FieldAgeStopWork) - Int32.Parse(FieldAgeCurrent);
+        double result = resultRows[index].total.yearBegin;
+        FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(result);
+
         //todo: add end amount of last result row to show it in chart
 
         string[] labels = Enumerable.Range(input.ageCurrent, input.ageStopWork - input.ageCurrent + 1)
-            .ToArray()
-            .Select(x => x.ToString())
-            .ToArray(); ;
+        .ToArray()
+        .Select(x => x.ToString())
+        .ToArray(); ;
 
         LineChartDataset<double> data = new LineChartDataset<double>
         {
@@ -345,7 +375,8 @@
 
         dataBarChartOptions = new BarChartOptions()
         {
-            Scales = new Scales {
+            Scales = new Scales
+            {
                 //XAxes = new List<Axis> { new Axis { Stacked = true} },
                 //YAxes = new List<Axis> { new Axis { Stacked = true} },
                 XAxes = new List<Axis>() { new Axis { Stacked = true } },
