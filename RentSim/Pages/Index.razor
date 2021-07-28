@@ -7,13 +7,11 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @bind-Text="@FieldAgeCurrent" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent"/> </FieldBody>
+    
     <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @bind-Text="@FieldAgeStopWork" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
         <TextEdit />
@@ -41,46 +39,35 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldCash" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash"/> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldCashGrowthRate" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldCashSaveAmount" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldStocks" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksGrowthRate" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldStocksSaveAmount" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" MaskType="MaskType.RegEx" EditMask="^[0-9]+$" @bind-Text="@FieldMetals" />
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldMetalsGrowthRate" />
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" />
     </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit @onkeypress="@(async () => await HandleRedraw())" @bind-Text="@FieldMetalsSaveAmount" />
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" />
     </FieldBody>
 </Field>
 
@@ -204,6 +191,7 @@
 
 </DataGrid>
 
+
 @code
 {
     int totalRows;
@@ -224,22 +212,22 @@
 
     async Task LoaderDefault()
     {
-        FieldAgeCurrent = "41";
-        FieldAgeStopWork = "60";
+        FieldAgeCurrent = 41;
+        FieldAgeStopWork = 60;
 
         interestRateType = InterestRateType.Relativ;
 
-        FieldStocks = "60000";
-        FieldStocksGrowthRate = "7";
-        FieldStocksSaveAmount = "700";
+        FieldStocks = 60000;
+        FieldStocksGrowthRate = 7;
+        FieldStocksSaveAmount = 700;
 
-        FieldCash = "60000";
-        FieldCashGrowthRate = "0";
-        FieldCashSaveAmount = "350";
+        FieldCash = 60000;
+        FieldCashGrowthRate = 0;
+        FieldCashSaveAmount = 350;
 
-        FieldMetals = "20000";
-        FieldMetalsGrowthRate = "1";
-        FieldMetalsSaveAmount = "0";
+        FieldMetals = 20000;
+        FieldMetalsGrowthRate = 1;
+        FieldMetalsSaveAmount = 0;
 
         FieldResultsTotalSavingStopWorkAge = "0";
 
@@ -279,53 +267,50 @@
     //string FieldRefCash;
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
 
-    string FieldAgeCurrent;
-    string FieldAgeStopWork;
+    int FieldAgeCurrent;
+    int FieldAgeStopWork;
 
 
 
-    string FieldStocks;
-    string FieldStocksGrowthRate;
-    string FieldStocksSaveAmount;
+    int FieldStocks;
+    int FieldStocksGrowthRate;
+    int FieldStocksSaveAmount;
 
-    string FieldCash;
-    string FieldCashGrowthRate;
-    string FieldCashSaveAmount;
+    int FieldCash;
+    int FieldCashGrowthRate;
+    int FieldCashSaveAmount;
 
-    string FieldMetals;
-    string FieldMetalsGrowthRate;
-    string FieldMetalsSaveAmount;
+    int FieldMetals;
+    int FieldMetalsGrowthRate;
+    int FieldMetalsSaveAmount;
 
     string FieldResultsTotalSavingStopWorkAge;
 
     async Task HandleRedraw()
     {
-        //Labels.SetValue(fieldRefCash, 0);
-        //StateContainer.Property = "1236";
-
         Input input = new Input();
-        input.ageCurrent = Int32.Parse(FieldAgeCurrent);
-        input.ageStopWork = Int32.Parse(FieldAgeStopWork);
+        input.ageCurrent = FieldAgeCurrent;
+        input.ageStopWork = FieldAgeStopWork;
 
         input.interestRateType = interestRateType;
 
-        input.stocks = Int32.Parse(FieldStocks);
-        input.stocksGrowthRate = Int32.Parse(FieldStocksGrowthRate);
-        input.stocksMonthlyInvestAmount = Int32.Parse(FieldStocksSaveAmount);
+        input.stocks = FieldStocks;
+        input.stocksGrowthRate = FieldStocksGrowthRate;
+        input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
 
-        input.cash = Int32.Parse(FieldCash);
-        input.cashGrowthRate = Int32.Parse(FieldCashGrowthRate);
-        input.cashMonthlyInvestAmount = Int32.Parse(FieldCashSaveAmount);
+        input.cash = FieldCash;
+        input.cashGrowthRate = FieldCashGrowthRate;
+        input.cashMonthlyInvestAmount = FieldCashSaveAmount;
 
-        input.metals = Int32.Parse(FieldMetals);
-        input.metalsGrowthRate = Int32.Parse(FieldMetalsGrowthRate);
-        input.metalsMonthlyInvestAmount = Int32.Parse(FieldMetalsSaveAmount);
+        input.metals = FieldMetals;
+        input.metalsGrowthRate = FieldMetalsGrowthRate;
+        input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
         rSet = new ResultSet(input);
         resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
         //results
-        int index = Int32.Parse(FieldAgeStopWork) - Int32.Parse(FieldAgeCurrent);
+        int index = FieldAgeStopWork - FieldAgeCurrent;
         double result = resultRows[index].total.yearBegin;
         FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(result);
 
