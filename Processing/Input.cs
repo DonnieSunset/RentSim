@@ -16,6 +16,8 @@ namespace Processing
     {
         public int ageCurrent;
         public int ageStopWork;
+        public int ageRentStart;
+        public int ageEnd;
 
         public InterestRateType interestRateType = InterestRateType.Konform;
 

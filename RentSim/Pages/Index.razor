@@ -7,19 +7,16 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent"/> </FieldBody>
-    
-    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -61,56 +58,33 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" /> </FieldBody>
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Gross State Rent (-> arbeiten bis renteneintrittsalter):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings StopWork Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge"/>
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">StopWork Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">RentStart Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-        <TextEdit />
-    </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Stop Work Age):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" /> </FieldBody>
 </Field>
 
 
@@ -214,6 +188,8 @@
     {
         FieldAgeCurrent = 41;
         FieldAgeStopWork = 60;
+        FieldAgeRentStart = 67;
+        FieldAgeEnd = 80;
 
         interestRateType = InterestRateType.Relativ;
 
@@ -229,7 +205,12 @@
         FieldMetalsGrowthRate = 1;
         FieldMetalsSaveAmount = 0;
 
+        //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
+        FieldNetStateRentFromCurrentAge = 762;
+        FieldNetStateRentFromRentStartAge = 2015;
+
         FieldResultsTotalSavingStopWorkAge = "0";
+        FieldResultsNetStateRent = "0";
 
         await Task.Delay(0);
     }
@@ -269,7 +250,8 @@
 
     int FieldAgeCurrent;
     int FieldAgeStopWork;
-
+    int FieldAgeRentStart;
+    int FieldAgeEnd;
 
 
     int FieldStocks;
@@ -284,13 +266,19 @@
     int FieldMetalsGrowthRate;
     int FieldMetalsSaveAmount;
 
+    int FieldNetStateRentFromCurrentAge;
+    int FieldNetStateRentFromRentStartAge;
+
     string FieldResultsTotalSavingStopWorkAge;
+    string FieldResultsNetStateRent;
 
     async Task HandleRedraw()
     {
         Input input = new Input();
         input.ageCurrent = FieldAgeCurrent;
         input.ageStopWork = FieldAgeStopWork;
+        input.ageRentStart = FieldAgeRentStart;
+        input.ageEnd = FieldAgeEnd;
 
         input.interestRateType = interestRateType;
 
