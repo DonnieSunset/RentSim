@@ -301,6 +301,8 @@
         int index = FieldAgeStopWork - FieldAgeCurrent;
         double result = resultRows[index].total.yearBegin;
         FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(result);
+        double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
+        FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
 
         //todo: add end amount of last result row to show it in chart
 

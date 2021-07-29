@@ -23,5 +23,21 @@ namespace Processing
 
             return interestPerMonth;
         }
+
+        public static double RentStopWorkAgeApproximation(int currentAge, int stopWorkAge, int rentStartAge, double currentRent, double rentStartRent)
+        {
+            if (rentStartAge == currentAge)
+            {
+                return rentStartRent;
+            }
+
+            double rentIncreasePerYear = (rentStartRent - currentRent) / (rentStartAge - currentAge);
+
+            double rentIncreaseUntilStopWorkAge = (stopWorkAge - currentAge) * rentIncreasePerYear;
+
+            double rentStopWorkAge = rentIncreaseUntilStopWorkAge + currentRent;
+
+            return rentStopWorkAge;
+        }
     }
 }
