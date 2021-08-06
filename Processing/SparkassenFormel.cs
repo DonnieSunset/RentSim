@@ -21,8 +21,15 @@ namespace Processing
             int i = 0;
 
             double diff;
-            double rateA;
-            double rateB;
+            double rateA, rateB;
+            double rateAperMonth, rateBperMonth;
+
+            if (anzahlJahreStopWorkAge == 0)
+            {
+                rateA = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreRent, jahreszins, endKapital);
+                rateAperMonth = -rateA / 12;
+                return (rateAperMonth, 0);
+            }
 
             do
             {
@@ -57,8 +64,8 @@ namespace Processing
             Console.WriteLine("Geschafft! nach iteration " + i);
 
 
-            double rateAperMonth = -rateA / 12;
-            double rateBperMonth = -rateB / 12;
+            rateAperMonth = -rateA / 12;
+            rateBperMonth = -rateB / 12;
             Console.WriteLine($"Rate pro Monat: {rateBperMonth} / {rateAperMonth} ... bei rente {rente}  und umschwungpunkt {middle}");
 
             return (rateAperMonth, rateBperMonth);

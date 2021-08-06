@@ -81,10 +81,16 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @FieldAgeStopWork</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @FieldAgeStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRateB" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRateA" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 
@@ -211,6 +217,8 @@
 
         FieldResultsTotalSavingStopWorkAge = "0";
         FieldResultsNetStateRent = "0";
+        FieldResultsRateA = "0";
+        FieldResultsRateB = "0";
 
         await Task.Delay(0);
     }
@@ -271,6 +279,8 @@
 
     string FieldResultsTotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
+    string FieldResultsRateA;
+    string FieldResultsRateB;
 
     async Task HandleRedraw()
     {
@@ -299,17 +309,30 @@
 
         //results
         int index = FieldAgeStopWork - FieldAgeCurrent;
-        double result = resultRows[index].total.yearBegin;
-        FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(result);
+        double TotalSavingStopWorkAge = resultRows[index].total.yearBegin;
+        FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
         double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
+
+        //TODO: hier muss noch der durchschnittszins über alle assets gewichtet berechnet werden, und die entnahmestrategie definiert werden dass wir davon ausgehen dass von allen assets gleichmäßig entnommen wird.
+        double TODOimaginaryAverageZins = 4;
+        (double rateA, double rateB) = SparkassenFormel.BerechneRateMitRente(
+            anfangskapital: TotalSavingStopWorkAge, 
+            anzahlJahreStopWorkAge: FieldAgeRentStart-FieldAgeStopWork, 
+            anzahlJahreRent: FieldAgeEnd - FieldAgeRentStart,
+            jahreszins: TODOimaginaryAverageZins,
+            endKapital: 0,
+            rente: approxStopWorkAgeNetRent
+            );
+        FieldResultsRateA = BeautifyToCurrenctWith0Decimals(rateA);
+        FieldResultsRateB = BeautifyToCurrenctWith0Decimals(rateB);
 
         //todo: add end amount of last result row to show it in chart
 
         string[] labels = Enumerable.Range(input.ageCurrent, input.ageStopWork - input.ageCurrent + 1)
-        .ToArray()
-        .Select(x => x.ToString())
-        .ToArray(); ;
+.ToArray()
+.Select(x => x.ToString())
+.ToArray(); ;
 
         LineChartDataset<double> data = new LineChartDataset<double>
         {
