@@ -12,7 +12,7 @@ namespace Processing
             return rate;
         }
 
-        public static (double rateA, double rateB) BerechneRateMitRente(double anfangskapital, int anzahlJahreStopWorkAge, int anzahlJahreRent, double jahreszins, double endKapital, double rente)
+        public static (double ratePhaseRent, double ratePhaseStopWork) BerechneRateMitRente(double anfangskapital, int anzahlJahreStopWorkAge, int anzahlJahreRent, double jahreszins, double endKapital, double rente)
         {
             double left = 0;
             double right = anfangskapital;
@@ -21,31 +21,31 @@ namespace Processing
             int i = 0;
 
             double diff;
-            double rateA, rateB;
-            double rateAperMonth, rateBperMonth;
+            double ratePhaseRent, ratePhaseStopWork;
+            double ratePhaseRentperMonth, ratePhaseStopWorkperMonth;
 
             if (anzahlJahreStopWorkAge == 0)
             {
-                rateA = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreRent, jahreszins, endKapital);
-                rateAperMonth = -rateA / 12;
-                return (rateAperMonth, 0);
+                ratePhaseRent = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreRent, jahreszins, endKapital);
+                ratePhaseRentperMonth = -ratePhaseRent / 12;
+                return (ratePhaseRentperMonth, 0);
             }
 
             do
             {
                 i++;
 
-                rateB = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, middle);
-                rateA = SparkassenFormel.BerechneRate(middle, anzahlJahreRent, jahreszins, endKapital);
+                ratePhaseStopWork = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, middle);
+                ratePhaseRent = SparkassenFormel.BerechneRate(middle, anzahlJahreRent, jahreszins, endKapital);
 
-                double rateAplusRent = rateA - (rente * 12);
+                double ratePhaseRentplusRent = ratePhaseRent - (rente * 12);
 
-                diff = Math.Abs(rateAplusRent - rateB);
+                diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
 
                 Console.WriteLine($"Border left: {Math.Round(left)} middle {Math.Round(middle)} right {Math.Round(right)} ");
-                Console.WriteLine($"rateA: {Math.Round(rateA)} rateB: {Math.Round(rateB)}");
+                Console.WriteLine($"ratePhaseRent: {Math.Round(ratePhaseRent)} ratePhaseStopWork: {Math.Round(ratePhaseStopWork)}");
 
-                if (rateAplusRent > rateB)
+                if (ratePhaseRentplusRent > ratePhaseStopWork)
                 {
                     Console.WriteLine("Moving to the right! ------>");
                     left = middle;
@@ -64,11 +64,11 @@ namespace Processing
             Console.WriteLine("Geschafft! nach iteration " + i);
 
 
-            rateAperMonth = -rateA / 12;
-            rateBperMonth = -rateB / 12;
-            Console.WriteLine($"Rate pro Monat: {rateBperMonth} / {rateAperMonth} ... bei rente {rente}  und umschwungpunkt {middle}");
+            ratePhaseRentperMonth = -ratePhaseRent / 12;
+            ratePhaseStopWorkperMonth = -ratePhaseStopWork / 12;
+            Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rente}  und umschwungpunkt {middle}");
 
-            return (rateAperMonth, rateBperMonth);
+            return (ratePhaseRentperMonth, ratePhaseStopWorkperMonth);
         }
 
         private static double Middle(double left, double right)

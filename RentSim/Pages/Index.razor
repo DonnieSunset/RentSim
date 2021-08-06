@@ -87,10 +87,10 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRateB" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRateA" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 
@@ -217,8 +217,8 @@
 
         FieldResultsTotalSavingStopWorkAge = "0";
         FieldResultsNetStateRent = "0";
-        FieldResultsRateA = "0";
-        FieldResultsRateB = "0";
+        FieldResultsRatePhaseRent = "0";
+        FieldResultsRatePhaseStopWork = "0";
 
         await Task.Delay(0);
     }
@@ -279,8 +279,8 @@
 
     string FieldResultsTotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
-    string FieldResultsRateA;
-    string FieldResultsRateB;
+    string FieldResultsRatePhaseRent;
+    string FieldResultsRatePhaseStopWork;
 
     async Task HandleRedraw()
     {
@@ -316,16 +316,16 @@
 
         //TODO: hier muss noch der durchschnittszins über alle assets gewichtet berechnet werden, und die entnahmestrategie definiert werden dass wir davon ausgehen dass von allen assets gleichmäßig entnommen wird.
         double TODOimaginaryAverageZins = 4;
-        (double rateA, double rateB) = SparkassenFormel.BerechneRateMitRente(
-            anfangskapital: TotalSavingStopWorkAge, 
-            anzahlJahreStopWorkAge: FieldAgeRentStart-FieldAgeStopWork, 
+        (double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.BerechneRateMitRente(
+            anfangskapital: TotalSavingStopWorkAge,
+            anzahlJahreStopWorkAge: FieldAgeRentStart-FieldAgeStopWork,
             anzahlJahreRent: FieldAgeEnd - FieldAgeRentStart,
             jahreszins: TODOimaginaryAverageZins,
             endKapital: 0,
             rente: approxStopWorkAgeNetRent
             );
-        FieldResultsRateA = BeautifyToCurrenctWith0Decimals(rateA);
-        FieldResultsRateB = BeautifyToCurrenctWith0Decimals(rateB);
+        FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
+        FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);
 
         //todo: add end amount of last result row to show it in chart
 
