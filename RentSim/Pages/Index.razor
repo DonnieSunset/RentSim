@@ -7,16 +7,16 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -25,7 +25,7 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
     <FieldBody>
         <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
+            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ" >Relativ</Radio>
             <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
         </RadioGroup>
     </FieldBody>
@@ -36,55 +36,55 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @FieldAgeStopWork</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @FieldAgeStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 
