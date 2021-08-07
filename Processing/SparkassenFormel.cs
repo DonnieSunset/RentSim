@@ -4,12 +4,19 @@ namespace Processing
 {
     public class SparkassenFormel
     {
+        /// <summary>
+        /// https://de.wikipedia.org/wiki/Sparkassenformel
+        /// https://www.onlinemathe.de/forum/Umformung-der-Sparkassenformel
+        /// </summary>
         public static double BerechneRate(double anfangskapital, int anzahlJahre, double jahreszins, double endKapital)
         {
             double q = 1 + (jahreszins / 100d);
-            double rate = (endKapital - anfangskapital * Math.Pow(q, anzahlJahre)) * ((q - 1) / (Math.Pow(q, anzahlJahre) - 1));
+            double rateNachschuessig = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q-1) / (Math.Pow(q, anzahlJahre) - 1);
+            
+            double rateVorschuessig = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q - 1)       /      (q * (Math.Pow(q, anzahlJahre) - 1));
+            //double rate = 1000;
 
-            return rate;
+            return rateVorschuessig;
         }
 
         public static (double ratePhaseRent, double ratePhaseStopWork) BerechneRateMitRente(double anfangskapital, int anzahlJahreStopWorkAge, int anzahlJahreRent, double jahreszins, double endKapital, double rente)
@@ -46,8 +53,9 @@ namespace Processing
 
                 diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
 
+                string s = $"ratePhaseRent11: {Math.Round(ratePhaseRent)} ratePhaseStopWork: {Math.Round(ratePhaseStopWork)}";
                 Console.WriteLine($"Border left: {Math.Round(left)} middle {Math.Round(middle)} right {Math.Round(right)} ");
-                Console.WriteLine($"ratePhaseRent: {Math.Round(ratePhaseRent)} ratePhaseStopWork: {Math.Round(ratePhaseStopWork)}");
+                Console.WriteLine(s);
 
                 if (ratePhaseRentplusRent > ratePhaseStopWork)
                 {
