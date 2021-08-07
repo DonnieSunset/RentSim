@@ -38,6 +38,10 @@ namespace Processing
                 ratePhaseStopWork = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, middle);
                 ratePhaseRent = SparkassenFormel.BerechneRate(middle, anzahlJahreRent, jahreszins, endKapital);
 
+                //TODO: von beiden raten müssen aktien steuern abgezogen werden. am besten eine abstraktion entnahmestrategie, die genau dieses verhältnis berechnen kann
+                // IEntnahmestrategie.Get
+
+                //korrektur: auf eine rate muss rente ausaddiert werden
                 double ratePhaseRentplusRent = ratePhaseRent - (rente * 12);
 
                 diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
