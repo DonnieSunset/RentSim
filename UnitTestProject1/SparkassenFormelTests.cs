@@ -48,5 +48,19 @@ namespace Processing_uTest
 
             Assert.AreEqual(endKapital, aktuellesKapital, 0.01);
         }
+
+        [TestMethod]
+        public void BerechneRateMitRente_VermoegenZuKlein_WirftExcxeption()
+        {
+            double anfangskapital = 60000;
+            int anzahlJahreStopWorkAge = 7;
+            int anzahlJahreRent = 13;
+            double jahreszins = 8;
+            double endKapital = 0;
+            double rente = 1800;
+
+            Action action = () => SparkassenFormel.BerechneRateMitRente(anfangskapital, anzahlJahreStopWorkAge, anzahlJahreRent, jahreszins, endKapital, rente);
+            Assert.ThrowsException<Exception>(action);
+        }
     }
 }

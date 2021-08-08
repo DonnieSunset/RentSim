@@ -31,6 +31,17 @@ namespace Processing
             double ratePhaseRent, ratePhaseStopWork;
             double ratePhaseRentperMonth, ratePhaseStopWorkperMonth;
 
+            // Prüfe ob das Anfangskapital überhaupt ausreicht. Angenommen das komplette Kapital würde in der StopWork-Phase
+            // verbraucht werden dürfen und die Rate würde immernoch under der erwarteten Rente liegen, dann haben wir
+            // zu wenig Kapital um eine gleichmäßige Rente zu erzielen.
+            var rateCompleteStopWorkPhase = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, endKapital);
+            rateCompleteStopWorkPhase = -rateCompleteStopWorkPhase / 12;
+            if (rateCompleteStopWorkPhase < rente)
+            {
+                throw new Exception($"Vermögen <{anfangskapital}> mit zu erzielbarem Restkapital von <{endKapital}> reicht nicht zur Mindestrente von <{rente}> aus bei StopWork Phase von <{anzahlJahreStopWorkAge}> Jahren. Erzielbare monatliche Rate wäre maximal <{rateCompleteStopWorkPhase}>.");
+            }
+
+
             if (anzahlJahreStopWorkAge == 0)
             {
                 ratePhaseRent = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreRent, jahreszins, endKapital);
