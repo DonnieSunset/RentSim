@@ -19,10 +19,10 @@ namespace Processing
             return rateVorschuessig;
         }
 
-        public static (double ratePhaseRent, double ratePhaseStopWork) BerechneRateMitRente(double anfangskapital, int anzahlJahreStopWorkAge, int anzahlJahreRent, double jahreszins, double endKapital, double rente)
+        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
             double left = 0;
-            double right = anfangskapital;
+            double right = startCapital;
             double middle = SparkassenFormel.Middle(left, right);
 
             int i = 0;
@@ -34,17 +34,17 @@ namespace Processing
             // Prüfe ob das Anfangskapital überhaupt ausreicht. Angenommen das komplette Kapital würde in der StopWork-Phase
             // verbraucht werden dürfen und die Rate würde immernoch under der erwarteten Rente liegen, dann haben wir
             // zu wenig Kapital um eine gleichmäßige Rente zu erzielen.
-            var rateCompleteStopWorkPhase = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, endKapital);
-            rateCompleteStopWorkPhase = -rateCompleteStopWorkPhase / 12;
-            if (rateCompleteStopWorkPhase < rente)
+            var rateCompleteStopWorkPhase = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, endCapital);
+            rateCompleteStopWorkPhase = Math.Round(-rateCompleteStopWorkPhase / 12, 2); //todo: maybe this rounding can be avoided once we migrate from double to decimal
+            if (rateCompleteStopWorkPhase < rent)
             {
-                throw new Exception($"Vermögen <{anfangskapital}> mit zu erzielbarem Restkapital von <{endKapital}> reicht nicht zur Mindestrente von <{rente}> aus bei StopWork Phase von <{anzahlJahreStopWorkAge}> Jahren. Erzielbare monatliche Rate wäre maximal <{rateCompleteStopWorkPhase}>.");
+                throw new Exception($"Vermögen <{startCapital}> mit zu erzielbarem Restkapital von <{endCapital}> reicht nicht zur Mindestrente von <{rent}> aus bei StopWork Phase von <{yearsStopWorkPhase}> Jahren. Erzielbare monatliche Rate wäre maximal <{rateCompleteStopWorkPhase}>.");
             }
 
 
-            if (anzahlJahreStopWorkAge == 0)
+            if (yearsStopWorkPhase == 0)
             {
-                ratePhaseRent = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreRent, jahreszins, endKapital);
+                ratePhaseRent = SparkassenFormel.BerechneRate(startCapital, yearsRentPhase, interestRate, endCapital);
                 ratePhaseRentperMonth = -ratePhaseRent / 12;
                 return (ratePhaseRentperMonth, 0);
             }
@@ -53,14 +53,14 @@ namespace Processing
             {
                 i++;
 
-                ratePhaseStopWork = SparkassenFormel.BerechneRate(anfangskapital, anzahlJahreStopWorkAge, jahreszins, middle);
-                ratePhaseRent = SparkassenFormel.BerechneRate(middle, anzahlJahreRent, jahreszins, endKapital);
+                ratePhaseStopWork = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
+                ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 
                 //TODO: von beiden raten müssen aktien steuern abgezogen werden. am besten eine abstraktion entnahmestrategie, die genau dieses verhältnis berechnen kann
                 // IEntnahmestrategie.Get
 
                 //korrektur: auf eine rate muss rente ausaddiert werden
-                double ratePhaseRentplusRent = ratePhaseRent - (rente * 12);
+                double ratePhaseRentplusRent = ratePhaseRent - (rent * 12);
 
                 diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
 
@@ -89,7 +89,7 @@ namespace Processing
 
             ratePhaseRentperMonth = -ratePhaseRent / 12;
             ratePhaseStopWorkperMonth = -ratePhaseStopWork / 12;
-            Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rente}  und umschwungpunkt {middle}");
+            Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
 
             return (ratePhaseRentperMonth, ratePhaseStopWorkperMonth);
         }
