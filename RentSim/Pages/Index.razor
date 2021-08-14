@@ -316,13 +316,13 @@
 
         //TODO: hier muss noch der durchschnittszins über alle assets gewichtet berechnet werden, und die entnahmestrategie definiert werden dass wir davon ausgehen dass von allen assets gleichmäßig entnommen wird.
         double TODOimaginaryAverageZins = 4;
-        (double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.BerechneRateMitRente(
-            anfangskapital: TotalSavingStopWorkAge,
-            anzahlJahreStopWorkAge: FieldAgeRentStart-FieldAgeStopWork,
-            anzahlJahreRent: FieldAgeEnd - FieldAgeRentStart,
-            jahreszins: TODOimaginaryAverageZins,
-            endKapital: 0,
-            rente: approxStopWorkAgeNetRent
+        (double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
+            startCapital: TotalSavingStopWorkAge,
+            yearsStopWorkPhase: FieldAgeRentStart-FieldAgeStopWork,
+            yearsRentPhase: FieldAgeEnd - FieldAgeRentStart,
+            interestRate: TODOimaginaryAverageZins,
+            endCapital: 0,
+            rent: approxStopWorkAgeNetRent
             );
         FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);

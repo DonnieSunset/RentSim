@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Processing;
+using Processing.Assets;
 using System;
 using System.Collections.Generic;
 
