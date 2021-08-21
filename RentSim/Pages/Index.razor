@@ -1,4 +1,5 @@
 ﻿@using Processing;
+@using Processing.Assets;
 @using System.Globalization;
 
 @page "/"
@@ -10,13 +11,13 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -25,7 +26,7 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
     <FieldBody>
         <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ" >Relativ</Radio>
+            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
             <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
         </RadioGroup>
     </FieldBody>
@@ -36,45 +37,45 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" DelayTextOnKeyPress="false" Step="1000"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
@@ -113,60 +114,60 @@
 
 
 
-<DataGrid TItem="RentSimResultRow"
+<DataGrid TItem="ResultRow"
           Data="@resultRows"
           ReadData="@OnReadData"
           TotalItems="@totalRows">
-    <DataGridCommandColumn TItem="RentSimResultRow" />
-    <DataGridColumn TItem="RentSimResultRow" Field="@nameof(RentSimResultRow.age)" Caption="Age" />
+    <DataGridCommandColumn TItem="ResultRow" />
+    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.age)" Caption="Age" />
 
-    <DataGridColumn TItem="RentSimResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.yearBegin)) </DisplayTemplate>
-    </DataGridColumn>
-
-    <DataGridColumn TItem="RentSimResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.invests)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="RentSimResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.growth)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.growth)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.growth)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.invests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.invests)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="RentSimResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.total.yearEnd)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.cash.yearEnd)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="RentSimResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as RentSimResultRow)?.metals.yearEnd)) </DisplayTemplate>
+
+    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
 
 </DataGrid>
@@ -176,7 +177,7 @@
 {
     int totalRows;
 
-    async Task OnReadData(DataGridReadDataEventArgs<RentSimResultRow> e)
+    async Task OnReadData(DataGridReadDataEventArgs<ResultRow> e)
     {
         totalRows = resultRows.Count; // this is used to tell datagrid how many items are available so that pagination will work
 
@@ -250,8 +251,13 @@
     BarChart<double> barChart;
     BarChartOptions dataBarChartOptions;
     Scales myScales;
-    ResultSet rSet;
-    List<RentSimResultRow> resultRows = new List<RentSimResultRow>();
+    ResultSet resultSet;
+    List<ResultRow> resultRows = new List<ResultRow>();
+    Cash cash = null;
+    Stocks stocks = null;
+    Metals metals = null;
+    Total total = null;
+
 
     //string FieldRefCash;
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
@@ -304,12 +310,23 @@
         input.metalsGrowthRate = FieldMetalsGrowthRate;
         input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
-        rSet = new ResultSet(input);
-        resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
+        cash = new Cash(input);
+        stocks = new Stocks(input);
+        metals = new Metals(input);
+        total = new Total(input, new List<Asset> { cash, stocks, metals });
+
+        cash.Process();
+        stocks.Process();
+        metals.Process();
+        total.Process();
+
+        resultSet = new ResultSet(input, cash, stocks, metals, total);
+        resultRows = resultSet.ProcessAssets();
+        //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
         //results
         int index = FieldAgeStopWork - FieldAgeCurrent;
-        double TotalSavingStopWorkAge = resultRows[index].total.yearBegin;
+        double TotalSavingStopWorkAge = total.protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
         FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
         double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
@@ -318,7 +335,7 @@
         double TODOimaginaryAverageZins = 4;
         (double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
             startCapital: TotalSavingStopWorkAge,
-            yearsStopWorkPhase: FieldAgeRentStart-FieldAgeStopWork,
+            yearsStopWorkPhase: FieldAgeRentStart - FieldAgeStopWork,
             yearsRentPhase: FieldAgeEnd - FieldAgeRentStart,
             interestRate: TODOimaginaryAverageZins,
             endCapital: 0,
@@ -342,32 +359,33 @@
             Fill = true,
             PointRadius = 2,
             BorderDash = new List<int> { },
-            Data = resultRows.Select(x => x.total.yearBegin).ToList(),
+            //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
+            Data = total.protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRows.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), cash.protocol.Count).ToList<string>(),
             Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRows.Count).ToList<string>(),
-            Data = resultRows.Select(x => x.cash.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), cash.protocol.Count).ToList<string>(),
+            Data = cash.protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRows.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), stocks.protocol.Count).ToList<string>(),
             Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count).ToList<string>(),
-            Data = resultRows.Select(x => x.stocks.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), stocks.protocol.Count).ToList<string>(),
+            Data = stocks.protocol.Select(x => x.yearBegin).ToList(),
         };
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
         BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), metals.protocol.Count).ToList<string>(),
             Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), resultRows.Count).ToList<string>(),
-            Data = resultRows.Select(x => x.metals.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), metals.protocol.Count).ToList<string>(),
+            Data = metals.protocol.Select(x => x.yearBegin).ToList(),
         };
 
 

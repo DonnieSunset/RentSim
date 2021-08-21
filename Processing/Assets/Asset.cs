@@ -1,31 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Processing.Assets
 {
-    public class Asset
+    public class ProtocolEntry
     {
+        public int age;
         public double yearBegin;
         public double invests;
         public double growth;
         public double yearEnd;
+    }
 
-        public Asset ApplyInvests(double invest)
+    public abstract class Asset
+    {
+        protected double growthRatePerMonth;
+        protected Input input;
+
+        public List<ProtocolEntry> protocol = new List<ProtocolEntry>();
+
+        protected Asset(Input _input)
         {
-            this.invests += invest;
-            this.yearEnd += invest;
+            input = _input;
+
+            protocol.Add(new ProtocolEntry {
+                age = input.ageCurrent,
+            });
+        }
+
+        protected Asset ApplyInvests(double invest)
+        {
+            protocol.Last().invests += invest;
+            protocol.Last().yearEnd += invest;
             return this;
         }
 
-        public Asset ApplyGrowth(double growthRate)
+        protected Asset ApplyGrowth(double growthRate)
         {
-            double thisMonthGrowth = yearEnd * (growthRate / 100d);
-            this.growth += thisMonthGrowth;
-            this.yearEnd += thisMonthGrowth;
+            var current = protocol.Last();
+            double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
+            current.growth += thisMonthGrowth;
+            current.yearEnd += thisMonthGrowth;
             return this;
         }
+
+        public Asset MoveToNextYear()
+        {
+            protocol.Add(new ProtocolEntry
+            {
+                age = protocol.Last().age + 1,
+                yearBegin = protocol.Last().yearEnd,
+                yearEnd = protocol.Last().yearEnd
+            });
+
+            return this;
+        }
+
+        public abstract void Process();
     }
 }

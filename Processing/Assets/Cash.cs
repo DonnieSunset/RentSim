@@ -1,22 +1,61 @@
 ﻿using System;
+using System.Linq;
 
 namespace Processing.Assets
 {
     public class Cash : Asset
     {
-        public void Save(double amount)
+        public Cash(Input _input) : base(_input) 
         {
-            throw new NotImplementedException();
+            switch (input.interestRateType)
+            {
+                case InterestRateType.Relativ:
+                    growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
+                    break;
+                case InterestRateType.Konform:
+                    growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.cashGrowthRate);
+                    break;
+                default:
+                    throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
+            }
+
+            this.protocol.Last().yearBegin = _input.cash;
+            this.protocol.Last().yearEnd = _input.cash;
         }
 
-        public void Withdraw(double amount)
+        public Cash Save(double amount)
         {
-            throw new NotImplementedException();
+            return (Cash)base.ApplyInvests(amount);
+        }
+
+        public Cash Withdraw(double amount)
+        {
+            return (Cash)base.ApplyInvests(-amount);
+        }
+
+        public Cash GetInterests(double interestRate)
+        {
+            return (Cash)base.ApplyGrowth(interestRate);
         }
 
         public void PayTaxesForInterests()
         {
             throw new NotImplementedException();
+        }
+
+        public override void Process()
+        {
+            for (int i = input.ageCurrent; i < input.ageStopWork; i++)
+            {
+                 for (int month = 1; month <= 12; month++)
+                {
+                    this
+                       .Save(input.cashMonthlyInvestAmount)
+                       .GetInterests(this.growthRatePerMonth);
+                }
+
+                base.MoveToNextYear();
+            }
         }
     }
 }
