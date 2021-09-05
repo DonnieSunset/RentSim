@@ -9,6 +9,12 @@ namespace Processing.Assets
         public double yearBegin;
         public double invests;
         public double growth;
+
+        /// <summary>
+        /// The percentage 
+        /// </summary>
+        public double withdrawalRate;
+
         public double yearEnd;
     }
 

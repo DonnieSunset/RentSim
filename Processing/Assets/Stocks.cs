@@ -3,8 +3,10 @@ using System.Linq;
 
 namespace Processing.Assets
 {
-    public class Stocks : Asset
+    public class Stocks : Asset, IMustPayTaxesAfterWithdrawal
     {
+        public double WithdrawalTaxRate { get => 0.26d; }
+
         public Stocks(Input _input) : base(_input) 
         {
             switch (input.interestRateType)
@@ -51,6 +53,11 @@ namespace Processing.Assets
 
                 base.MoveToNextYear();
             }
+        }
+
+        public double GetTaxesAfterWithdrawal(double amount)
+        {
+            return amount * this.WithdrawalTaxRate;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@using Processing;
 @using Processing.Assets;
+@using Processing.Withdrawal; 
 @using System.Globalization;
 
 @page "/"
@@ -87,10 +88,10 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @FieldAgeStopWork):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Gross Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
@@ -257,6 +258,7 @@
     Stocks stocks = null;
     Metals metals = null;
     Total total = null;
+    UniformWithdrawalStrategy withdrawalStrategy = null;
 
 
     //string FieldRefCash;
@@ -324,6 +326,8 @@
         resultRows = resultSet.ProcessAssets();
         //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
+        withdrawalStrategy = new UniformWithdrawalStrategy(cash, stocks, metals);
+
         //results
         int index = FieldAgeStopWork - FieldAgeCurrent;
         double TotalSavingStopWorkAge = total.protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
@@ -339,7 +343,8 @@
             yearsRentPhase: FieldAgeEnd - FieldAgeRentStart,
             interestRate: TODOimaginaryAverageZins,
             endCapital: 0,
-            rent: approxStopWorkAgeNetRent
+            rent: approxStopWorkAgeNetRent,
+            withdrawalStrategy: withdrawalStrategy
             );
         FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);

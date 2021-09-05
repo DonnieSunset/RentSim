@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Processing;
+using Processing.Withdrawal;
 using System;
 
 namespace Processing_uTest
@@ -15,7 +17,6 @@ namespace Processing_uTest
         //
         //
         //TODO: das ist jetzt brutto, da muss noch die kapitalertragssteuer weg
-        //TODO: testen bei kleinem anfangskapital wo die rente einfach garnicht erst erriecht werden kann
         //TODO: das klappt jetzt mit vorschüssigem zins, aber will ich das nicht eigneltich mit nachschüssigem zins? oder konfigurierbar?
         //todo: replace all double with decimal
         //todo: translate to english
@@ -24,7 +25,9 @@ namespace Processing_uTest
         [DataRow(12000, 1, 13, 8, 0, 1000)]
         public void CalculatePayoutRateWithRent_CapitalEnough_RatesLeadToEndKapital(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
-            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent);
+            var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
+
+            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy);
             Assert.AreEqual(rent, rateStopWork - rateRent, 0.1);
 
             double currentCapital = startCapital;
@@ -49,9 +52,18 @@ namespace Processing_uTest
         [DataRow(12000-1, 1, 13, 8, 0, 1000)]
         public void CalculatePayoutRateWithRent_CapitalTooSmall_ThrowsException(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
-            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent);
+            var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
+            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy);
             
             Assert.ThrowsException<Exception>(action);
+        }
+
+        private IWithdrawalStrategy GetMockedZeroTaxWithdrawalStrategy()
+        {
+            var mockWithdrawalStrategy = new Mock<IWithdrawalStrategy>();
+            mockWithdrawalStrategy.Setup(o => o.SimulateTaxesAtWithdrawal(It.IsAny<double>())).Returns(0);
+
+            return mockWithdrawalStrategy.Object;
         }
     }
 }

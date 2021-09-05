@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Processing.Assets;
+using Processing.Withdrawal;
+using System;
+using System.Collections.Generic;
 
 namespace Processing
 {
@@ -11,15 +14,13 @@ namespace Processing
         public static double BerechneRate(double anfangskapital, int anzahlJahre, double jahreszins, double endKapital)
         {
             double q = 1 + (jahreszins / 100d);
-            double rateNachschuessig = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q-1) / (Math.Pow(q, anzahlJahre) - 1);
-            
-            double rateVorschuessig = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q - 1)       /      (q * (Math.Pow(q, anzahlJahre) - 1));
-            //double rate = 1000;
+            double rateNachschuessig = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q-1) /      (Math.Pow(q, anzahlJahre) - 1);
+            double rateVorschuessig  = (endKapital - (anfangskapital * Math.Pow(q, anzahlJahre))) * (q-1) / (q * (Math.Pow(q, anzahlJahre) - 1));
 
             return rateVorschuessig;
         }
 
-        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
+        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent, IWithdrawalStrategy withdrawalStrategy)
         {
             double left = 0;
             double right = startCapital;
@@ -30,6 +31,10 @@ namespace Processing
             double diff;
             double ratePhaseRent, ratePhaseStopWork;
             double ratePhaseRentperMonth, ratePhaseStopWorkperMonth;
+
+            double taxesRatePhaseStopWork, taxesratePhaseRent;
+
+            //todo: check if startCapital equals the sum of all asset capitals
 
             // Prüfe ob das Anfangskapital überhaupt ausreicht. Angenommen das komplette Kapital würde in der StopWork-Phase
             // verbraucht werden dürfen und die Rate würde immernoch under der erwarteten Rente liegen, dann haben wir
@@ -56,8 +61,12 @@ namespace Processing
                 ratePhaseStopWork = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
                 ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 
-                //TODO: von beiden raten müssen aktien steuern abgezogen werden. am besten eine abstraktion entnahmestrategie, die genau dieses verhältnis berechnen kann
-                // IEntnahmestrategie.Get
+                //we have to substract taxes from both rates to be realistic
+                taxesRatePhaseStopWork = withdrawalStrategy.SimulateTaxesAtWithdrawal(ratePhaseStopWork);
+                taxesratePhaseRent = withdrawalStrategy.SimulateTaxesAtWithdrawal(ratePhaseRent);
+
+                ratePhaseStopWork -= taxesRatePhaseStopWork;
+                ratePhaseRent -= taxesratePhaseRent;
 
                 //korrektur: auf eine rate muss rente ausaddiert werden
                 double ratePhaseRentplusRent = ratePhaseRent - (rent * 12);
@@ -90,6 +99,7 @@ namespace Processing
             ratePhaseRentperMonth = -ratePhaseRent / 12;
             ratePhaseStopWorkperMonth = -ratePhaseStopWork / 12;
             Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
+            Console.WriteLine($"Tax rate {taxesRatePhaseStopWork} / {taxesratePhaseRent}");
 
             return (ratePhaseRentperMonth, ratePhaseStopWorkperMonth);
         }
