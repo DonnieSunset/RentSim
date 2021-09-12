@@ -52,5 +52,16 @@ namespace Processing.Assets
                 base.MoveToNextYear();
             }
         }
+
+        public override void Process2()
+        {
+            for (int i = input.ageStopWork; i < input.ageRentStart; i++)
+            {
+                this
+                    .Sell(1000);
+
+                base.MoveToNextYear();
+            }
+        }
     }
 }

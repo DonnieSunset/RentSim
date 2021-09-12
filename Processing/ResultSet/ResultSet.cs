@@ -13,6 +13,8 @@ namespace Processing
         private Metals metals;
         private Total total;
 
+        private int processingAges;
+
         public List<ResultRow> resultSet;
 
         public ResultSet(Input input, Cash cash, Stocks stocks, Metals metals, Total total)
@@ -22,13 +24,23 @@ namespace Processing
             this.stocks = stocks;
             this.metals = metals;
             this.total = total;
+
+            processingAges = input.ageRentStart - input.ageCurrent + 1;
+            foreach (Asset a in new Asset[] { cash, stocks, metals, total })
+            {
+                if (a.protocol.Count != processingAges)
+                {
+                    string errorMsg = $"Asset <{a.GetType()}> cannot be processed in ResultSet because intended years span is <{processingAges}>, but asset index count is <{a.protocol.Count}>";
+                    throw new Exception(errorMsg);
+                }
+            }
         }
 
         public List<ResultRow> ProcessAssets()
         {
             resultSet = new List<ResultRow>();
 
-            for (int i = 0; i < input.ageStopWork - input.ageCurrent; i++)
+            for (int i = 0; i < processingAges; i++)
             {
                 ResultRow row = new ResultRow();
 
@@ -43,7 +55,7 @@ namespace Processing
                     || row.age != row.metals.age
                     || row.age != row.total.age)
                 {
-                    throw new Exception($"Age {row.age} not consisten in protocol entries.");
+                    throw new Exception($"Age {row.age} not consistent in protocol entries.");
                 }
 
                 resultSet.Add(row);

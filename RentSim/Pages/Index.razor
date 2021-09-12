@@ -320,11 +320,12 @@
         cash.Process();
         stocks.Process();
         metals.Process();
+
+
+
         total.Process();
 
-        resultSet = new ResultSet(input, cash, stocks, metals, total);
-        resultRows = resultSet.ProcessAssets();
-        //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
+
 
         withdrawalStrategy = new UniformWithdrawalStrategy(cash, stocks, metals);
 
@@ -345,16 +346,27 @@
             endCapital: 0,
             rent: approxStopWorkAgeNetRent,
             withdrawalStrategy: withdrawalStrategy
-            );
+        );
         FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);
 
+        cash.Process2();
+        stocks.Process2();
+        metals.Process2();
+
+        total.Process2();
+
+        resultSet = new ResultSet(input, cash, stocks, metals, total);
+        resultRows = resultSet.ProcessAssets();
+        //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
+
+
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(input.ageCurrent, input.ageStopWork - input.ageCurrent + 1)
-.ToArray()
-.Select(x => x.ToString())
-.ToArray(); ;
+        string[] labels = Enumerable.Range(input.ageCurrent, input.ageRentStart - input.ageCurrent + 1)
+            .ToArray()
+            .Select(x => x.ToString())
+            .ToArray();
 
         LineChartDataset<double> data = new LineChartDataset<double>
         {

@@ -59,5 +59,16 @@ namespace Processing.Assets
         {
             return amount * this.WithdrawalTaxRate;
         }
+
+        public override void Process2()
+        {
+            for (int i = input.ageStopWork; i < input.ageRentStart; i++)
+            {
+                this
+                    .Buy(-1000);
+
+                base.MoveToNextYear();
+            }
+        }
     }
 }

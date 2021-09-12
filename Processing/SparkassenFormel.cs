@@ -58,6 +58,11 @@ namespace Processing
             {
                 i++;
 
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //TODO: zum berechnen muss natürlich die brutto rente genutzt werden, aber als ergebnis müsste man die netto rente
+                //zurückliefern, ambesten als tuple (nettorate, taxes)
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                 ratePhaseStopWork = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
                 ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 

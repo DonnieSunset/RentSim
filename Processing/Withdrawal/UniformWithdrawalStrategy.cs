@@ -53,7 +53,7 @@ namespace Processing.Withdrawal
                 }
             });
 
-            if (completeAssetFractions != 1)
+            if (1 - completeAssetFractions > 0.0001)
             {
                 throw new Exception($"Asset fractions sum up to <{completeAssetFractions}> but should sum up to 1.");
             }

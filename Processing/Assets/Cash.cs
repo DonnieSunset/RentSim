@@ -5,7 +5,7 @@ namespace Processing.Assets
 {
     public class Cash : Asset
     {
-        public Cash(Input _input) : base(_input) 
+        public Cash(Input _input) : base(_input)
         {
             switch (input.interestRateType)
             {
@@ -47,12 +47,23 @@ namespace Processing.Assets
         {
             for (int i = input.ageCurrent; i < input.ageStopWork; i++)
             {
-                 for (int month = 1; month <= 12; month++)
+                for (int month = 1; month <= 12; month++)
                 {
                     this
                        .Save(input.cashMonthlyInvestAmount)
                        .GetInterests(this.growthRatePerMonth);
                 }
+
+                base.MoveToNextYear();
+            }
+        }
+
+        public override void Process2()
+        {
+            for (int i = input.ageStopWork; i < input.ageRentStart; i++)
+            {
+                this
+                    .Withdraw(1000);
 
                 base.MoveToNextYear();
             }

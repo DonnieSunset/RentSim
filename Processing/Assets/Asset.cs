@@ -63,5 +63,7 @@ namespace Processing.Assets
         }
 
         public abstract void Process();
+
+        public abstract void Process2();
     }
 }
