@@ -58,5 +58,10 @@ namespace Processing.Withdrawal
 
             return completeTaxesToPay;
         }
+
+        public double GetWithdrawalAmount(int age)
+        {
+            return 1000;
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace Processing_uTest
                 new ResultRow { age=60, stocks = new ProtocolEntry { yearBegin=559899.52, invests=0, growth=0, yearEnd=559899.52 } },
             };
 
-            var testee = new Stocks(input);
+            var testee = new Stocks(input, null);
             testee.Process();
 
             Assert.AreEqual(expectedResult.Count, testee.protocol.Count);

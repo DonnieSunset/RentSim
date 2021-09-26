@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Processing.Withdrawal;
+using System;
 using System.Linq;
 
 namespace Processing.Assets
 {
     public class Metals : Asset
     {
-        public Metals(Input _input) : base(_input)
+        public Metals(Input _input, Portfolio portfolio) : base(_input, portfolio)
         {
             switch (input.interestRateType)
             {
@@ -57,8 +58,10 @@ namespace Processing.Assets
         {
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
+                double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(i);
+
                 this
-                    .Sell(1000);
+                    .Sell(withdrawalAmount);
 
                 base.MoveToNextYear();
             }

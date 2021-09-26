@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Processing.Withdrawal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace Processing.Assets
     {
         List<Asset> listOfAssets;
 
-        public Total(Input _input, List<Asset> assets) : base(_input)
+        public Total(Input _input, List<Asset> assets, Portfolio portfolio) : base(_input, portfolio)
         {
             listOfAssets = assets;
         }

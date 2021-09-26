@@ -45,10 +45,10 @@ namespace Processing.Assets
         {
             myInput = input;
 
-            Cash = new Cash(myInput);
-            Stocks = new Stocks(myInput);
-            Metals = new Metals(myInput);
-            Total = new Total(myInput, new List<Asset> { Cash, Stocks, Metals });
+            Cash = new Cash(myInput, this);
+            Stocks = new Stocks(myInput, this);
+            Metals = new Metals(myInput, this);
+            Total = new Total(myInput, new List<Asset> { Cash, Stocks, Metals }, this);
 
             WithdrawalStrategy = new UniformWithdrawalStrategy(this);
         }

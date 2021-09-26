@@ -23,15 +23,13 @@ namespace Processing_uTest
             };
             var stocksFraction = (double) input.stocks / (input.stocks + input.cash + input.metals);
 
+            Portfolio p = new Portfolio(input);
             var assets = new List<Asset>() {
-                new Cash(input),
-                new Stocks(input),
-                new Metals(input)
+                new Cash(input, p),
+                new Stocks(input, p),
+                new Metals(input, p)
             };
 
-
-//            var uws = new UniformWithdrawalStrategy();
-            Portfolio p = new Portfolio(input);
 
             var taxes = p.WithdrawalStrategy.SimulateTaxesAtWithdrawal(withdrawalAmount);
             Assert.AreEqual(withdrawalAmount * stocksFraction * 0.26d, taxes, 0.01);

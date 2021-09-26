@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Processing.Withdrawal;
+using System;
 using System.Linq;
 
 namespace Processing.Assets
@@ -7,7 +8,7 @@ namespace Processing.Assets
     {
         public double WithdrawalTaxRate { get => 0.26d; }
 
-        public Stocks(Input _input) : base(_input) 
+        public Stocks(Input _input, Portfolio portfolio) : base(_input, portfolio) 
         {
             switch (input.interestRateType)
             {
@@ -64,8 +65,10 @@ namespace Processing.Assets
         {
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
+                double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(i);
+
                 this
-                    .Buy(-1000);
+                    .Buy(-withdrawalAmount);
 
                 base.MoveToNextYear();
             }

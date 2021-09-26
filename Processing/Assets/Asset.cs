@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Processing.Withdrawal;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Processing.Assets
@@ -25,13 +26,20 @@ namespace Processing.Assets
 
         public List<ProtocolEntry> protocol = new List<ProtocolEntry>();
 
-        protected Asset(Input _input)
+        protected Asset(Input _input, Portfolio portfolio)
         {
             input = _input;
+            BasePortfolio = portfolio;
 
             protocol.Add(new ProtocolEntry {
                 age = input.ageCurrent,
             });
+        }
+
+        public Portfolio BasePortfolio
+        {
+            get;
+            private set;
         }
 
         protected Asset ApplyInvests(double invest)
