@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace Processing
 {
+    /// <summary>
+    /// This class provides helper methods for fincanial calculations.
+    /// It should not have dependencies to the domain specific classes.
+    /// </summary>
     public class SparkassenFormel
     {
         /// <summary>
@@ -20,7 +24,7 @@ namespace Processing
             return rateVorschuessig;
         }
 
-        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent, IWithdrawalStrategy withdrawalStrategy)
+        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent, Func<double, double> calcTaxes)
         {
             double left = 0;
             double right = startCapital;
@@ -60,15 +64,15 @@ namespace Processing
 
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 //TODO: zum berechnen muss natürlich die brutto rente genutzt werden, aber als ergebnis müsste man die netto rente
-                //zurückliefern, ambesten als tuple (nettorate, taxes)
+                //zurückliefern, am besten als tuple (nettorate, taxes)
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 ratePhaseStopWork = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
                 ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 
                 //we have to substract taxes from both rates to be realistic
-                taxesRatePhaseStopWork = withdrawalStrategy.SimulateTaxesAtWithdrawal(ratePhaseStopWork);
-                taxesratePhaseRent = withdrawalStrategy.SimulateTaxesAtWithdrawal(ratePhaseRent);
+                taxesRatePhaseStopWork = calcTaxes(ratePhaseStopWork);
+                taxesratePhaseRent = calcTaxes(ratePhaseRent);
 
                 ratePhaseStopWork -= taxesRatePhaseStopWork;
                 ratePhaseRent -= taxesratePhaseRent;

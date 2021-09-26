@@ -7,13 +7,11 @@ namespace Processing.Withdrawal
 {
     public class UniformWithdrawalStrategy : IWithdrawalStrategy
     {
-        private Asset cash, stocks, metals;
+        private Portfolio portfolio;
 
-        public UniformWithdrawalStrategy(Cash cash, Stocks stocks, Metals metals)
+        public UniformWithdrawalStrategy(Portfolio basePortfolio)
         {
-            this.cash = cash;
-            this.stocks = stocks;
-            this.metals = metals;
+            portfolio = basePortfolio;
         }
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace Processing.Withdrawal
         /// <returns>The amount of taxes to be paid.</returns>
         public double SimulateTaxesAtWithdrawal(double amount)
         {
-            List<Asset> assets = new List<Asset>() { cash, stocks, metals };
+            List<Asset> assets = portfolio.GetAssets(); //new List<Asset>() { cash, stocks, metals };
             double completeTaxesToPay = 0;
             double completeAssetFractions = 0;
 

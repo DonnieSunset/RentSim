@@ -254,11 +254,12 @@
     Scales myScales;
     ResultSet resultSet;
     List<ResultRow> resultRows = new List<ResultRow>();
-    Cash cash = null;
-    Stocks stocks = null;
-    Metals metals = null;
-    Total total = null;
-    UniformWithdrawalStrategy withdrawalStrategy = null;
+    //Cash cash = null;
+    //Stocks stocks = null;
+    //Metals metals = null;
+    //Total total = null;
+    Portfolio portfolio = null;
+    //UniformWithdrawalStrategy withdrawalStrategy = null;
 
 
     //string FieldRefCash;
@@ -312,26 +313,12 @@
         input.metalsGrowthRate = FieldMetalsGrowthRate;
         input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
-        cash = new Cash(input);
-        stocks = new Stocks(input);
-        metals = new Metals(input);
-        total = new Total(input, new List<Asset> { cash, stocks, metals });
-
-        cash.Process();
-        stocks.Process();
-        metals.Process();
-
-
-
-        total.Process();
-
-
-
-        withdrawalStrategy = new UniformWithdrawalStrategy(cash, stocks, metals);
+        portfolio = new Portfolio(input);
+        portfolio.Process();
 
         //results
         int index = FieldAgeStopWork - FieldAgeCurrent;
-        double TotalSavingStopWorkAge = total.protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
+        double TotalSavingStopWorkAge = portfolio.Total.protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
         FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
         double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
@@ -345,18 +332,14 @@
             interestRate: TODOimaginaryAverageZins,
             endCapital: 0,
             rent: approxStopWorkAgeNetRent,
-            withdrawalStrategy: withdrawalStrategy
+            calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
         );
         FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);
 
-        cash.Process2();
-        stocks.Process2();
-        metals.Process2();
+        portfolio.Process2();
 
-        total.Process2();
-
-        resultSet = new ResultSet(input, cash, stocks, metals, total);
+        resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
         resultRows = resultSet.ProcessAssets();
         //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
@@ -377,32 +360,32 @@
             PointRadius = 2,
             BorderDash = new List<int> { },
             //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
-            Data = total.protocol.Select(x => x.yearBegin).ToList(),
+            Data = portfolio.Total.protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), cash.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.protocol.Count).ToList<string>(),
             Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), cash.protocol.Count).ToList<string>(),
-            Data = cash.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.protocol.Count).ToList<string>(),
+            Data = portfolio.Cash.protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), stocks.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.protocol.Count).ToList<string>(),
             Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), stocks.protocol.Count).ToList<string>(),
-            Data = stocks.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.protocol.Count).ToList<string>(),
+            Data = portfolio.Stocks.protocol.Select(x => x.yearBegin).ToList(),
         };
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
         BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), metals.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.protocol.Count).ToList<string>(),
             Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), metals.protocol.Count).ToList<string>(),
-            Data = metals.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.protocol.Count).ToList<string>(),
+            Data = portfolio.Metals.protocol.Select(x => x.yearBegin).ToList(),
         };
 
 

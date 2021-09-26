@@ -27,7 +27,7 @@ namespace Processing_uTest
         {
             var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
 
-            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy);
+            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy.SimulateTaxesAtWithdrawal);
             Assert.AreEqual(rent, rateStopWork - rateRent, 0.1);
 
             double currentCapital = startCapital;
@@ -53,7 +53,7 @@ namespace Processing_uTest
         public void CalculatePayoutRateWithRent_CapitalTooSmall_ThrowsException(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
             var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
-            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy);
+            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy.SimulateTaxesAtWithdrawal);
             
             Assert.ThrowsException<Exception>(action);
         }
