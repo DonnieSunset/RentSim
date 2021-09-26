@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Processing;
 using Processing.Assets;
-using Processing.Withdrawal;
-using System;
-using System.Collections.Generic;
 
 namespace Processing_uTest
 {
@@ -24,14 +21,8 @@ namespace Processing_uTest
             var stocksFraction = (double) input.stocks / (input.stocks + input.cash + input.metals);
 
             Portfolio p = new Portfolio(input);
-            var assets = new List<Asset>() {
-                new Cash(input, p),
-                new Stocks(input, p),
-                new Metals(input, p)
-            };
-
-
             var taxes = p.WithdrawalStrategy.SimulateTaxesAtWithdrawal(withdrawalAmount);
+
             Assert.AreEqual(withdrawalAmount * stocksFraction * 0.26d, taxes, 0.01);
         }
     }
