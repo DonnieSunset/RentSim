@@ -58,6 +58,28 @@ namespace Processing.Assets
             return new List<Asset>() { Cash, Stocks, Metals };
         }
 
+        /// <summary>
+        /// Gets the fraction of a given asset type
+        /// compared to the sum of all assets.
+        /// </summary>
+        /// <param name="assetType">The asset type.</param>
+        /// <returns>The fraction of the asset.</returns>
+        public double GetAssetFraction(Type assetType)
+        {
+            double total = Cash.protocol.Last().yearEnd
+                + Stocks.protocol.Last().yearEnd
+                + Metals.protocol.Last().yearEnd;
+
+            if (assetType == typeof(Cash))
+                return Cash.protocol.Last().yearEnd / total;
+            else if (assetType == typeof(Stocks))
+                return Stocks.protocol.Last().yearEnd / total;
+            else if (assetType == typeof(Metals))
+                return Metals.protocol.Last().yearEnd / total;
+            else
+                throw new Exception($"Unknown asset type <{assetType}>.");
+        }
+
         public void Process()
         {
             Cash.Process();

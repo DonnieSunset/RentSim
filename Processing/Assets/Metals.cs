@@ -58,7 +58,7 @@ namespace Processing.Assets
         {
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
-                double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(i);
+                double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(i, this.GetType());
 
                 this
                     .Sell(withdrawalAmount);

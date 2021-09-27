@@ -32,11 +32,9 @@ namespace Processing.Withdrawal
             double completeTaxesToPay = 0;
             double completeAssetFractions = 0;
 
-            double totalCapital = assets.Sum(a => a.protocol.Last().yearEnd);
-
             assets.ForEach((a) =>
             {
-                double assetFraction = a.protocol.Last().yearEnd / totalCapital;
+                double assetFraction = portfolio.GetAssetFraction(a.GetType());
                 completeAssetFractions += assetFraction;
                 
                 if (assetFraction < 0 || assetFraction > 1)
@@ -59,8 +57,13 @@ namespace Processing.Withdrawal
             return completeTaxesToPay;
         }
 
-        public double GetWithdrawalAmount(int age)
+        public double GetWithdrawalAmount(int age, Type assetType)
         {
+
+
+            double fraction = portfolio.GetAssetFraction(assetType);
+
+
             return 1000;
         }
     }

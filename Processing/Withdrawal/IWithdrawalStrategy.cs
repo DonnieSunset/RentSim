@@ -1,5 +1,4 @@
-﻿using Processing.Assets;
-using System.Collections.Generic;
+﻿using System;
 
 namespace Processing.Withdrawal
 {
@@ -7,6 +6,6 @@ namespace Processing.Withdrawal
     {
         public double SimulateTaxesAtWithdrawal(double amount);
 
-        public double GetWithdrawalAmount(int age);
+        public double GetWithdrawalAmount(int age, Type assetType);
     }
 }
