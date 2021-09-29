@@ -56,6 +56,23 @@ namespace Processing_uTest.Assets
             Assert.ThrowsException<Exception>(() => p.GetAssetFraction(typeof(Input)));
         }
 
+        [TestMethod]
+        public void GetAverageGrowthRate_ValidAssets_ReturnsCorrectGrowthRate()
+        {
+            Input i = GetFakeInput();
+            i.cashGrowthRate = 1;
+            i.stocksGrowthRate = 8;
+            i.metalsGrowthRate = 0;
+
+            var expectedGrowthRate = (60000 * i.cashGrowthRate  + 70000 * i.stocksGrowthRate + 10000 * i.metalsGrowthRate) / 140000d;
+
+            Portfolio p = new Portfolio(i);
+
+            var averageGrowthRate = p.GetAverageGrowthRate();
+
+            Assert.AreEqual(expectedGrowthRate, averageGrowthRate);
+        }
+
         private Input GetFakeInput()
         {
             return new Input()

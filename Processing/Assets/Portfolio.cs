@@ -80,6 +80,19 @@ namespace Processing.Assets
                 throw new Exception($"Unknown asset type <{assetType}>.");
         }
 
+        /// <summary>
+        /// Gets the average growth rate over all assets.
+        /// </summary>
+        /// <returns>The average growth rate over all assets.</returns>
+        public double GetAverageGrowthRate()
+        {
+            double result = GetAssetFraction(typeof(Cash)) * myInput.cashGrowthRate +
+                GetAssetFraction(typeof(Stocks)) * myInput.stocksGrowthRate +
+                GetAssetFraction(typeof(Metals)) * myInput.metalsGrowthRate;
+
+            return result;
+        }
+
         public void Process()
         {
             Cash.Process();

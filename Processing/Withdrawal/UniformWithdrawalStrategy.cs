@@ -19,7 +19,6 @@ namespace Processing.Withdrawal
         /// given amount from the total portfolio.
         /// </summary>
         /// <remarks>
-        /// TODO: carve out calculation of asset fractions.
         /// TODO: At the moment the total capital is calculated from the last protocol
         /// entry. it would be more safe to explicitely select the protocol entry at year stopwork
         /// or at least throw an exception if last entry != stopWorkage.
