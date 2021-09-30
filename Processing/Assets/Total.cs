@@ -5,15 +5,6 @@ using System.Linq;
 
 namespace Processing.Assets
 {
-    //public static class ZeroBasedIndex
-    //{ 
-    //    public static int Of(int nonZeroBasedIndex)
-    //    { 
-    //        return 
-    //    }
-    //}
-
-
     public class Total : Asset
     {
         List<Asset> listOfAssets;

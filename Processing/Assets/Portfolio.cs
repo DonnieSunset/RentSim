@@ -9,7 +9,11 @@ namespace Processing.Assets
 {
     public class Portfolio
     {
-        private Input myInput;
+        public Input Input
+        {
+            get;
+            private set;
+        }
 
         public IWithdrawalStrategy WithdrawalStrategy
         {
@@ -43,12 +47,12 @@ namespace Processing.Assets
 
         public Portfolio(Input input)
         {
-            myInput = input;
+            Input = input;
 
-            Cash = new Cash(myInput, this);
-            Stocks = new Stocks(myInput, this);
-            Metals = new Metals(myInput, this);
-            Total = new Total(myInput, new List<Asset> { Cash, Stocks, Metals }, this);
+            Cash = new Cash(Input, this);
+            Stocks = new Stocks(Input, this);
+            Metals = new Metals(Input, this);
+            Total = new Total(Input, new List<Asset> { Cash, Stocks, Metals }, this);
 
             WithdrawalStrategy = new UniformWithdrawalStrategy(this);
         }
@@ -64,18 +68,20 @@ namespace Processing.Assets
         /// </summary>
         /// <param name="assetType">The asset type.</param>
         /// <returns>The fraction of the asset.</returns>
-        public double GetAssetFraction(Type assetType)
+        public double GetAssetFraction(int age, Type assetType)
         {
-            double total = Cash.protocol.Last().yearEnd
-                + Stocks.protocol.Last().yearEnd
-                + Metals.protocol.Last().yearEnd;
+            int index = age - Input.ageCurrent;
+
+            double total = Cash.protocol[index].yearEnd
+                + Stocks.protocol[index].yearEnd
+                + Metals.protocol[index].yearEnd;
 
             if (assetType == typeof(Cash))
-                return Cash.protocol.Last().yearEnd / total;
+                return Cash.protocol[index].yearEnd / total;
             else if (assetType == typeof(Stocks))
-                return Stocks.protocol.Last().yearEnd / total;
+                return Stocks.protocol[index].yearEnd / total;
             else if (assetType == typeof(Metals))
-                return Metals.protocol.Last().yearEnd / total;
+                return Metals.protocol[index].yearEnd / total;
             else
                 throw new Exception($"Unknown asset type <{assetType}>.");
         }
@@ -84,11 +90,11 @@ namespace Processing.Assets
         /// Gets the average growth rate over all assets.
         /// </summary>
         /// <returns>The average growth rate over all assets.</returns>
-        public double GetAverageGrowthRate()
+        public double GetAverageGrowthRate(int age)
         {
-            double result = GetAssetFraction(typeof(Cash)) * myInput.cashGrowthRate +
-                GetAssetFraction(typeof(Stocks)) * myInput.stocksGrowthRate +
-                GetAssetFraction(typeof(Metals)) * myInput.metalsGrowthRate;
+            double result = GetAssetFraction(age, typeof(Cash)) * Input.cashGrowthRate +
+                GetAssetFraction(age, typeof(Stocks)) * Input.stocksGrowthRate +
+                GetAssetFraction(age, typeof(Metals)) * Input.metalsGrowthRate;
 
             return result;
         }

@@ -38,6 +38,7 @@ namespace Processing.Assets
 
         public void SellAndPayTaxes(double amount)
         {
+            //todo: why is this not implemented??
             throw new NotImplementedException();
         }
 
@@ -63,10 +64,10 @@ namespace Processing.Assets
 
         public override void Process2()
         {
+            double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork, this.GetType());
+
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
-                double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(i, this.GetType());
-
                 this
                     .Buy(-withdrawalAmount);
 

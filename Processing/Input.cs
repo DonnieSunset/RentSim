@@ -26,5 +26,9 @@
         public int metals;
         public int metalsGrowthRate;
         public int metalsMonthlyInvestAmount;
+
+        public int netStateRentFromCurrentAge;
+        public int netStateRentFromRentStartAge;
+
     }
 }

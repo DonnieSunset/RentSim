@@ -256,7 +256,6 @@
     List<ResultRow> resultRows = new List<ResultRow>();
     Portfolio portfolio = null;
 
-
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
 
     int FieldAgeCurrent;
@@ -307,6 +306,9 @@
         input.metalsGrowthRate = FieldMetalsGrowthRate;
         input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
+        input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
+        input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
+
         portfolio = new Portfolio(input);
         portfolio.Process();
 
@@ -317,18 +319,23 @@
         double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
 
-        double averageGrowthRate = portfolio.GetAverageGrowthRate();
-        (double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
-            startCapital: TotalSavingStopWorkAge,
-            yearsStopWorkPhase: FieldAgeRentStart - FieldAgeStopWork,
-            yearsRentPhase: FieldAgeEnd - FieldAgeRentStart,
-            interestRate: averageGrowthRate,
-            endCapital: 0,
-            rent: approxStopWorkAgeNetRent,
-            calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
-        );
-        FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent);
-        FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork);
+        //double averageGrowthRate = portfolio.GetAverageGrowthRate();
+        //(double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
+        //    startCapital: TotalSavingStopWorkAge,
+        //    yearsStopWorkPhase: FieldAgeRentStart - FieldAgeStopWork,
+        //    yearsRentPhase: FieldAgeEnd - FieldAgeRentStart,
+        //    interestRate: averageGrowthRate,
+        //    endCapital: 0,
+        //    rent: approxStopWorkAgeNetRent,
+        //    calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
+        //);
+
+
+        double ratePhaseStopWork = portfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork);
+        double ratePhaseRent = ratePhaseStopWork - (approxStopWorkAgeNetRent * 12);
+
+        FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
+        FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
         portfolio.Process2();
 

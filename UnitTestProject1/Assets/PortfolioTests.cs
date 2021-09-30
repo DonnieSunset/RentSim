@@ -22,9 +22,9 @@ namespace Processing_uTest.Assets
 
             var total = 180000 + 190000 + 10000; // 380.000
 
-            var cashFraction = p.GetAssetFraction(typeof(Cash));
-            var StocksFraction = p.GetAssetFraction(typeof(Stocks));
-            var metalsFraction = p.GetAssetFraction(typeof(Metals));
+            var cashFraction = p.GetAssetFraction(i.ageStopWork, typeof(Cash));
+            var StocksFraction = p.GetAssetFraction(i.ageStopWork, typeof(Stocks));
+            var metalsFraction = p.GetAssetFraction(i.ageStopWork, typeof(Metals));
 
             Assert.AreEqual(180d/380d, cashFraction);
             Assert.AreEqual(190d/380d, StocksFraction);
@@ -41,7 +41,7 @@ namespace Processing_uTest.Assets
             Portfolio p = new Portfolio(i);
             p.Process();
 
-            var cashFraction = p.GetAssetFraction(typeof(Cash));
+            var cashFraction = p.GetAssetFraction(i.ageStopWork, typeof(Cash));
 
             Assert.AreEqual(0, cashFraction);
         }
@@ -53,7 +53,7 @@ namespace Processing_uTest.Assets
             Portfolio p = new Portfolio(i);
             p.Process();
 
-            Assert.ThrowsException<Exception>(() => p.GetAssetFraction(typeof(Input)));
+            Assert.ThrowsException<Exception>(() => p.GetAssetFraction(i.ageStopWork, typeof(Input)));
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace Processing_uTest.Assets
 
             Portfolio p = new Portfolio(i);
 
-            var averageGrowthRate = p.GetAverageGrowthRate();
+            var averageGrowthRate = p.GetAverageGrowthRate(i.ageStopWork);
 
             Assert.AreEqual(expectedGrowthRate, averageGrowthRate);
         }

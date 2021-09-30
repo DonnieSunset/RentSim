@@ -71,6 +71,7 @@ namespace Processing
                 ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 
                 //we have to substract taxes from both rates to be realistic
+                // be careful, tax results are negative numbers
                 taxesRatePhaseStopWork = calcTaxes(ratePhaseStopWork);
                 taxesratePhaseRent = calcTaxes(ratePhaseRent);
 

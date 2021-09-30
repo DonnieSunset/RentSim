@@ -16,12 +16,17 @@ namespace Processing_uTest
             {
                 stocks = 10000,
                 cash = 20000,
-                metals = 50000
+                metals = 50000,
+
+                ageCurrent = 41,
+                ageStopWork = 60,
+                ageRentStart = 68,
+                ageEnd = 80
             };
             var stocksFraction = (double) input.stocks / (input.stocks + input.cash + input.metals);
 
             Portfolio p = new Portfolio(input);
-            var taxes = p.WithdrawalStrategy.SimulateTaxesAtWithdrawal(withdrawalAmount);
+            var taxes = p.WithdrawalStrategy.SimulateTaxesAtWithdrawal(input.ageStopWork, withdrawalAmount);
 
             Assert.AreEqual(withdrawalAmount * stocksFraction * 0.26d, taxes, 0.01);
         }
