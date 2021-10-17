@@ -28,9 +28,9 @@ namespace Processing
             processingAges = input.ageRentStart - input.ageCurrent + 1;
             foreach (Asset a in new Asset[] { cash, stocks, metals, total })
             {
-                if (a.protocol.Count != processingAges)
+                if (a.Protocol.Count != processingAges)
                 {
-                    string errorMsg = $"Asset <{a.GetType()}> cannot be processed in ResultSet because intended years span is <{processingAges}>, but asset index count is <{a.protocol.Count}>";
+                    string errorMsg = $"Asset <{a.GetType()}> cannot be processed in ResultSet because intended years span is <{processingAges}>, but asset index count is <{a.Protocol.Count}>";
                     throw new Exception(errorMsg);
                 }
             }
@@ -45,10 +45,10 @@ namespace Processing
                 ResultRow row = new ResultRow();
 
                 row.age = input.ageCurrent + i;
-                row.cash = cash.protocol[i];
-                row.stocks = stocks.protocol[i];
-                row.metals = metals.protocol[i];
-                row.total = total.protocol[i];
+                row.cash = cash.Protocol[i];
+                row.stocks = stocks.Protocol[i];
+                row.metals = metals.Protocol[i];
+                row.total = total.Protocol[i];
 
                 if (row.age != row.cash.age
                     || row.age != row.stocks.age

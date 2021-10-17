@@ -314,7 +314,7 @@
 
         //results
         int index = FieldAgeStopWork - FieldAgeCurrent;
-        double TotalSavingStopWorkAge = portfolio.Total.protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
+        double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
         FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
         double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
@@ -360,32 +360,32 @@
             PointRadius = 2,
             BorderDash = new List<int> { },
             //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
-            Data = portfolio.Total.protocol.Select(x => x.yearBegin).ToList(),
+            Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
             Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.protocol.Count).ToList<string>(),
-            Data = portfolio.Cash.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
+            Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
         };
 
         BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
             Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.protocol.Count).ToList<string>(),
-            Data = portfolio.Stocks.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
+            Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
         };
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
         BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.protocol.Count).ToList<string>(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
             Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.protocol.Count).ToList<string>(),
-            Data = portfolio.Metals.protocol.Select(x => x.yearBegin).ToList(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
+            Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
         };
 
 

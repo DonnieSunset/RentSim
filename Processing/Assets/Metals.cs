@@ -8,6 +8,7 @@ namespace Processing.Assets
     {
         public Metals(Input _input, Portfolio portfolio) : base(_input, portfolio)
         {
+            //todo: can this be moved to base class?
             switch (input.interestRateType)
             {
                 case InterestRateType.Relativ:
@@ -19,9 +20,10 @@ namespace Processing.Assets
                 default:
                     throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
             }
+            growthRatePerYear = input.metalsGrowthRate;
 
-            this.protocol.Last().yearBegin = _input.metals;
-            this.protocol.Last().yearEnd = _input.metals;
+            this.Protocol.Last().yearBegin = _input.metals;
+            this.Protocol.Last().yearEnd = _input.metals;
         }
 
         public Metals Buy(double amount)
@@ -34,9 +36,9 @@ namespace Processing.Assets
             return (Metals)base.ApplyInvests(-amount);
         }
 
-        public Metals GetWorthIncrease(double amount)
+        public Metals ApplyWorthIncrease(double growthRate)
         {
-            return (Metals)base.ApplyGrowth(amount);
+            return (Metals)base.ApplyGrowth(growthRate);
         }
 
         public override void Process()
@@ -47,7 +49,7 @@ namespace Processing.Assets
                 {
                     this
                        .Buy(input.metalsMonthlyInvestAmount)
-                       .GetWorthIncrease(this.growthRatePerMonth);
+                       .ApplyWorthIncrease(this.growthRatePerMonth);
                 }
 
                 base.MoveToNextYear();
@@ -61,7 +63,8 @@ namespace Processing.Assets
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
                 this
-                    .Sell(withdrawalAmount);
+                    .Sell(withdrawalAmount)
+                    .ApplyWorthIncrease(this.growthRatePerYear);
 
                 base.MoveToNextYear();
             }

@@ -16,38 +16,34 @@ namespace Processing.Assets
 
         public override void Process()
         {
-            protocol.Clear();
-            protocol.Add(new ProtocolEntry
-            {
-            });
 
-            var current = protocol.Last();
+            var current = Protocol.Last();
 
             for (int i = 0; i < input.ageStopWork - input.ageCurrent; i++)
             {
-                current.age = listOfAssets.First().protocol[i].age;
-                current.yearBegin = listOfAssets.Select(x => x.protocol[i].yearBegin).Sum();
-                current.growth = listOfAssets.Select(x => x.protocol[i].growth).Sum();
-                current.invests = listOfAssets.Select(x => x.protocol[i].invests).Sum();
-                current.yearEnd = listOfAssets.Select(x => x.protocol[i].yearEnd).Sum();
+                current.age = listOfAssets.First().Protocol[i].age;
+                current.yearBegin = listOfAssets.Select(x => x.Protocol[i].yearBegin).Sum();
+                current.growth = listOfAssets.Select(x => x.Protocol[i].growth).Sum();
+                current.invests = listOfAssets.Select(x => x.Protocol[i].invests).Sum();
+                current.yearEnd = listOfAssets.Select(x => x.Protocol[i].yearEnd).Sum();
 
-                current = base.MoveToNextYear().protocol.Last();
+                current = base.MoveToNextYear().Protocol.Last();
             }
         }
 
         public override void Process2()
         {
-            var current = protocol.Last();
+            var current = Protocol.Last();
 
             for (int i = input.ageStopWork - input.ageCurrent; i < input.ageRentStart - input.ageCurrent; i++)
             {
-                current.age = listOfAssets.First().protocol[i].age;
-                current.yearBegin = listOfAssets.Select(x => x.protocol[i].yearBegin).Sum();
-                current.growth = listOfAssets.Select(x => x.protocol[i].growth).Sum();
-                current.invests = listOfAssets.Select(x => x.protocol[i].invests).Sum();
-                current.yearEnd = listOfAssets.Select(x => x.protocol[i].yearEnd).Sum();
+                current.age = listOfAssets.First().Protocol[i].age;
+                current.yearBegin = listOfAssets.Select(x => x.Protocol[i].yearBegin).Sum();
+                current.growth = listOfAssets.Select(x => x.Protocol[i].growth).Sum();
+                current.invests = listOfAssets.Select(x => x.Protocol[i].invests).Sum();
+                current.yearEnd = listOfAssets.Select(x => x.Protocol[i].yearEnd).Sum();
 
-                current = base.MoveToNextYear().protocol.Last();
+                current = base.MoveToNextYear().Protocol.Last();
             }
         }
     }

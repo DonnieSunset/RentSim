@@ -70,20 +70,25 @@ namespace Processing.Assets
         /// <returns>The fraction of the asset.</returns>
         public double GetAssetFraction(int age, Type assetType)
         {
+            //SCheisse: das hier darf nur aufgerufen werden wenn ALLE asset klassen schon prozessiert wurden sonst gibts ungleichgewichte!
+
             int index = age - Input.ageCurrent;
 
-            double total = Cash.protocol[index].yearEnd
-                + Stocks.protocol[index].yearEnd
-                + Metals.protocol[index].yearEnd;
+            double total = Cash.Protocol[index].yearEnd
+                + Stocks.Protocol[index].yearEnd
+                + Metals.Protocol[index].yearEnd;
 
+            double result;
             if (assetType == typeof(Cash))
-                return Cash.protocol[index].yearEnd / total;
+                result = Cash.Protocol[index].yearEnd / total;
             else if (assetType == typeof(Stocks))
-                return Stocks.protocol[index].yearEnd / total;
+                result = Stocks.Protocol[index].yearEnd / total;
             else if (assetType == typeof(Metals))
-                return Metals.protocol[index].yearEnd / total;
+                result = Metals.Protocol[index].yearEnd / total;
             else
                 throw new Exception($"Unknown asset type <{assetType}>.");
+
+            return result;
         }
 
         /// <summary>
@@ -92,11 +97,13 @@ namespace Processing.Assets
         /// <returns>The average growth rate over all assets.</returns>
         public double GetAverageGrowthRate(int age)
         {
-            double result = GetAssetFraction(age, typeof(Cash)) * Input.cashGrowthRate +
-                GetAssetFraction(age, typeof(Stocks)) * Input.stocksGrowthRate +
-                GetAssetFraction(age, typeof(Metals)) * Input.metalsGrowthRate;
+            var assetFractionCash = GetAssetFraction(age, typeof(Cash)) * Input.cashGrowthRate;
+            var assetFractionStocks = GetAssetFraction(age, typeof(Stocks)) * Input.stocksGrowthRate;
+            var assetFractionMetals = GetAssetFraction(age, typeof(Metals)) * Input.metalsGrowthRate;
 
-            return result;
+            var result = assetFractionCash + assetFractionStocks + assetFractionMetals;
+
+             return result;
         }
 
         public void Process()

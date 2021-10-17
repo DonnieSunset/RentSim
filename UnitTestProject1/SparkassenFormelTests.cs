@@ -23,11 +23,9 @@ namespace Processing_uTest
         [DataTestMethod]
         [DataRow(600000, 7, 13, 8, 0, 1800)]
         [DataRow(12000, 1, 13, 8, 0, 1000)]
-        public void CalculatePayoutRateWithRent_CapitalEnough_RatesLeadToEndKapital(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
+        public void CalculatePayoutRateWithRent_ZeroTaxes_RatesLeadToEndKapital(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
-            var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
-
-            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy.SimulateTaxesAtWithdrawal);
+            (double rateRent, double rateStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, GetMockedZeroTaxWithdrawalStrategyFunc());
             Assert.AreEqual(rent, rateStopWork - rateRent, 0.1);
 
             double currentCapital = startCapital;
@@ -52,18 +50,19 @@ namespace Processing_uTest
         [DataRow(12000-1, 1, 13, 8, 0, 1000)]
         public void CalculatePayoutRateWithRent_CapitalTooSmall_ThrowsException(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent)
         {
-            var mockedZeroTaxWithdrawalStrategy = GetMockedZeroTaxWithdrawalStrategy();
-            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, mockedZeroTaxWithdrawalStrategy.SimulateTaxesAtWithdrawal);
+            Action action = () => SparkassenFormel.CalculatePayoutRateWithRent(startCapital, yearsStopWorkPhase, yearsRentPhase, interestRate, endCapital, rent, GetMockedZeroTaxWithdrawalStrategyFunc());
             
             Assert.ThrowsException<Exception>(action);
         }
 
-        private IWithdrawalStrategy GetMockedZeroTaxWithdrawalStrategy()
+        private Func<double, double> GetMockedZeroTaxWithdrawalStrategyFunc()
         {
             var mockWithdrawalStrategy = new Mock<IWithdrawalStrategy>();
-            mockWithdrawalStrategy.Setup(o => o.SimulateTaxesAtWithdrawal(It.IsAny<double>())).Returns(0);
+            mockWithdrawalStrategy.Setup(o => o.SimulateTaxesAtWithdrawal(It.IsAny<int>(), It.IsAny<double>())).Returns(0);
 
-            return mockWithdrawalStrategy.Object;
+            Func<double, double> mockedZeroTaxWithdrawalStrategyFunc = (double amount) => mockWithdrawalStrategy.Object.SimulateTaxesAtWithdrawal(0, amount);
+
+            return mockedZeroTaxWithdrawalStrategyFunc;
         }
     }
 }

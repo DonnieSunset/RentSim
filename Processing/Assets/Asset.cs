@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Processing.Assets
@@ -21,9 +23,21 @@ namespace Processing.Assets
     public abstract class Asset
     {
         protected double growthRatePerMonth;
+        protected double growthRatePerYear;
         protected Input input;
 
-        public List<ProtocolEntry> protocol = new List<ProtocolEntry>();
+        private List<ProtocolEntry> protocol = new List<ProtocolEntry>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// We need to ensure that protocol entries can only be written in the Asset class.
+        /// </remarks>
+        public ReadOnlyCollection<ProtocolEntry> Protocol
+        {
+            get { return protocol.AsReadOnly(); }
+        }
 
         protected Asset(Input _input, Portfolio portfolio)
         {
@@ -45,6 +59,7 @@ namespace Processing.Assets
         {
             protocol.Last().invests += invest;
             protocol.Last().yearEnd += invest;
+
             return this;
         }
 
@@ -54,6 +69,7 @@ namespace Processing.Assets
             double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
             current.growth += thisMonthGrowth;
             current.yearEnd += thisMonthGrowth;
+
             return this;
         }
 

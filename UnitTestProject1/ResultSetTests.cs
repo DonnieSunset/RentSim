@@ -53,14 +53,14 @@ namespace Processing_uTest
             var testee = new Stocks(input, null);
             testee.Process();
 
-            Assert.AreEqual(expectedResult.Count, testee.protocol.Count);
+            Assert.AreEqual(expectedResult.Count, testee.Protocol.Count);
             for (int i = 0; i < expectedResult.Count; i++)
             {
-                Assert.AreEqual(expectedResult[i].age, testee.protocol[i].age);
-                Assert.AreEqual(expectedResult[i].stocks.yearBegin, Math.Round(testee.protocol[i].yearBegin, 2));
-                Assert.AreEqual(expectedResult[i].stocks.invests, Math.Round(testee.protocol[i].invests, 2));
-                Assert.AreEqual(expectedResult[i].stocks.growth, Math.Round(testee.protocol[i].growth, 2));
-                Assert.AreEqual(expectedResult[i].stocks.yearEnd, Math.Round(testee.protocol[i].yearEnd, 2));
+                Assert.AreEqual(expectedResult[i].age, testee.Protocol[i].age);
+                Assert.AreEqual(expectedResult[i].stocks.yearBegin, Math.Round(testee.Protocol[i].yearBegin, 2));
+                Assert.AreEqual(expectedResult[i].stocks.invests, Math.Round(testee.Protocol[i].invests, 2));
+                Assert.AreEqual(expectedResult[i].stocks.growth, Math.Round(testee.Protocol[i].growth, 2));
+                Assert.AreEqual(expectedResult[i].stocks.yearEnd, Math.Round(testee.Protocol[i].yearEnd, 2));
             }
         }
     }

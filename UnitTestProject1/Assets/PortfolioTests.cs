@@ -16,9 +16,9 @@ namespace Processing_uTest.Assets
             Portfolio p = new Portfolio(i);
             p.Process();
 
-            Assert.AreEqual(180000, p.Cash.protocol.Last().yearEnd);
-            Assert.AreEqual(190000, p.Stocks.protocol.Last().yearEnd);
-            Assert.AreEqual(10000, p.Metals.protocol.Last().yearEnd);
+            Assert.AreEqual(180000, p.Cash.Protocol.Last().yearEnd);
+            Assert.AreEqual(190000, p.Stocks.Protocol.Last().yearEnd);
+            Assert.AreEqual(10000, p.Metals.Protocol.Last().yearEnd);
 
             var total = 180000 + 190000 + 10000; // 380.000
 
@@ -64,11 +64,11 @@ namespace Processing_uTest.Assets
             i.stocksGrowthRate = 8;
             i.metalsGrowthRate = 0;
 
-            var expectedGrowthRate = (60000 * i.cashGrowthRate  + 70000 * i.stocksGrowthRate + 10000 * i.metalsGrowthRate) / 140000d;
+            var expectedGrowthRate = (i.cash * i.cashGrowthRate  + i.stocks * i.stocksGrowthRate + i.metals * i.metalsGrowthRate) / (double)(i.cash + i.stocks + i.metals);
 
             Portfolio p = new Portfolio(i);
 
-            var averageGrowthRate = p.GetAverageGrowthRate(i.ageStopWork);
+            var averageGrowthRate = p.GetAverageGrowthRate(i.ageCurrent);
 
             Assert.AreEqual(expectedGrowthRate, averageGrowthRate);
         }

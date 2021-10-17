@@ -21,9 +21,10 @@ namespace Processing.Assets
                 default:
                     throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
             }
+            growthRatePerYear = input.stocksGrowthRate;
 
-            this.protocol.Last().yearBegin = _input.stocks;
-            this.protocol.Last().yearEnd = _input.stocks;
+            this.Protocol.Last().yearBegin = _input.stocks;
+            this.Protocol.Last().yearEnd = _input.stocks;
         }
 
         public Stocks Buy(double amount)
@@ -31,9 +32,9 @@ namespace Processing.Assets
             return (Stocks)base.ApplyInvests(amount);
         }
 
-        public Stocks GetWorthIncrease(double amount)
+        public Stocks ApplyWorthIncrease(double growthRate)
         {
-            return (Stocks)base.ApplyGrowth(amount);
+            return (Stocks)base.ApplyGrowth(growthRate);
         }
 
         public void SellAndPayTaxes(double amount)
@@ -50,7 +51,7 @@ namespace Processing.Assets
                 {
                     this
                        .Buy(input.stocksMonthlyInvestAmount)
-                       .GetWorthIncrease(this.growthRatePerMonth);
+                       .ApplyWorthIncrease(this.growthRatePerMonth);
                 }
 
                 base.MoveToNextYear();
@@ -69,7 +70,8 @@ namespace Processing.Assets
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
                 this
-                    .Buy(-withdrawalAmount);
+                    .Buy(-withdrawalAmount)
+                    .ApplyWorthIncrease(this.growthRatePerYear);
 
                 base.MoveToNextYear();
             }

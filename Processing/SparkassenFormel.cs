@@ -83,27 +83,23 @@ namespace Processing
 
                 diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
 
-                string s = $"ratePhaseRent11: {Math.Round(ratePhaseRent)} ratePhaseStopWork: {Math.Round(ratePhaseStopWork)}";
-                Console.WriteLine($"Border left: {Math.Round(left)} middle {Math.Round(middle)} right {Math.Round(right)} ");
-                Console.WriteLine(s);
-
                 if (ratePhaseRentplusRent > ratePhaseStopWork)
                 {
-                    Console.WriteLine("Moving to the right! ------>");
+                    //Console.WriteLine("Moving to the right! ------>");
                     left = middle;
                     middle = SparkassenFormel.Middle(left, right);
                 }
                 else
                 {
-                    Console.WriteLine("<------ Moving to the left!");
+                    //Console.WriteLine("<------ Moving to the left!");
                     right = middle;
                     middle = SparkassenFormel.Middle(left, right);
                 }
-                Console.WriteLine("");
+                //Console.WriteLine("");
             }
             while (diff >= 1);
 
-            Console.WriteLine("Geschafft! nach iteration " + i);
+            //Console.WriteLine("Geschafft! nach iteration " + i);
 
 
             ratePhaseRentperMonth = -ratePhaseRent / 12;

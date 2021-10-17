@@ -61,7 +61,7 @@ namespace Processing.Withdrawal
             double averageGrowthRate = portfolio.GetAverageGrowthRate(age);
 
             int index = age - portfolio.Input.ageCurrent;
-            double totalSavingStopWorkAge = portfolio.Total.protocol[index].yearBegin;
+            double totalSavingStopWorkAge = portfolio.Total.Protocol[index].yearEnd;
 
             double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(
                 portfolio.Input.ageCurrent,
@@ -82,9 +82,9 @@ namespace Processing.Withdrawal
                 calcTaxes: localSimulateTaxesAtWithdrawal
             );
 
-            if (age < portfolio.Input.ageStopWork || age >= portfolio.Input.ageEnd)
+            if (age < portfolio.Input.ageCurrent || age >= portfolio.Input.ageEnd)
             {
-                throw new Exception($"Age <{age}> not valid. Must be between StopWorkAge (<{portfolio.Input.ageStopWork}>) and EndAge (<{portfolio.Input.ageEnd}>).");
+                throw new Exception($"Age <{age}> not valid. Must be between ageCurrent (<{portfolio.Input.ageCurrent}>) and EndAge (<{portfolio.Input.ageEnd}>).");
             }
             else if (age < portfolio.Input.ageRentStart)
             {
@@ -98,8 +98,16 @@ namespace Processing.Withdrawal
 
         public double GetWithdrawalAmount(int age, Type assetType)
         {
-            double fraction = portfolio.GetAssetFraction(age, assetType);
-            double amount = GetWithdrawalAmount(age);
+            // The withdrawal amount must be calculated based on an age which does not change anymore,
+            // otherwise there will be inconsistencies becasue the values of one asset could be already altered
+            // which the values of another asset is yet to be processed!
+            // so we choose input.ageStopWork-1 here
+            // for uniform withdrawal strategy, the age of withdrawal does not matter. 
+            // we choose here always the stopwork age - 1 and calculate it from yearEnd
+            var ageToCalculate = portfolio.Input.ageStopWork - 1;
+
+            double fraction = portfolio.GetAssetFraction(ageToCalculate, assetType);
+            double amount = GetWithdrawalAmount(ageToCalculate);
 
             return fraction * amount;
         }

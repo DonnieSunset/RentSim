@@ -19,9 +19,10 @@ namespace Processing.Assets
                 default:
                     throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
             }
+            growthRatePerYear = input.cashGrowthRate;
 
-            this.protocol.Last().yearBegin = _input.cash;
-            this.protocol.Last().yearEnd = _input.cash;
+            this.Protocol.Last().yearBegin = _input.cash;
+            this.Protocol.Last().yearEnd = _input.cash;
         }
 
         public Cash Save(double amount)
@@ -34,7 +35,7 @@ namespace Processing.Assets
             return (Cash)base.ApplyInvests(-amount);
         }
 
-        public Cash GetInterests(double interestRate)
+        public Cash ApplyInterests(double interestRate)
         {
             return (Cash)base.ApplyGrowth(interestRate);
         }
@@ -52,7 +53,7 @@ namespace Processing.Assets
                 {
                     this
                        .Save(input.cashMonthlyInvestAmount)
-                       .GetInterests(this.growthRatePerMonth);
+                       .ApplyInterests(this.growthRatePerMonth);
                 }
 
                 base.MoveToNextYear();
@@ -66,7 +67,8 @@ namespace Processing.Assets
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
             {
                 this
-                    .Withdraw(withdrawalAmount);
+                    .Withdraw(withdrawalAmount)
+                    .ApplyInterests(this.growthRatePerYear);
 
                 base.MoveToNextYear();
             }
