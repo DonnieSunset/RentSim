@@ -4,9 +4,8 @@ namespace Processing.Withdrawal
 {
     public interface IWithdrawalStrategy
     {
-        public double SimulateTaxesAtWithdrawal(int age, double amount);
+        public WithdrawalRateInfo GetResults();
 
-        public double GetWithdrawalAmount(int age);
-        public double GetWithdrawalAmount(int age, Type assetType);
+        public void Calculate();
     }
 }
