@@ -54,7 +54,8 @@ namespace Processing.Assets
             Metals = new Metals(Input, this);
             Total = new Total(Input, new List<Asset> { Cash, Stocks, Metals }, this);
 
-            WithdrawalStrategy = new UniformWithdrawalStrategy(this);
+            //WithdrawalStrategy = new UniformWithdrawalStrategy(this);
+            WithdrawalStrategy = new SellAllWithdrawalStrategy(this);
         }
 
         public List<Asset> GetAssets()
@@ -123,10 +124,10 @@ namespace Processing.Assets
 
         public void Process()
         {
-            Cash.Process();
-            Stocks.Process();
-            Metals.Process();
-            Total.Process();
+            //Cash.Process();
+            //Stocks.Process();
+            //Metals.Process();
+            //Total.Process();
 
             //TODO PRIO: Hier muss EINMALIG!!! der withdrawal amount berechnet werden! dnach niewieder! und zwar für stopwork age. wir haben hier schon aöle infos die wir brahcen um alles zu berechnen. also machen wir es auch hier.vereinfach alles und macht den code lesbarer.
 
@@ -143,13 +144,49 @@ namespace Processing.Assets
             //double withdrawalAmount_Metals_AgeStopWork_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageStopWork, Metals.GetType());
             //double withdrawalAmount_Metals_AgeRentStart_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageRentStart, Metals.GetType());
 
-            WithdrawalStrategy.Calculate();
-            var withdrawalResults = WithdrawalStrategy.GetResults();
 
-            Cash.Process2(withdrawalResults.Cash);
-            Stocks.Process2(withdrawalResults.Stocks);
-            Metals.Process2(withdrawalResults.Metals);
-            Total.Process2(null);
+
+
+            for (int i = Input.ageCurrent; i < Input.ageStopWork; i++)
+            {
+                for (int month = 1; month <= 12; month++)
+                {
+                    Cash
+                       .Save(Input.cashMonthlyInvestAmount)
+                       .ApplyInterests(Cash.GrowthRatePerMonth);
+
+                    Stocks
+                       .Buy(Input.stocksMonthlyInvestAmount)
+                       .ApplyWorthIncrease(Stocks.GrowthRatePerMonth);
+
+                    Metals
+                       .Buy(Input.metalsMonthlyInvestAmount)
+                       .ApplyWorthIncrease(Metals.GrowthRatePerMonth);
+
+                }
+
+                Cash.MoveToNextYear();
+                Stocks.MoveToNextYear();
+                Metals.MoveToNextYear();
+
+                int protocolIndex = i - Input.ageCurrent;
+                Total.Protocol.Last().age = i;
+                Total.Protocol.Last().yearBegin = Total.listOfAssets.Select(x => x.Protocol[protocolIndex].yearBegin).Sum();
+                Total.Protocol.Last().growth = Total.listOfAssets.Select(x => x.Protocol[protocolIndex].growth).Sum();
+                Total.Protocol.Last().invests = Total.listOfAssets.Select(x => x.Protocol[protocolIndex].invests).Sum();
+                Total.Protocol.Last().yearEnd = Total.listOfAssets.Select(x => x.Protocol[protocolIndex].yearEnd).Sum();
+                Total.MoveToNextYear();
+            }
+
+
+            //WithdrawalStrategy.Calculate();
+            //var withdrawalResults = WithdrawalStrategy.GetResults();
+
+            //Cash.Process2(withdrawalResults.Cash);
+            //Stocks.Process2(withdrawalResults.Stocks);
+            //Metals.Process2(withdrawalResults.Metals);
+            //Total.Process2(null);
+
         }
     }
 }

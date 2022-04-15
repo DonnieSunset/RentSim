@@ -40,6 +40,11 @@ namespace Processing.Assets
             get { return protocol.AsReadOnly(); }
         }
 
+        public double GrowthRatePerMonth
+        {
+            get => growthRatePerMonth;
+        }
+
         protected Asset(Input _input, Portfolio portfolio)
         {
             input = _input;
@@ -86,7 +91,7 @@ namespace Processing.Assets
             return this;
         }
 
-        public abstract void Process();
+        //public abstract void Process();
 
         public abstract void Process2(AssetWithdrawalRateInfo withdrawalRateInfo);
     }

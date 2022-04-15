@@ -104,9 +104,9 @@
     <Column ColumnSize="ColumnSize.Is4">
         <LineChart @ref="lineChart" TItem="double"/>
     </Column>
-@*   <Column ColumnSize="ColumnSize.Is4">
+   <Column ColumnSize="ColumnSize.Is4">
         <BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />
-    </Column>*@
+    </Column>
 
 </Row>
 
@@ -330,6 +330,7 @@
         //    calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
         //);
 
+        portfolio.WithdrawalStrategy.Calculate();
         var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
         double ratePhaseStopWork = withdrawalResults.Total.RateStopWorkNet;
         double ratePhaseRent = withdrawalResults.Total.RateRentStartNet;
@@ -338,8 +339,8 @@
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
 
-        resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
-        resultRows = resultSet.ProcessAssets();
+        //resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
+        //resultRows = resultSet.ProcessAssets();
         //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
 

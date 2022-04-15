@@ -45,20 +45,20 @@ namespace Processing.Assets
             throw new NotImplementedException();
         }
 
-        public override void Process()
-        {
-            for (int i = input.ageCurrent; i < input.ageStopWork; i++)
-            {
-                for (int month = 1; month <= 12; month++)
-                {
-                    this
-                       .Save(input.cashMonthlyInvestAmount)
-                       .ApplyInterests(this.growthRatePerMonth);
-                }
+        //public override void Process()
+        //{
+        //    for (int i = input.ageCurrent; i < input.ageStopWork; i++)
+        //    {
+        //        for (int month = 1; month <= 12; month++)
+        //        {
+        //            this
+        //               .Save(input.cashMonthlyInvestAmount)
+        //               .ApplyInterests(this.growthRatePerMonth);
+        //        }
 
-                base.MoveToNextYear();
-            }
-        }
+        //        base.MoveToNextYear();
+        //    }
+        //}
 
         public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
         {
