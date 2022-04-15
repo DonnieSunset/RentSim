@@ -63,11 +63,22 @@ namespace Processing.Assets
             return amount * this.WithdrawalTaxRate;
         }
 
-        public override void Process2()
+        public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
         {
-            double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork, this.GetType());
+            double withdrawalAmount = withdrawalRateInfo.RateStopWorkGross;
 
             for (int i = input.ageStopWork; i < input.ageRentStart; i++)
+            {
+                this
+                    .Buy(-withdrawalAmount)
+                    .ApplyWorthIncrease(this.growthRatePerYear);
+
+                base.MoveToNextYear();
+            }
+
+            withdrawalAmount = withdrawalRateInfo.RateRentStartGross;
+
+            for (int i = input.ageRentStart; i < input.ageEnd; i++)
             {
                 this
                     .Buy(-withdrawalAmount)

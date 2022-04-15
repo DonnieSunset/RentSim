@@ -35,5 +35,10 @@ namespace Processing
 
             return rentStopWorkAge;
         }
+
+        public static double Middle(double left, double right)
+        {
+            return left + (right - left) / 2;
+        }
     }
 }

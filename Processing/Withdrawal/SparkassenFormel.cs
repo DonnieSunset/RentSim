@@ -104,8 +104,8 @@ namespace Processing.Withdrawal
 
             var ratePhaseRentperMonth = -ratePhaseRentGross / 12d;
             var ratePhaseStopWorkperMonth = -ratePhaseStopWorkGross / 12d;
-            Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
-            Console.WriteLine($"Tax rate {taxesRatePhaseStopWork} / {taxesratePhaseRent}");
+            //Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
+            //Console.WriteLine($"Tax rate {taxesRatePhaseStopWork} / {taxesratePhaseRent}");
 
             return (ratePhaseRentGross,  ratePhaseStopWorkGross);
         }

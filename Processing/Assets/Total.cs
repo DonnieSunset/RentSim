@@ -31,11 +31,11 @@ namespace Processing.Assets
             }
         }
 
-        public override void Process2()
+        public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
         {
             var current = Protocol.Last();
 
-            for (int i = input.ageStopWork - input.ageCurrent; i < input.ageRentStart - input.ageCurrent; i++)
+            for (int i = input.ageStopWork - input.ageCurrent; i < input.ageEnd - input.ageCurrent; i++)
             {
                 current.age = listOfAssets.First().Protocol[i].age;
                 current.yearBegin = listOfAssets.Select(x => x.Protocol[i].yearBegin).Sum();

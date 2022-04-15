@@ -25,7 +25,7 @@ namespace Processing
             this.metals = metals;
             this.total = total;
 
-            processingAges = input.ageRentStart - input.ageCurrent + 1;
+            processingAges = input.ageEnd - input.ageCurrent + 1;
             foreach (Asset a in new Asset[] { cash, stocks, metals, total })
             {
                 if (a.Protocol.Count != processingAges)

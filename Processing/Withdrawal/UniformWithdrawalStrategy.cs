@@ -10,9 +10,16 @@ namespace Processing.Withdrawal
         private Portfolio portfolio;
         private WithdrawalRateInfo result;
 
+        public double adder;
+
         public UniformWithdrawalStrategy(Portfolio basePortfolio)
         {
             portfolio = basePortfolio;
+        }
+
+        public void Adder(double amount)
+        {
+            adder = amount;
         }
 
         public void Calculate()
@@ -111,9 +118,16 @@ namespace Processing.Withdrawal
             return completeTaxesToPay;
         }
 
+        //todo: this is called now 3 times,but should be called only 1 time.
         internal (double ratePhaseRent, double ratePhaseStopWork) GetWithdrawalAmount()
         {
             double averageGrowthRate = portfolio.GetAverageGrowthRate(AgePhaseBy.Age(portfolio.Input.ageStopWork, portfolio.Input));
+
+            
+            ////////////////// only for debugging //////
+            averageGrowthRate = 0;
+            ////////////////// only for debugging //////
+            
 
             int index = portfolio.Input.ageStopWork - portfolio.Input.ageCurrent;
             double totalSavingStopWorkAge = portfolio.Total.Protocol[index].yearEnd;
@@ -136,6 +150,11 @@ namespace Processing.Withdrawal
                 rent: approxStopWorkAgeNetRent,
                 calcTaxes: localSimulateTaxesAtWithdrawal
             );
+
+            ////////////////// only for debugging //////
+            ratePhaseRent -= this.adder;
+            ratePhaseStopWork -= this.adder;
+            ///////////////////////////////////////
 
             return (-ratePhaseRent, -ratePhaseStopWork);
         }

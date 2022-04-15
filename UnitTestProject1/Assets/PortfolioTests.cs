@@ -21,10 +21,11 @@ namespace Processing_uTest.Assets
             Assert.AreEqual(10000, p.Metals.Protocol.Last().yearEnd);
 
             var total = 180000 + 190000 + 10000; // 380.000
+            AgePhase agePhase = AgePhaseBy.Age(i.ageStopWork, i);
 
-            var cashFraction = p.GetAssetFraction(i.ageStopWork, typeof(Cash));
-            var StocksFraction = p.GetAssetFraction(i.ageStopWork, typeof(Stocks));
-            var metalsFraction = p.GetAssetFraction(i.ageStopWork, typeof(Metals));
+            var cashFraction = p.GetAssetFraction(agePhase, typeof(Cash));
+            var StocksFraction = p.GetAssetFraction(agePhase, typeof(Stocks));
+            var metalsFraction = p.GetAssetFraction(agePhase, typeof(Metals));
 
             Assert.AreEqual(180d/380d, cashFraction);
             Assert.AreEqual(190d/380d, StocksFraction);
@@ -41,7 +42,8 @@ namespace Processing_uTest.Assets
             Portfolio p = new Portfolio(i);
             p.Process();
 
-            var cashFraction = p.GetAssetFraction(i.ageStopWork, typeof(Cash));
+            AgePhase agePhase = AgePhaseBy.Age(i.ageStopWork, i);
+            var cashFraction = p.GetAssetFraction(agePhase, typeof(Cash));
 
             Assert.AreEqual(0, cashFraction);
         }
@@ -53,7 +55,9 @@ namespace Processing_uTest.Assets
             Portfolio p = new Portfolio(i);
             p.Process();
 
-            Assert.ThrowsException<Exception>(() => p.GetAssetFraction(i.ageStopWork, typeof(Input)));
+            AgePhase agePhase = AgePhaseBy.Age(i.ageStopWork, i);
+
+            Assert.ThrowsException<Exception>(() => p.GetAssetFraction(agePhase, typeof(Input)));
         }
 
         [TestMethod]
@@ -67,8 +71,9 @@ namespace Processing_uTest.Assets
             var expectedGrowthRate = (i.cash * i.cashGrowthRate  + i.stocks * i.stocksGrowthRate + i.metals * i.metalsGrowthRate) / (double)(i.cash + i.stocks + i.metals);
 
             Portfolio p = new Portfolio(i);
+            AgePhase agePhase = AgePhaseBy.Age(i.ageStopWork, i);
 
-            var averageGrowthRate = p.GetAverageGrowthRate(i.ageCurrent);
+            var averageGrowthRate = p.GetAverageGrowthRate(agePhase);
 
             Assert.AreEqual(expectedGrowthRate, averageGrowthRate);
         }

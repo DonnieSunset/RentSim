@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Processing.Withdrawal;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -87,6 +88,6 @@ namespace Processing.Assets
 
         public abstract void Process();
 
-        public abstract void Process2();
+        public abstract void Process2(AssetWithdrawalRateInfo withdrawalRateInfo);
     }
 }

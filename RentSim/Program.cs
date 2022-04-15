@@ -29,7 +29,8 @@ namespace RentSim
             builder.Services
               .AddBlazorise(options =>
               {
-                  options.ChangeTextOnKeyPress = true;
+                  //options.ChangeTextOnKeyPress = true;
+                  options.Immediate = true;
               })
               .AddBootstrapProviders()
               .AddFontAwesomeIcons();

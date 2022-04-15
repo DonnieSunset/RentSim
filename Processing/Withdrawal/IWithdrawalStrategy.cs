@@ -7,5 +7,7 @@ namespace Processing.Withdrawal
         public WithdrawalRateInfo GetResults();
 
         public void Calculate();
+
+        public void Adder(double amount);
     }
 }

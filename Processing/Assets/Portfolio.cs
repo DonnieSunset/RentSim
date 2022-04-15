@@ -68,11 +68,26 @@ namespace Processing.Assets
         /// </summary>
         /// <param name="assetType">The asset type.</param>
         /// <returns>The fraction of the asset.</returns>
-        public double GetAssetFraction(int age, Type assetType)
+        public double GetAssetFraction(AgePhase agePhase, Type assetType)
         {
-            //SCheisse: das hier darf nur aufgerufen werden wenn ALLE asset klassen schon prozessiert wurden sonst gibts ungleichgewichte!
+            //Scheisse: das hier darf nur aufgerufen werden wenn ALLE asset klassen schon prozessiert wurden sonst gibts ungleichgewichte!
 
-            int index = age - Input.ageCurrent;
+            //TODO: remove the age parameter, replace with a enum. then do exstensive checks.
+            int index;
+            if (agePhase == AgePhase.StopWork)
+            {
+                index = Input.ageStopWork - Input.ageCurrent - 1;
+            }
+            else if (agePhase == AgePhase.RentStart)
+            {
+                index = Input.ageRentStart - Input.ageCurrent - 1;
+            }
+            else
+            {
+                throw new Exception($"Unknown age phase <{agePhase}>.");
+            }
+
+            //Console.WriteLine("S: xxx " + index + " / " + Cash.Protocol.Count + " / " + Stocks.Protocol.Count + " / " + Metals.Protocol.Count);
 
             double total = Cash.Protocol[index].yearEnd
                 + Stocks.Protocol[index].yearEnd
@@ -95,11 +110,11 @@ namespace Processing.Assets
         /// Gets the average growth rate over all assets.
         /// </summary>
         /// <returns>The average growth rate over all assets.</returns>
-        public double GetAverageGrowthRate(int age)
+        public double GetAverageGrowthRate(AgePhase agePhase)
         {
-            var assetFractionCash = GetAssetFraction(age, typeof(Cash)) * Input.cashGrowthRate;
-            var assetFractionStocks = GetAssetFraction(age, typeof(Stocks)) * Input.stocksGrowthRate;
-            var assetFractionMetals = GetAssetFraction(age, typeof(Metals)) * Input.metalsGrowthRate;
+            var assetFractionCash = GetAssetFraction(agePhase, typeof(Cash)) * Input.cashGrowthRate;
+            var assetFractionStocks = GetAssetFraction(agePhase, typeof(Stocks)) * Input.stocksGrowthRate;
+            var assetFractionMetals = GetAssetFraction(agePhase, typeof(Metals)) * Input.metalsGrowthRate;
 
             var result = assetFractionCash + assetFractionStocks + assetFractionMetals;
 
@@ -112,14 +127,29 @@ namespace Processing.Assets
             Stocks.Process();
             Metals.Process();
             Total.Process();
-        }
 
-        public void Process2()
-        {
-            Cash.Process2();
-            Stocks.Process2();
-            Metals.Process2();
-            Total.Process2();
+            //TODO PRIO: Hier muss EINMALIG!!! der withdrawal amount berechnet werden! dnach niewieder! und zwar für stopwork age. wir haben hier schon aöle infos die wir brahcen um alles zu berechnen. also machen wir es auch hier.vereinfach alles und macht den code lesbarer.
+
+            //Auch einmalig berechnen: getAverageGrowthRate!!
+
+            // darf eigentlich nicht hier berechnet werden, da obige annahme nur für die uniformWithdrawalStrategy gilt. also muss alles EINMALUG in der withdrawalstrategy berechnet werden.
+
+            //double withdrawalAmount_Cash_AgeStopWork_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageStopWork, Cash.GetType());
+            //double withdrawalAmount_Cash_AgeRentStart_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageRentStart, Cash.GetType());
+
+            //double withdrawalAmount_Stocks_AgeStopWork_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageStopWork, Stocks.GetType());
+            //double withdrawalAmount_Stocks_AgeRentStart_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageRentStart, Stocks.GetType());
+
+            //double withdrawalAmount_Metals_AgeStopWork_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageStopWork, Metals.GetType());
+            //double withdrawalAmount_Metals_AgeRentStart_Net = WithdrawalStrategy.GetWithdrawalAmount(Input.ageRentStart, Metals.GetType());
+
+            WithdrawalStrategy.Calculate();
+            var withdrawalResults = WithdrawalStrategy.GetResults();
+
+            Cash.Process2(withdrawalResults.Cash);
+            Stocks.Process2(withdrawalResults.Stocks);
+            Metals.Process2(withdrawalResults.Metals);
+            Total.Process2(null);
         }
     }
 }

@@ -102,13 +102,12 @@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4">
-        <LineChart @ref="lineChart" TItem="double" />
+        <LineChart @ref="lineChart" TItem="double"/>
     </Column>
-    <Column ColumnSize="ColumnSize.Is4">
-        @*<BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />*@
-        @* <BarChart @ref="barChart" TItem="double" OptionsJsonString="@myStackedOptions" />*@
-        <BarChart @ref="barChart" TItem="double" OptionsObject="@myScales" />
-    </Column>
+@*   <Column ColumnSize="ColumnSize.Is4">
+        <BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />
+    </Column>*@
+
 </Row>
 
 
@@ -122,52 +121,52 @@
     <DataGridCommandColumn TItem="ResultRow" />
     <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.age)" Caption="Age" />
 
-    <DataGridColumn TItem="ResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.invests)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.growth)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
 
@@ -194,22 +193,22 @@
 
     async Task LoaderDefault()
     {
-        FieldAgeCurrent = 41;
+        FieldAgeCurrent = 42;
         FieldAgeStopWork = 60;
         FieldAgeRentStart = 67;
         FieldAgeEnd = 80;
 
         interestRateType = InterestRateType.Relativ;
 
-        FieldStocks = 60000;
+        FieldStocks = 88800;
         FieldStocksGrowthRate = 7;
         FieldStocksSaveAmount = 700;
 
-        FieldCash = 60000;
+        FieldCash = 58000;
         FieldCashGrowthRate = 0;
         FieldCashSaveAmount = 350;
 
-        FieldMetals = 20000;
+        FieldMetals = 21400;
         FieldMetalsGrowthRate = 1;
         FieldMetalsSaveAmount = 0;
 
@@ -251,7 +250,8 @@
     LineChart<double> lineChart;
     BarChart<double> barChart;
     BarChartOptions dataBarChartOptions;
-    Scales myScales;
+    LineChartOptions dataLineChartOptions;
+    ChartScales myScales;
     ResultSet resultSet;
     List<ResultRow> resultRows = new List<ResultRow>();
     Portfolio portfolio = null;
@@ -330,14 +330,13 @@
         //    calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
         //);
 
-
-        double ratePhaseStopWork = portfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork);
-        double ratePhaseRent = ratePhaseStopWork - (approxStopWorkAgeNetRent * 12);
+        var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
+        double ratePhaseStopWork = withdrawalResults.Total.RateStopWorkNet;
+        double ratePhaseRent = withdrawalResults.Total.RateRentStartNet;
 
         FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
         FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
-        portfolio.Process2();
 
         resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
         resultRows = resultSet.ProcessAssets();
@@ -346,7 +345,7 @@
 
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(input.ageCurrent, input.ageRentStart - input.ageCurrent + 1)
+        string[] labels = Enumerable.Range(input.ageCurrent, input.ageEnd - input.ageCurrent + 1)
             .ToArray()
             .Select(x => x.ToString())
             .ToArray();
@@ -391,21 +390,37 @@
 
         dataBarChartOptions = new BarChartOptions()
         {
-            Scales = new Scales
+
+            Scales = new ChartScales
             {
                 //XAxes = new List<Axis> { new Axis { Stacked = true} },
                 //YAxes = new List<Axis> { new Axis { Stacked = true} },
-                XAxes = new List<Axis>() { new Axis { Stacked = true } },
-                YAxes = new List<Axis>() { new Axis { Stacked = true } },
+                //X = new List<Axis>() { new Axis { Stacked = true } },
+                //YAxes = new List<Axis>() { new Axis { Stacked = true } },
+                X = new ChartAxis { Stacked = true },
+                Y = new ChartAxis { Stacked = true }
+
             },
         };
 
-        myScales = new Scales
+        dataLineChartOptions = new LineChartOptions()
+        {
+            Scales = new ChartScales
+            {
+                X = new ChartAxis { Stacked = true },
+                Y = new ChartAxis { Stacked = true }
+
+            },
+        };
+
+        myScales = new ChartScales
         {
             //XAxes = new List<Axis> { new Axis { Stacked = true} },
             //YAxes = new List<Axis> { new Axis { Stacked = true} },
-            XAxes = new List<Axis>() { new Axis { Stacked = true } },
-            YAxes = new List<Axis>() { new Axis { Stacked = true } },
+            //XAxes = new List<Axis>() { new Axis { Stacked = true } },
+            //YAxes = new List<Axis>() { new Axis { Stacked = true } },
+            X = new ChartAxis { Stacked = true },
+            Y = new ChartAxis { Stacked = true }
         };
 
         await lineChart.Clear();
