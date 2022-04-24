@@ -40,5 +40,13 @@ namespace Processing
         {
             return left + (right - left) / 2;
         }
+
+        public static double InflationAdjusted(int startAge, int endAge, double amount, double inflationRate)
+        { 
+            int numYears = endAge - startAge;
+            double totalInflation = Math.Pow(1+(inflationRate/100), numYears);
+
+            return amount * totalInflation;
+        }
     }
 }

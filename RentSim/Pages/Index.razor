@@ -69,7 +69,11 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
+
+
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
+
+
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
@@ -78,6 +82,28 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
+
+<Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNeedsNowMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNeedsNowComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldInflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+
+</Field>
+
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
@@ -94,6 +120,7 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
 
 
 
@@ -216,6 +243,10 @@
         FieldNetStateRentFromCurrentAge = 762;
         FieldNetStateRentFromRentStartAge = 2015;
 
+        FieldNeedsNowMinimum = 1575;
+        FieldNeedsNowComfort = 2200;
+        FieldInflationRate = 3;
+
         FieldResultsTotalSavingStopWorkAge = "0";
         FieldResultsNetStateRent = "0";
         FieldResultsRatePhaseRent = "0";
@@ -252,7 +283,7 @@
     BarChartOptions dataBarChartOptions;
     LineChartOptions dataLineChartOptions;
     ChartScales myScales;
-    ResultSet resultSet;
+    //ResultSet resultSet;
     List<ResultRow> resultRows = new List<ResultRow>();
     Portfolio portfolio = null;
 
@@ -278,6 +309,13 @@
 
     int FieldNetStateRentFromCurrentAge;
     int FieldNetStateRentFromRentStartAge;
+
+    int FieldNeedsNowMinimum;
+    int FieldNeedsNowComfort;
+    int FieldInflationRate;
+
+    string FieldNeedsRentStartMinimum;
+    string FieldNeedsRentStartComfort;
 
     string FieldResultsTotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
@@ -309,15 +347,21 @@
         input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
         input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
 
+        input.NeedsNowMinimum = FieldNeedsNowMinimum;
+        input.NeedsNowComfort = FieldNeedsNowComfort;
+
+        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
+        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
+
         portfolio = new Portfolio(input);
-        portfolio.Process();
+        //portfolio.Process();
 
         //results
-        int index = FieldAgeStopWork - FieldAgeCurrent;
-        double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
-        FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
-        double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
-        FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
+        //int index = FieldAgeStopWork - FieldAgeCurrent;
+        //double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
+        //FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
+        //double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
+        //FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
 
         //double averageGrowthRate = portfolio.GetAverageGrowthRate();
         //(double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
@@ -330,13 +374,13 @@
         //    calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
         //);
 
-        portfolio.WithdrawalStrategy.Calculate();
-        var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
-        double ratePhaseStopWork = withdrawalResults.Total.RateStopWorkNet;
-        double ratePhaseRent = withdrawalResults.Total.RateRentStartNet;
+        //portfolio.WithdrawalStrategy.Calculate();
+        //var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
+        //double ratePhaseStopWork = withdrawalResults.Total.RateStopWorkNet;
+        //double ratePhaseRent = withdrawalResults.Total.RateRentStartNet;
 
-        FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
-        FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
+        //FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
+        //FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
 
         //resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
@@ -346,89 +390,85 @@
 
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(input.ageCurrent, input.ageEnd - input.ageCurrent + 1)
-            .ToArray()
-            .Select(x => x.ToString())
-            .ToArray();
+        //string[] labels = Enumerable.Range(input.ageCurrent, input.ageEnd - input.ageCurrent + 1)
+        //    .ToArray()
+        //    .Select(x => x.ToString())
+        //    .ToArray();
 
-        LineChartDataset<double> data = new LineChartDataset<double>
-        {
-            BackgroundColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 0.5f) },
-            Label = "Total",
-            BorderColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 1f) },
-            Fill = true,
-            PointRadius = 2,
-            BorderDash = new List<int> { },
-            //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
-            Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //LineChartDataset<double> data = new LineChartDataset<double>
+        //{
+        //    BackgroundColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 0.5f) },
+        //    Label = "Total",
+        //    BorderColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 1f) },
+        //    Fill = true,
+        //    PointRadius = 2,
+        //    BorderDash = new List<int> { },
+        //    //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
+        //    Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
-        BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
-            Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
-            Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
+        //    Label = "Cash",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
-        BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-            Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-            Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
+        //    Label = "Stocks",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
-        BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
-            Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
-            Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
+        //    Label = "Metals",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
 
-        dataBarChartOptions = new BarChartOptions()
-        {
+        //dataBarChartOptions = new BarChartOptions()
+        //{
 
-            Scales = new ChartScales
-            {
-                //XAxes = new List<Axis> { new Axis { Stacked = true} },
-                //YAxes = new List<Axis> { new Axis { Stacked = true} },
-                //X = new List<Axis>() { new Axis { Stacked = true } },
-                //YAxes = new List<Axis>() { new Axis { Stacked = true } },
-                X = new ChartAxis { Stacked = true },
-                Y = new ChartAxis { Stacked = true }
+        //    Scales = new ChartScales
+        //    {
+        //        //XAxes = new List<Axis> { new Axis { Stacked = true} },
+        //        //YAxes = new List<Axis> { new Axis { Stacked = true} },
+        //        //X = new List<Axis>() { new Axis { Stacked = true } },
+        //        //YAxes = new List<Axis>() { new Axis { Stacked = true } },
+        //        X = new ChartAxis { Stacked = true },
+        //        Y = new ChartAxis { Stacked = true }
 
-            },
-        };
+        //    },
+        //};
 
-        dataLineChartOptions = new LineChartOptions()
-        {
-            Scales = new ChartScales
-            {
-                X = new ChartAxis { Stacked = true },
-                Y = new ChartAxis { Stacked = true }
+        //dataLineChartOptions = new LineChartOptions()
+        //{
+        //    Scales = new ChartScales
+        //    {
+        //        X = new ChartAxis { Stacked = true },
+        //        Y = new ChartAxis { Stacked = true }
 
-            },
-        };
+        //    },
+        //};
 
-        myScales = new ChartScales
-        {
-            //XAxes = new List<Axis> { new Axis { Stacked = true} },
-            //YAxes = new List<Axis> { new Axis { Stacked = true} },
-            //XAxes = new List<Axis>() { new Axis { Stacked = true } },
-            //YAxes = new List<Axis>() { new Axis { Stacked = true } },
-            X = new ChartAxis { Stacked = true },
-            Y = new ChartAxis { Stacked = true }
-        };
+        //myScales = new ChartScales
+        //{
+        //    X = new ChartAxis { Stacked = true },
+        //    Y = new ChartAxis { Stacked = true }
+        //};
 
-        await lineChart.Clear();
-        await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
+        //await lineChart.Clear();
+        //await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
 
-        await barChart.Clear();
-        await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
+        //await barChart.Clear();
+        //await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
 
     }
 }

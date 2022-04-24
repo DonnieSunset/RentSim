@@ -31,20 +31,20 @@ namespace Processing.Assets
         //    }
         //}
 
-        public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
-        {
-            var current = Protocol.Last();
+        //public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
+        //{
+        //    var current = Protocol.Last();
 
-            for (int i = input.ageStopWork - input.ageCurrent; i < input.ageEnd - input.ageCurrent; i++)
-            {
-                current.age = listOfAssets.First().Protocol[i].age;
-                current.yearBegin = listOfAssets.Select(x => x.Protocol[i].yearBegin).Sum();
-                current.growth = listOfAssets.Select(x => x.Protocol[i].growth).Sum();
-                current.invests = listOfAssets.Select(x => x.Protocol[i].invests).Sum();
-                current.yearEnd = listOfAssets.Select(x => x.Protocol[i].yearEnd).Sum();
+        //    for (int i = input.ageStopWork - input.ageCurrent; i < input.ageEnd - input.ageCurrent; i++)
+        //    {
+        //        current.age = listOfAssets.First().Protocol[i].age;
+        //        current.yearBegin = listOfAssets.Select(x => x.Protocol[i].yearBegin).Sum();
+        //        current.growth = listOfAssets.Select(x => x.Protocol[i].growth).Sum();
+        //        current.invests = listOfAssets.Select(x => x.Protocol[i].invests).Sum();
+        //        current.yearEnd = listOfAssets.Select(x => x.Protocol[i].yearEnd).Sum();
 
-                current = base.MoveToNextYear().Protocol.Last();
-            }
-        }
+        //        current = base.MoveToNextYear().Protocol.Last();
+        //    }
+        //}
     }
 }

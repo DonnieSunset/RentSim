@@ -30,5 +30,8 @@
         public int netStateRentFromCurrentAge;
         public int netStateRentFromRentStartAge;
 
+        public int NeedsNowMinimum;
+        public int NeedsNowComfort;
+
     }
 }

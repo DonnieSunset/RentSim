@@ -82,74 +82,74 @@ namespace RentSim_iTest
         //    Assert.AreEqual(ratePhaseStopWork, sumOfAllWithdrawals, 0.1);
         //}
 
-        [TestMethod]
-        public void WeirdTest()
-        {
-            for (int i = 0; i < 100; i=i+10)
-            {
-                Input input = new Input();
-                input.ageCurrent = 41;
-                input.ageStopWork = 60;
-                input.ageRentStart = 67;
-                input.ageEnd = 80;
+        //[TestMethod]
+        //public void WeirdTest()
+        //{
+        //    for (int i = 0; i < 100; i=i+10)
+        //    {
+        //        Input input = new Input();
+        //        input.ageCurrent = 41;
+        //        input.ageStopWork = 60;
+        //        input.ageRentStart = 67;
+        //        input.ageEnd = 80;
 
-                input.interestRateType = InterestRateType.Relativ;
+        //        input.interestRateType = InterestRateType.Relativ;
 
-                input.stocks = 60000;
-                input.stocksGrowthRate = 7;
-                input.stocksMonthlyInvestAmount = 700;
+        //        input.stocks = 60000;
+        //        input.stocksGrowthRate = 7;
+        //        input.stocksMonthlyInvestAmount = 700;
 
-                input.cash = 60000;
-                input.cashGrowthRate = 0;
-                input.cashMonthlyInvestAmount = 350;
+        //        input.cash = 60000;
+        //        input.cashGrowthRate = 0;
+        //        input.cashMonthlyInvestAmount = 350;
 
-                input.metals = 20000;
-                input.metalsGrowthRate = 1;
-                input.metalsMonthlyInvestAmount = 0;
+        //        input.metals = 20000;
+        //        input.metalsGrowthRate = 1;
+        //        input.metalsMonthlyInvestAmount = 0;
 
-                input.netStateRentFromCurrentAge = 762;
-                input.netStateRentFromRentStartAge = 2015;
+        //        input.netStateRentFromCurrentAge = 762;
+        //        input.netStateRentFromRentStartAge = 2015;
 
-                var portfolio = new Portfolio(input);
+        //        var portfolio = new Portfolio(input);
 
-                portfolio.Cash.Process();
-                portfolio.Stocks.Process();
-                portfolio.Metals.Process();
-                portfolio.Total.Process();
+        //        portfolio.Cash.Process();
+        //        portfolio.Stocks.Process();
+        //        portfolio.Metals.Process();
+        //        portfolio.Total.Process();
 
-                //what are the fractions now of the total
+        //        //what are the fractions now of the total
 
-                var index = input.ageStopWork - input.ageCurrent;
-                var total = portfolio.Total.Protocol[index].yearEnd;
-                var frac_cash = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Cash));
-                var frac_stocks = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Stocks));
-                var frac_metals = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Metals));
+        //        var index = input.ageStopWork - input.ageCurrent;
+        //        var total = portfolio.Total.Protocol[index].yearEnd;
+        //        var frac_cash = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Cash));
+        //        var frac_stocks = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Stocks));
+        //        var frac_metals = portfolio.GetAssetFraction(AgePhase.StopWork, typeof(Metals));
 
-                Console.WriteLine($"Total amount: {total}, cash frac: {frac_cash}, stocks frac: {frac_stocks}, metals frac: {frac_metals}");
-
-
-                portfolio.WithdrawalStrategy.Adder((double)i);
+        //        Console.WriteLine($"Total amount: {total}, cash frac: {frac_cash}, stocks frac: {frac_stocks}, metals frac: {frac_metals}");
 
 
-                portfolio.WithdrawalStrategy.Calculate();
-                var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
+        //        portfolio.WithdrawalStrategy.Adder((double)i);
 
 
-                portfolio.Cash.Process2(withdrawalResults.Cash);
-                portfolio.Stocks.Process2(withdrawalResults.Stocks);
-                portfolio.Metals.Process2(withdrawalResults.Metals);
-                portfolio.Total.Process2(null);
+        //        portfolio.WithdrawalStrategy.Calculate();
+        //        var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
 
-                var index2 = input.ageEnd - input.ageCurrent;
-                var end_total = portfolio.Total.Protocol[index2].yearEnd;
-                var end_cash = portfolio.Cash.Protocol[index2].yearEnd;
-                var end_stocks = portfolio.Stocks.Protocol[index2].yearEnd;
-                var end_metals = portfolio.Metals.Protocol[index2].yearEnd;
 
-                Console.WriteLine($"Year End amounts total : {end_total}, cash: {end_cash}, stocks: {end_stocks}, metals: {end_metals}");
+        //        portfolio.Cash.Process2(withdrawalResults.Cash);
+        //        portfolio.Stocks.Process2(withdrawalResults.Stocks);
+        //        portfolio.Metals.Process2(withdrawalResults.Metals);
+        //        portfolio.Total.Process2(null);
 
-            }
+        //        var index2 = input.ageEnd - input.ageCurrent;
+        //        var end_total = portfolio.Total.Protocol[index2].yearEnd;
+        //        var end_cash = portfolio.Cash.Protocol[index2].yearEnd;
+        //        var end_stocks = portfolio.Stocks.Protocol[index2].yearEnd;
+        //        var end_metals = portfolio.Metals.Protocol[index2].yearEnd;
 
-        }
+        //        Console.WriteLine($"Year End amounts total : {end_total}, cash: {end_cash}, stocks: {end_stocks}, metals: {end_metals}");
+
+        //    }
+
+        //}
     }
 }
