@@ -1,7 +1,12 @@
-﻿@using Processing;
+﻿@*@using Processing;
 @using Processing.Assets;
-@using Processing.Withdrawal; 
+@using Processing.Withdrawal; *@
 @using System.Globalization;
+@using Protocol;
+@using Strategy;
+@using Portfolio;
+@using Finance;
+@using System.Collections.ObjectModel
 
 @page "/"
 
@@ -9,16 +14,16 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageEnd" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -32,41 +37,51 @@
         </RadioGroup>
     </FieldBody>
 
+    @code {
+        InterestRateType interestRateType = InterestRateType.Relativ;
+
+        async void OnInterestRateCheckedValueChanged(InterestRateType value)
+        {
+            interestRateType = value;
+            await HandleRedraw();
+        }
+    }
+
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Initial Assets"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 
@@ -108,16 +123,16 @@
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @FieldAgeStopWork</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @FieldAgeStopWork):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageStopWork - @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageRentStart - @lifeAssumptions.ageEnd):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
@@ -146,12 +161,14 @@
           ReadData="@OnReadData"
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
-    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.age)" Caption="Age" />
-
-    <DataGridColumn TItem="ResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearBegin)) </DisplayTemplate>
+    
+    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.ageByIndex)" Caption="Age" Sortable="false" TextAlignment=TextAlignment.Center>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
+
+    <DataGridColumn TItem="ResultRow" Field="balanceYearBegin" Caption="Year Begin" Sortable="false" TextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearBegin)) </DisplayTemplate>
+    </DataGridColumn>
+    @*<DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
@@ -195,7 +212,7 @@
     </DataGridColumn>
     <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>
+    </DataGridColumn>*@
 
 </DataGrid>
 
@@ -206,7 +223,10 @@
 
     async Task OnReadData(DataGridReadDataEventArgs<ResultRow> e)
     {
-        totalRows = resultRows.Count; // this is used to tell datagrid how many items are available so that pagination will work
+        // this is used to tell datagrid how many items are available so that pagination will work
+        totalRows = resultRows != null
+            ? resultRows.Count()
+            : 0;
 
         // always call StateHasChanged!
         StateHasChanged();
@@ -220,24 +240,24 @@
 
     async Task LoaderDefault()
     {
-        FieldAgeCurrent = 42;
-        FieldAgeStopWork = 60;
-        FieldAgeRentStart = 67;
-        FieldAgeEnd = 80;
+        //FieldAgeCurrent = 42;
+        //FieldAgeStopWork = 60;
+        //FieldAgeRentStart = 67;
+        //FieldAgeEnd = 80;
 
         interestRateType = InterestRateType.Relativ;
 
-        FieldStocks = 88800;
-        FieldStocksGrowthRate = 7;
-        FieldStocksSaveAmount = 700;
+        //FieldStocks = 88800;
+        //FieldStocksGrowthRate = 7;
+        //FieldStocksSaveAmount = 700;
 
-        FieldCash = 58000;
-        FieldCashGrowthRate = 0;
-        FieldCashSaveAmount = 350;
+        //FieldCash = 58000;
+        //FieldCashGrowthRate = 0;
+        //FieldCashSaveAmount = 350;
 
-        FieldMetals = 21400;
-        FieldMetalsGrowthRate = 1;
-        FieldMetalsSaveAmount = 0;
+        //FieldMetals = 21400;
+        //FieldMetalsGrowthRate = 1;
+        //FieldMetalsSaveAmount = 0;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
         FieldNetStateRentFromCurrentAge = 762;
@@ -255,27 +275,19 @@
         await Task.Delay(0);
     }
 
-    public string BeautifyToCurrenctWith2Decimals(double? num)
+    public string BeautifyToCurrenctWith2Decimals(decimal? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", num);
     }
 
-    public string BeautifyToCurrenctWith0Decimals(double? num)
+    public string BeautifyToCurrenctWith0Decimals(decimal? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
     }
 
 }
 
-@code{
-    InterestRateType interestRateType = InterestRateType.Relativ;
 
-    async void OnInterestRateCheckedValueChanged(InterestRateType value)
-    {
-        interestRateType = value;
-        await HandleRedraw();
-    }
-}
 
 @code{
     LineChart<double> lineChart;
@@ -284,28 +296,31 @@
     LineChartOptions dataLineChartOptions;
     ChartScales myScales;
     //ResultSet resultSet;
-    List<ResultRow> resultRows = new List<ResultRow>();
-    Portfolio portfolio = null;
+    IEnumerable<ResultRow> resultRows;
+    //Portfolio portfolio = null;
+
+    LifeAssumptions lifeAssumptions = new LifeAssumptions();
+
 
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
 
-    int FieldAgeCurrent;
-    int FieldAgeStopWork;
-    int FieldAgeRentStart;
-    int FieldAgeEnd;
+    //int FieldAgeCurrent;
+    //int FieldAgeStopWork;
+    //int FieldAgeRentStart;
+    //int FieldAgeEnd;
 
 
-    int FieldStocks;
-    int FieldStocksGrowthRate;
-    int FieldStocksSaveAmount;
+    //int FieldStocks;
+    //int FieldStocksGrowthRate;
+    //int FieldStocksSaveAmount;
 
-    int FieldCash;
-    int FieldCashGrowthRate;
-    int FieldCashSaveAmount;
+    //int FieldCash;
+    //int FieldCashGrowthRate;
+    //int FieldCashSaveAmount;
 
-    int FieldMetals;
-    int FieldMetalsGrowthRate;
-    int FieldMetalsSaveAmount;
+    //int FieldMetals;
+    //int FieldMetalsGrowthRate;
+    //int FieldMetalsSaveAmount;
 
     int FieldNetStateRentFromCurrentAge;
     int FieldNetStateRentFromRentStartAge;
@@ -324,37 +339,63 @@
 
     async Task HandleRedraw()
     {
-        Input input = new Input();
-        input.ageCurrent = FieldAgeCurrent;
-        input.ageStopWork = FieldAgeStopWork;
-        input.ageRentStart = FieldAgeRentStart;
-        input.ageEnd = FieldAgeEnd;
+        //Input input = new Input();
+        //input.ageCurrent = FieldAgeCurrent;
+        //input.ageStopWork = FieldAgeStopWork;
+        //input.ageRentStart = FieldAgeRentStart;
+        //input.ageEnd = FieldAgeEnd;
 
-        input.interestRateType = interestRateType;
+        //input.interestRateType = interestRateType;
 
-        input.stocks = FieldStocks;
-        input.stocksGrowthRate = FieldStocksGrowthRate;
-        input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
+        //input.stocks = FieldStocks;
+        //input.stocksGrowthRate = FieldStocksGrowthRate;
+        //input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
 
-        input.cash = FieldCash;
-        input.cashGrowthRate = FieldCashGrowthRate;
-        input.cashMonthlyInvestAmount = FieldCashSaveAmount;
+        //input.cash = FieldCash;
+        //input.cashGrowthRate = FieldCashGrowthRate;
+        //input.cashMonthlyInvestAmount = FieldCashSaveAmount;
 
-        input.metals = FieldMetals;
-        input.metalsGrowthRate = FieldMetalsGrowthRate;
-        input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
+        //input.metals = FieldMetals;
+        //input.metalsGrowthRate = FieldMetalsGrowthRate;
+        //input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
-        input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
-        input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
+        //input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
+        //input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
 
-        input.NeedsNowMinimum = FieldNeedsNowMinimum;
-        input.NeedsNowComfort = FieldNeedsNowComfort;
+        //input.NeedsNowMinimum = FieldNeedsNowMinimum;
+        //input.NeedsNowComfort = FieldNeedsNowComfort;
 
-        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
-        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
+        //FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
+        //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
 
-        portfolio = new Portfolio(input);
+
+        Age.SetCurrent(lifeAssumptions.ageCurrent);
+
+
+
+        IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+
+        var portfolio = new AssetPortfolio();
+
+        var strategy = new SavingStrategy(
+            portfolio,
+            lifeAssumptions,
+            protocolWriter);
+
+        strategy.Process();
+
         //portfolio.Process();
+
+        resultRows = protocolWriter.Protocol;
+
+
+
+
+
+
+
+
+
 
         //results
         //int index = FieldAgeStopWork - FieldAgeCurrent;

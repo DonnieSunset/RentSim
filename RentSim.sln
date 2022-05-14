@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentSim", "RentSim\RentSim.csproj", "{B87D664B-79E8-4F46-B6D7-433B8744676E}"
 EndProject
@@ -14,7 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		Default.runsettings = Default.runsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentSim_iTest", "RentSim_iTest\RentSim_iTest.csproj", "{27881615-E573-4291-B844-7A7F5E76A0AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentSim_iTest", "RentSim_iTest\RentSim_iTest.csproj", "{27881615-E573-4291-B844-7A7F5E76A0AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio", "Portfolio\Portfolio.csproj", "{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finance", "Finance\Finance.csproj", "{D6D91397-5A7D-46A8-825E-B1A04826A65D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategy", "Strategy\Strategy.csproj", "{350901B1-1ADE-4257-8056-35B4C97AC239}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{F765C451-BFB9-4876-92C4-7F60CC37FBB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +46,22 @@ Global
 		{27881615-E573-4291-B844-7A7F5E76A0AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27881615-E573-4291-B844-7A7F5E76A0AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27881615-E573-4291-B844-7A7F5E76A0AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D91397-5A7D-46A8-825E-B1A04826A65D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D91397-5A7D-46A8-825E-B1A04826A65D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D91397-5A7D-46A8-825E-B1A04826A65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D91397-5A7D-46A8-825E-B1A04826A65D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350901B1-1ADE-4257-8056-35B4C97AC239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350901B1-1ADE-4257-8056-35B4C97AC239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350901B1-1ADE-4257-8056-35B4C97AC239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350901B1-1ADE-4257-8056-35B4C97AC239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F765C451-BFB9-4876-92C4-7F60CC37FBB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F765C451-BFB9-4876-92C4-7F60CC37FBB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F765C451-BFB9-4876-92C4-7F60CC37FBB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F765C451-BFB9-4876-92C4-7F60CC37FBB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
