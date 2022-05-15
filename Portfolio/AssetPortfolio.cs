@@ -1,13 +1,19 @@
 ﻿
+using Finance;
+
 namespace Portfolio
 {
     public class AssetPortfolio
     {
         private readonly Cash myCash;
+        private readonly MarketAssumptions myMarketAssumptions;
+        private readonly LifeAssumptions myLifeAssumptions;
 
-        public AssetPortfolio()
+        public AssetPortfolio(LifeAssumptions lifeAssumptions, MarketAssumptions marketAssumptions)
         {
-            myCash = new Cash();
+            myMarketAssumptions = marketAssumptions;
+            myLifeAssumptions = lifeAssumptions;
+            myCash = new Cash(lifeAssumptions.cash, lifeAssumptions.cashGrowthRate);
         }
 
         public TransactionDetails SaveCash(decimal amount)
@@ -27,6 +33,18 @@ namespace Portfolio
             return new TransactionDetails()
             {
                 cashDeposits = -amount,
+            };
+        }
+
+        public TransactionDetails GetInterestsForCash()
+        {
+            decimal amount = InterestCalculator.GetInterestsFor(myCash.Amount, myCash.InterestsPercent);
+
+            myCash.Save(amount);
+
+            return new TransactionDetails()
+            {
+                cashInterests = amount,
             };
         }
 

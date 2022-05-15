@@ -15,15 +15,15 @@ namespace Portfolio
 
         public int stocks = 88800;
         public int stocksGrowthRate = 7;
-        public int stocksSaveAmount = 700;
+        public int stocksSaveAmountPerMonth = 700;
 
         public int cash = 58000;
         public int cashGrowthRate = 0;
-        public int cashSaveAmount = 350;
+        public int cashSaveAmountPerMonth = 350;
 
         public int metals = 21400;
         public int metalsGrowthRate = 1;
-        public int metalsSaveAmount = 0;
+        public int metalsSaveAmountPerMonth = 0;
 
         public decimal needsNowMinimum = 1900;
         public decimal needsNowComfort = 2600;

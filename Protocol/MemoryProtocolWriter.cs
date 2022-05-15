@@ -17,26 +17,43 @@ namespace Protocol
             get { return myProtocol.AsReadOnly(); }
         }
 
+        public void LogBalanceYearBegin(Age age, decimal amount)
+        {
+            var affectedResultRow = GetOrCreateRow(age.Index);
+            affectedResultRow.balanceYearBegin = amount;
+        }
+
         public void Log(Age age, TransactionDetails transactionDetails)
         {
-            var affectedResultRow = myProtocol.SingleOrDefault(x => x.ageByIndex == age.Index);
+            var affectedResultRow = GetOrCreateRow(age.Index);
 
-            if (affectedResultRow == null)
-            {
-                affectedResultRow = new ResultRow() 
-                { 
-                    ageByIndex = age.Index 
-                };
-                myProtocol.Add(affectedResultRow);
-            }
-
+            affectedResultRow.deposits += transactionDetails.cashDeposits + transactionDetails.stockDeposits + transactionDetails.metalDeposits;
             affectedResultRow.taxes += transactionDetails.cashTaxes + transactionDetails.stockTaxes + transactionDetails.metalTaxes;
             affectedResultRow.interests += transactionDetails.cashInterests + transactionDetails.stockInterests + transactionDetails.metalInterests;
-            affectedResultRow.deposits += transactionDetails.cashDeposits + transactionDetails.stockDeposits + transactionDetails.metalDeposits;
 
-            //todo: calculate year end
+            //calculate year end
+            affectedResultRow.balanceYearEnd = affectedResultRow.balanceYearBegin + affectedResultRow.deposits + affectedResultRow.taxes + affectedResultRow.interests;
 
-            //todo: calculate year begin
+            //calculate year begin of next row
+            var affectedResultRowNext = GetOrCreateRow(age.Index + 1);
+            affectedResultRowNext.balanceYearBegin = affectedResultRow.balanceYearEnd;
+        }
+
+        private ResultRow GetOrCreateRow(int index)
+        {
+            var row = myProtocol.SingleOrDefault(x => x.ageByIndex == index);
+
+            if (row == null)
+            {
+                row = new ResultRow()
+                {
+                    ageByIndex = index,
+                    ageAbsolute = Age.NewByIndexAge(index).Absolut,
+                };
+                myProtocol.Add(row);
+            }
+
+            return row;
         }
     }
 }

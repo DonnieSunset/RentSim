@@ -3,10 +3,12 @@
     public class Cash 
     {
         private decimal myAmount;
+        private int myInterestsPercent;
 
         public decimal Amount => myAmount;
+        public int InterestsPercent => myInterestsPercent;
 
-        public Cash() 
+        public Cash(decimal initialAmount, int interestsPercent) 
         {
             //switch (input.interestRateType)
             //{
@@ -23,6 +25,9 @@
 
             //this.Protocol.Last().yearBegin = _input.cash;
             //this.Protocol.Last().yearEnd = _input.cash;
+
+            myAmount = initialAmount;
+            myInterestsPercent = interestsPercent;
         }
 
         public Cash Save(decimal amount)

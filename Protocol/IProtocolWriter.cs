@@ -7,5 +7,6 @@ namespace Protocol
     {
         public ReadOnlyCollection<ResultRow> Protocol { get; }
         void Log(Age age, TransactionDetails transactionDetails);
+        void LogBalanceYearBegin(Age age, decimal amount);
     }
 }

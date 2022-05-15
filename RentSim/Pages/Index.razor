@@ -63,7 +63,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
@@ -74,7 +74,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
@@ -85,7 +85,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 
@@ -139,14 +139,19 @@
 </Field>
 
 
+
+
+
+
+
+
+
+
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageStopWork - @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -181,16 +186,22 @@
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
     
-    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.ageByIndex)" Caption="Age" Sortable="false" TextAlignment=TextAlignment.Center>
+    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.ageAbsolute)" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="balanceYearBegin" Caption="Year Begin" Sortable="false" TextAlignment=TextAlignment.End>
+    <DataGridColumn TItem="ResultRow" Field="balanceYearBegin" Caption="Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    @*<DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
+    <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="balanceYearEnd" Caption="Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+    @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
@@ -417,7 +428,7 @@
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
-        var portfolio = new AssetPortfolio();
+        var portfolio = new AssetPortfolio(lifeAssumptions, marketAssumptions);
 
         var strategy = new SavingStrategy(
             portfolio,
