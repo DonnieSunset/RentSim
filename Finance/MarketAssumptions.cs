@@ -12,7 +12,8 @@ namespace Finance
         Konform
     }
 
-    internal class MarketAssumptions
+    public class MarketAssumptions
     {
+        public double inflationRate = 3.0;
     }
 }

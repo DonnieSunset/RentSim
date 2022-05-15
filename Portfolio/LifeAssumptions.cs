@@ -24,5 +24,8 @@ namespace Portfolio
         public int metals = 21400;
         public int metalsGrowthRate = 1;
         public int metalsSaveAmount = 0;
+
+        public decimal needsNowMinimum = 1900;
+        public decimal needsNowComfort = 2600;
     }
 }

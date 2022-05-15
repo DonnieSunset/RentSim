@@ -46,8 +46,12 @@
             await HandleRedraw();
         }
     }
+ </Field>
 
-</Field>
+
+
+
+
 
 <Divider DividerType="DividerType.TextContent" Text="Initial Assets"></Divider>
 
@@ -103,13 +107,13 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNeedsNowMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsNowMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNeedsNowComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsNowComfort" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldInflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@marketAssumptions.inflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -263,9 +267,9 @@
         FieldNetStateRentFromCurrentAge = 762;
         FieldNetStateRentFromRentStartAge = 2015;
 
-        FieldNeedsNowMinimum = 1575;
-        FieldNeedsNowComfort = 2200;
-        FieldInflationRate = 3;
+        //FieldNeedsNowMinimum = 1575;
+        //FieldNeedsNowComfort = 2200;
+        //FieldInflationRate = 3;
 
         FieldResultsTotalSavingStopWorkAge = "0";
         FieldResultsNetStateRent = "0";
@@ -299,7 +303,8 @@
     IEnumerable<ResultRow> resultRows;
     //Portfolio portfolio = null;
 
-    LifeAssumptions lifeAssumptions = new LifeAssumptions();
+    LifeAssumptions lifeAssumptions = new();
+    MarketAssumptions marketAssumptions = new();
 
 
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
@@ -325,9 +330,9 @@
     int FieldNetStateRentFromCurrentAge;
     int FieldNetStateRentFromRentStartAge;
 
-    int FieldNeedsNowMinimum;
-    int FieldNeedsNowComfort;
-    int FieldInflationRate;
+    //int FieldNeedsNowMinimum;
+    //int FieldNeedsNowComfort;
+    //int FieldInflationRate;
 
     string FieldNeedsRentStartMinimum;
     string FieldNeedsRentStartComfort;
@@ -371,7 +376,8 @@
 
         Age.SetCurrent(lifeAssumptions.ageCurrent);
 
-
+        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(Inflation.Calc(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsNowMinimum, marketAssumptions.inflationRate));
+        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(Inflation.Calc(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsNowComfort, marketAssumptions.inflationRate));
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
