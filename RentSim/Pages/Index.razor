@@ -90,17 +90,32 @@
 
 
 
+
+
+
+
+
+
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
-
-
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
+
+
+
+
+
+
+
 
 
 <Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
@@ -263,9 +278,9 @@
         //FieldMetalsGrowthRate = 1;
         //FieldMetalsSaveAmount = 0;
 
-        //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        FieldNetStateRentFromCurrentAge = 762;
-        FieldNetStateRentFromRentStartAge = 2015;
+        ////https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
+        //FieldNetStateRentFromCurrentAge = 762;
+        //FieldNetStateRentFromRentStartAge = 2015;
 
         //FieldNeedsNowMinimum = 1575;
         //FieldNeedsNowComfort = 2200;
@@ -327,8 +342,8 @@
     //int FieldMetalsGrowthRate;
     //int FieldMetalsSaveAmount;
 
-    int FieldNetStateRentFromCurrentAge;
-    int FieldNetStateRentFromRentStartAge;
+    //int FieldNetStateRentFromCurrentAge;
+    //int FieldNetStateRentFromRentStartAge;
 
     //int FieldNeedsNowMinimum;
     //int FieldNeedsNowComfort;
@@ -341,6 +356,8 @@
     string FieldResultsNetStateRent;
     string FieldResultsRatePhaseRent;
     string FieldResultsRatePhaseStopWork;
+
+    string FieldNetRentAgeStopWork;
 
     async Task HandleRedraw()
     {
@@ -376,8 +393,27 @@
 
         Age.SetCurrent(lifeAssumptions.ageCurrent);
 
-        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(Inflation.Calc(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsNowMinimum, marketAssumptions.inflationRate));
-        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(Inflation.Calc(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsNowComfort, marketAssumptions.inflationRate));
+        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(
+            Inflation.Calc(
+                lifeAssumptions.ageCurrent, 
+                lifeAssumptions.ageRentStart, 
+                lifeAssumptions.needsNowMinimum, 
+                marketAssumptions.inflationRate));
+
+        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
+            Inflation.Calc(
+                lifeAssumptions.ageCurrent, 
+                lifeAssumptions.ageRentStart, 
+                lifeAssumptions.needsNowComfort, 
+                marketAssumptions.inflationRate));
+
+        FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
+            RentCalculator.ApproxNetRent(
+                lifeAssumptions.ageCurrent,
+                lifeAssumptions.netStateRentFromCurrentAge,
+                lifeAssumptions.ageRentStart,
+                lifeAssumptions.netStateRentFromRentStartAge,
+                lifeAssumptions.ageStopWork));
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 

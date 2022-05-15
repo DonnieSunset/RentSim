@@ -27,5 +27,9 @@ namespace Portfolio
 
         public decimal needsNowMinimum = 1900;
         public decimal needsNowComfort = 2600;
+
+        //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
+        public decimal netStateRentFromCurrentAge = 827;
+        public decimal netStateRentFromRentStartAge = 2025;
     }
 }
