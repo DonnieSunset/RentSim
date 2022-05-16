@@ -38,7 +38,7 @@ namespace Portfolio
 
         public TransactionDetails GetInterestsForCash()
         {
-            decimal amount = InterestCalculator.GetInterestsFor(myCash.Amount, myCash.InterestsPercent);
+            decimal amount = InterestCalculator.GetInterestsFor(myCash.Total, myCash.InterestsPercent);
 
             myCash.Save(amount);
 

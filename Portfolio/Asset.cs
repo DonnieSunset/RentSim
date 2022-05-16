@@ -2,25 +2,41 @@
 {
     public abstract class Asset
     {
-        //protected double growthRatePerMonth;
-        protected double growthRatePerYear;
-        
-        public double CurrentAmount
+        public decimal SavingsPart
         {
             get; protected set;
         }
 
-        public double CurrentGrowth
+        public decimal GrowthPart
         {
             get; protected set;
         }
+
+        public decimal Total
+        {
+            get { return SavingsPart + GrowthPart; }
+        }
+
+
+        //protected double growthRatePerMonth;
+        //protected double growthRatePerYear;
+
+        //public double CurrentAmount
+        //{
+        //    get; protected set;
+        //}
+
+        //public double CurrentGrowth
+        //{
+        //    get; protected set;
+        //}
 
         //protected Input input;
 
-        public double GrowthRatePerYear
-        {
-            get => growthRatePerYear;
-        }
+        //public double GrowthRatePerYear
+        //{
+        //    get => growthRatePerYear;
+        //}
 
         //protected Asset(Input _input, AssetPortfolio portfolio)
         //{
@@ -32,20 +48,20 @@
         //    //});
         //}
 
-        public AssetPortfolio BasePortfolio
-        {
-            get;
-            private set;
-        }
+        //public AssetPortfolio BasePortfolio
+        //{
+        //    get;
+        //    private set;
+        //}
 
-        protected Asset ApplyInvests(double invest)
-        {
-            //protocol.Last().invests += invest;
-            //protocol.Last().yearEnd += invest;
-            this.CurrentAmount += invest;
+        //protected Asset ApplyInvests(double invest)
+        //{
+        //    //protocol.Last().invests += invest;
+        //    //protocol.Last().yearEnd += invest;
+        //    this.CurrentAmount += invest;
 
-            return this;
-        }
+        //    return this;
+        //}
 
         /// <summary>
         /// Applies growth rate to asset, typically in terms of interests for cash
@@ -53,28 +69,28 @@
         /// </summary>
         /// <param name="growthRate">The growth rate in % (e.g. 3 corresponds to 3% groths)</param>
         /// <returns></returns>
-        protected Asset ApplyYearlyGrowth(double growthRate)
-        {
-            //var current = protocol.Last();
-            //double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
-            double growthFactor = 1 + (growthRate / 100);
-            double growth = this.CurrentAmount * growthFactor;
+        //protected Asset ApplyYearlyGrowth(double growthRate)
+        //{
+        //    //var current = protocol.Last();
+        //    //double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
+        //    double growthFactor = 1 + (growthRate / 100);
+        //    double growth = this.CurrentAmount * growthFactor;
 
-            this.CurrentAmount += growth;
-            this.CurrentGrowth += growth;
+        //    this.CurrentAmount += growth;
+        //    this.CurrentGrowth += growth;
 
-            return this;
-        }
+        //    return this;
+        //}
 
         //protected double GetAllGrowth()
         //{
         //    return this.CurrentGrowth;
         //}
 
-        protected double GetFractionOfGrowthAccordingToAmount(double amount)
-        {
-            throw new NotImplementedException();
-        }
+        //protected double GetFractionOfGrowthAccordingToAmount(double amount)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //public Asset MoveToNextYear()
         //{

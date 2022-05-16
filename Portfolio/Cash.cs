@@ -1,11 +1,13 @@
-﻿namespace Portfolio
+﻿using Finance;
+
+namespace Portfolio
 {
-    public class Cash 
+    public class Cash : Asset
     {
-        private decimal myAmount;
+        //private decimal myAmount;
         private int myInterestsPercent;
 
-        public decimal Amount => myAmount;
+        //public decimal Amount => myAmount;
         public int InterestsPercent => myInterestsPercent;
 
         public Cash(decimal initialAmount, int interestsPercent) 
@@ -26,19 +28,23 @@
             //this.Protocol.Last().yearBegin = _input.cash;
             //this.Protocol.Last().yearEnd = _input.cash;
 
-            myAmount = initialAmount;
+            base.SavingsPart = initialAmount;
             myInterestsPercent = interestsPercent;
         }
 
         public Cash Save(decimal amount)
         {
-            myAmount += amount;
+            base.SavingsPart += amount;
             return this;
         }
 
         public Cash Withdraw(decimal amount)
         {
-            myAmount -= amount;
+            (decimal withdrawalSavings, decimal withdrawalInterests) = FinanceCalculator.WithdrawUniformFromTwoAmounts(base.SavingsPart, base.GrowthPart, amount);
+
+            base.SavingsPart -= withdrawalSavings; 
+            base.GrowthPart -= withdrawalInterests;
+
             return this;
         }
 

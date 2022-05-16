@@ -155,48 +155,48 @@ namespace Processing.Assets
             // 3. How much is left for StopWork->Rent
             // 4. Depending on whats left, move stopWorkAge to lower or higher. StopWorkAge influences the available rent!
 
-            double amountNeededForRentPhase = CalculateAmountNeededForRentPhase();
+            //double amountNeededForRentPhase = CalculateAmountNeededForRentPhase();
             
             
             
             
             
-            (double rentPhaseWithdrawalRateLowRisk, double rentPhaseWithdrawalRateHighRisk) = CalculateRentPhaseWithdrawalRate();
+            //(double rentPhaseWithdrawalRateLowRisk, double rentPhaseWithdrawalRateHighRisk) = CalculateRentPhaseWithdrawalRate();
 
 
 
 
-            for (int i = Input.ageCurrent; i < Input.ageStopWork; i++)
-            {
-                for (int month = 1; month <= 12; month++)
-                {
-                    Cash.Save(Input.cashMonthlyInvestAmount);
-                    Stocks.Buy(Input.stocksMonthlyInvestAmount);
-                    Metals.Buy(Input.metalsMonthlyInvestAmount);
+            //for (int i = Input.ageCurrent; i < Input.ageStopWork; i++)
+            //{
+            //    for (int month = 1; month <= 12; month++)
+            //    {
+            //        Cash.Save(Input.cashMonthlyInvestAmount);
+            //        Stocks.Buy(Input.stocksMonthlyInvestAmount);
+            //        Metals.Buy(Input.metalsMonthlyInvestAmount);
                        
-                }
+            //    }
 
-                Cash.ApplyInterests(Cash.GrowthRatePerYear);
-                Stocks.ApplyWorthIncrease(Stocks.GrowthRatePerYear);
-                Metals.ApplyWorthIncrease(Metals.GrowthRatePerYear);
-            }
+            //    Cash.ApplyInterests(Cash.GrowthRatePerYear);
+            //    Stocks.ApplyWorthIncrease(Stocks.GrowthRatePerYear);
+            //    Metals.ApplyWorthIncrease(Metals.GrowthRatePerYear);
+            //}
 
-            Metals.Sell(Metals.CurrentAmount, Cash);
+            //Metals.Sell(Metals.CurrentAmount, Cash);
 
-            for (int i = Input.ageStopWork; i < Input.ageRentStart; i++)
-            {
-            }
+            //for (int i = Input.ageStopWork; i < Input.ageRentStart; i++)
+            //{
+            //}
 
-            for (int i = Input.ageRentStart; i < Input.ageEnd; i++)
-            {
-                var receivedAmountAfterTaxes = Stocks.SellSuchThatAfterTaxesTheGivenAmountIsAvailable(rentPhaseWithdrawalRateHighRisk, Cash);
+            //for (int i = Input.ageRentStart; i < Input.ageEnd; i++)
+            //{
+            //    var receivedAmountAfterTaxes = Stocks.SellSuchThatAfterTaxesTheGivenAmountIsAvailable(rentPhaseWithdrawalRateHighRisk, Cash);
 
-                //hmm hier ist nicht ganz klar an welcher stelle die 26% weggehen. schon bei CalculateRentPhaseWithdrawalRate?
+            //    //hmm hier ist nicht ganz klar an welcher stelle die 26% weggehen. schon bei CalculateRentPhaseWithdrawalRate?
 
-                Cash.Withdraw(receivedAmountAfterTaxes);
-                Cash.Withdraw(rentPhaseWithdrawalRateLowRisk);
+            //    Cash.Withdraw(receivedAmountAfterTaxes);
+            //    Cash.Withdraw(rentPhaseWithdrawalRateLowRisk);
 
-            }
+            //}
 
             ////Sell all
             //var stocksAmount = Stocks.Protocol.Last().yearBegin;
