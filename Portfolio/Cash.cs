@@ -48,10 +48,11 @@ namespace Portfolio
             return this;
         }
 
-        //public Cash ApplyInterests(double interestRate)
-        //{
-        //    return (Cash)base.ApplyYearlyGrowth(interestRate);
-        //}
+        public Cash ApplyInterests(decimal amount)
+        {
+            base.GrowthPart += amount;
+            return this;
+        }
 
         //public void PayTaxesForInterests()
         //{
