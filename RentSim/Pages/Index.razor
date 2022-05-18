@@ -430,12 +430,21 @@
 
         var portfolio = new AssetPortfolio(lifeAssumptions, marketAssumptions);
 
-        var strategy = new SavingStrategy(
+        var savingStrategy = new SavingStrategy(
             portfolio,
             lifeAssumptions,
             protocolWriter);
 
-        strategy.Process();
+        savingStrategy.Process();
+
+        var rentStartStrategy = new RentStartStrategy(
+            portfolio,
+            lifeAssumptions,
+            protocolWriter);
+
+        rentStartStrategy.Process(2000);
+        
+
 
         //portfolio.Process();
 
