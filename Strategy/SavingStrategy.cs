@@ -1,4 +1,5 @@
-﻿using Portfolio;
+﻿using Domain;
+using Portfolio;
 using Protocol;
 
 namespace Strategy

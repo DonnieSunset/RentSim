@@ -1,6 +1,6 @@
-﻿using Finance;
+﻿using Domain;
+using Finance;
 using NUnit.Framework;
-using Portfolio;
 
 
 namespace Finance_uTests
@@ -13,13 +13,16 @@ namespace Finance_uTests
         {
             var lifeAssumptions = new LifeAssumptions();
             var rent = lifeAssumptions.Rent;
+            var rentPhase = lifeAssumptions.RentPhase;
 
-            decimal stocks_interestRate_goodCase = 1.08m;
-            //double cash_interestRate_goodCase = 1.01;
-            decimal stocks_interestRate_badCase = 1.01m;
-            //double cash_interestRate_badCase = 1.001;
-            decimal cash_interestRate = 1.01m;
-            int years = 13;
+
+
+            //decimal stocks_interestRate_goodCase = 1.08m;
+            ////double cash_interestRate_goodCase = 1.01;
+            //decimal stocks_interestRate_badCase = 1.01m;
+            ////double cash_interestRate_badCase = 1.001;
+            //decimal cash_interestRate = 1.01m;
+            //int years = 13;
 
             decimal stocks_crashFactor_badCase = 0.5m;
 
@@ -30,8 +33,8 @@ namespace Finance_uTests
 
 
 
-            decimal minimum_total_needed = minimum_total_needed_Year * years;
-            decimal comfort_total_needed = comfort_total_needed_Year * years;
+            decimal minimum_total_needed = minimum_total_needed_Year * rentPhase.DurationInYears;
+            decimal comfort_total_needed = comfort_total_needed_Year * rentPhase.DurationInYears;
 
 
 
@@ -90,12 +93,12 @@ namespace Finance_uTests
 
             //wenn sich z_* an n annähert bedeutet das dass der zinssatz nahe 1 ist, dann sind es bei 13 jahren genau 13 raten.
             //wenn z kleiner wird heisst es größere raten weil es gute und große zinsen gibt
-
+            
             //var z_cash_max      = -(Math.Pow(cash_interestRate_goodCase, years) - 1)    / ((cash_interestRate_goodCase - 1)     * (Math.Pow(cash_interestRate_goodCase, years)));
-            var z_stocks_max    = (-(FinanceCalculator.Pow(stocks_interestRate_goodCase, years) - 1)  / ((stocks_interestRate_goodCase - 1)   * (FinanceCalculator.Pow(stocks_interestRate_goodCase, years))));
+            var z_stocks_max    = (-(FinanceCalculator.Pow(rentPhase.Stocks_InterestRate_GoodCase, rentPhase.DurationInYears) - 1)  / ((rentPhase.Stocks_InterestRate_GoodCase - 1)   * (FinanceCalculator.Pow(rentPhase.Stocks_InterestRate_GoodCase, rentPhase.DurationInYears))));
             //var z_cash_min      = -(Math.Pow(cash_interestRate_badCase, years) - 1)     / ((cash_interestRate_badCase - 1)      * (Math.Pow(cash_interestRate_badCase ,years)));
-            var z_stocks_min    = (-(FinanceCalculator.Pow(stocks_interestRate_badCase, years) - 1)   / ((stocks_interestRate_badCase - 1)    * (FinanceCalculator.Pow(stocks_interestRate_badCase,years))));
-            var z_cash          = (-(FinanceCalculator.Pow(cash_interestRate, years) - 1) / ((cash_interestRate - 1) * (FinanceCalculator.Pow(cash_interestRate, years))));
+            var z_stocks_min    = (-(FinanceCalculator.Pow(rentPhase.Stocks_InterestRate_BadCase, rentPhase.DurationInYears) - 1)   / ((rentPhase.Stocks_InterestRate_BadCase - 1)    * (FinanceCalculator.Pow(rentPhase.Stocks_InterestRate_BadCase, rentPhase.DurationInYears))));
+            var z_cash          = (-(FinanceCalculator.Pow(rentPhase.Cash_InerestRate, rentPhase.DurationInYears) - 1) / ((rentPhase.Cash_InerestRate - 1) * (FinanceCalculator.Pow(rentPhase.Cash_InerestRate, rentPhase.DurationInYears))));
 
             Console.WriteLine($"SSHH: z_stocks_min {z_stocks_min:F2} z_stocks_max {z_stocks_max:F2}");
             Console.WriteLine($"SSHH: z_cash {z_cash:F2}");
@@ -117,13 +120,13 @@ namespace Finance_uTests
             Total_Cash = -Total_Cash;
             Total_Stocks = -Total_Stocks;
 
-            for (int i = 0; i < years; i++)
+            for (int i = 0; i < rentPhase.DurationInYears; i++)
             {
                 Console.WriteLine($"State Begin Year {i}: Cash: {Total_Cash:F2} Stocks: {Total_Stocks:F2} Total: {Total_Stocks+Total_Cash:F2}");
 
 
-                var interests_Cash = Total_Cash * (cash_interestRate - 1);
-                var interests_Stocks = Total_Stocks * (stocks_interestRate_goodCase - 1);
+                var interests_Cash = Total_Cash * (rentPhase.Cash_InerestRate - 1);
+                var interests_Stocks = Total_Stocks * (rentPhase.Stocks_InterestRate_GoodCase - 1);
                 Total_Cash += interests_Cash;
                 Total_Stocks += interests_Stocks;
                 Console.WriteLine($"\tInterests: Cash: {interests_Cash:F2} Stocks: {interests_Stocks:F2} Total: {interests_Cash + interests_Stocks:F2}");

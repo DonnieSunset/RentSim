@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Finance\Finance.csproj" />
     <ProjectReference Include="..\Processing\Processing.csproj" />
-    <ProjectReference Include="..\Protocol\Protocol.csproj" />
     <ProjectReference Include="..\Strategy\Strategy.csproj" />
   </ItemGroup>
 
