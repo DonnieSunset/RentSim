@@ -29,7 +29,14 @@ namespace Portfolio
         public decimal needsNowComfort = 2600;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        public decimal netStateRentFromCurrentAge = 827;
-        public decimal netStateRentFromRentStartAge = 2025;
+        private decimal netStateRentFromCurrentAge = 827;
+        private decimal netStateRentFromRentStartAge = 2025;
+
+        public Rent Rent { get; private set; }
+
+        public LifeAssumptions()
+        {
+            Rent = new Rent(netStateRentFromCurrentAge, netStateRentFromRentStartAge, ageEnd - ageRentStart);
+        }
     }
 }

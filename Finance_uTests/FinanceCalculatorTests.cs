@@ -1,48 +1,43 @@
 ﻿using Finance;
 using NUnit.Framework;
+using Portfolio;
+
 
 namespace Finance_uTests
 {
     [TestFixture]
     public class FinanceCalculatorTests
     {
-        //[TestCase(1000, 1000, 70, 35, 35)]
-        //[TestCase(1000, 0, 70, 70, 0)]
-        //[TestCase(0, 1000, 70, 0, 70)]
-        //[TestCase(2000, 1000, 120, 80, 40)]
-        //public void WithdrawUniformFromTwoAmounts_TwoValidSets_ReturnsCorrectResults(decimal amount1, decimal amount2, decimal withdrawalAmount, decimal expectedPartAmount1, decimal expectedPartAmount2)
-        //{
-        //    (decimal result1, decimal result2) = FinanceCalculator.WithdrawUniformFromTwoAmounts(amount1, amount2, withdrawalAmount);
-
-        //    Assert.That(result1, Is.EqualTo(expectedPartAmount1).Within(0.000000000000001));
-        //    Assert.That(result2, Is.EqualTo(expectedPartAmount2).Within(0.000000000000001));
-        //}
-
         [Test]
         public void Blubb()
         {
-            double stocks_interestRate_goodCase = 1.08;
+            var lifeAssumptions = new LifeAssumptions();
+            var rent = lifeAssumptions.Rent;
+
+            decimal stocks_interestRate_goodCase = 1.08m;
             //double cash_interestRate_goodCase = 1.01;
-            double stocks_interestRate_badCase = 1.1;
+            decimal stocks_interestRate_badCase = 1.01m;
             //double cash_interestRate_badCase = 1.001;
-            double cash_interestRate = 1.001;
+            decimal cash_interestRate = 1.01m;
             int years = 13;
 
-            double stocks_crashFactor_badCase = 0.5;
+            decimal stocks_crashFactor_badCase = 0.5m;
 
-            double comfort_total_needed_Year = 3000 * 12;
-            double minimum_total_needed_Year = 2000 * 12;
+            //RENAME TO: savings_needed....
+            //Create class like: Rent.PerMonth
+            decimal comfort_total_needed_Year = 5000 - rent.FromRentStartAge.PerYear;
+            decimal minimum_total_needed_Year = 3500 - rent.FromRentStartAge.PerYear;
 
-            double minimum_total_needed = minimum_total_needed_Year * years;
-            double comfort_total_needed = comfort_total_needed_Year * years;
+
+
+            decimal minimum_total_needed = minimum_total_needed_Year * years;
+            decimal comfort_total_needed = comfort_total_needed_Year * years;
 
 
 
             //double rate
 
-            double rent_MONTH = 1690;
-            double rent_YEAR = rent_MONTH * 12;
-            double rent_TOTAL = rent_YEAR * years;
+    
 
             //double cash_needed;
             //double stocks_needed;
@@ -74,7 +69,7 @@ namespace Finance_uTests
 
             //Console.WriteLine($"cash_needed: {cash_needed}");
             //Console.WriteLine($"stocks_needed: {stocks_needed}");
-            Console.WriteLine($"rent per year: {rent_YEAR}");
+            Console.WriteLine($"rent per year: {rent.FromRentStartAge.PerYear}");
 
 
 
@@ -91,16 +86,16 @@ namespace Finance_uTests
             //                  eq1 = Eq(K0 * q**n - (K0/n)*(q**n-1)/(q-1), Kn)
             //                  sol = solve(eq1,K0)
 
-
+            //
 
             //wenn sich z_* an n annähert bedeutet das dass der zinssatz nahe 1 ist, dann sind es bei 13 jahren genau 13 raten.
             //wenn z kleiner wird heisst es größere raten weil es gute und große zinsen gibt
 
             //var z_cash_max      = -(Math.Pow(cash_interestRate_goodCase, years) - 1)    / ((cash_interestRate_goodCase - 1)     * (Math.Pow(cash_interestRate_goodCase, years)));
-            var z_stocks_max    = -(Math.Pow(stocks_interestRate_goodCase, years) - 1)  / ((stocks_interestRate_goodCase - 1)   * (Math.Pow(stocks_interestRate_goodCase, years)));
+            var z_stocks_max    = (-(FinanceCalculator.Pow(stocks_interestRate_goodCase, years) - 1)  / ((stocks_interestRate_goodCase - 1)   * (FinanceCalculator.Pow(stocks_interestRate_goodCase, years))));
             //var z_cash_min      = -(Math.Pow(cash_interestRate_badCase, years) - 1)     / ((cash_interestRate_badCase - 1)      * (Math.Pow(cash_interestRate_badCase ,years)));
-            var z_stocks_min    = -(Math.Pow(stocks_interestRate_badCase, years) - 1)   / ((stocks_interestRate_badCase - 1)    * (Math.Pow(stocks_interestRate_badCase,years)));
-            var z_cash = -(Math.Pow(cash_interestRate, years) - 1) / ((cash_interestRate - 1) * (Math.Pow(cash_interestRate, years)));
+            var z_stocks_min    = (-(FinanceCalculator.Pow(stocks_interestRate_badCase, years) - 1)   / ((stocks_interestRate_badCase - 1)    * (FinanceCalculator.Pow(stocks_interestRate_badCase,years))));
+            var z_cash          = (-(FinanceCalculator.Pow(cash_interestRate, years) - 1) / ((cash_interestRate - 1) * (FinanceCalculator.Pow(cash_interestRate, years))));
 
             Console.WriteLine($"SSHH: z_stocks_min {z_stocks_min:F2} z_stocks_max {z_stocks_max:F2}");
             Console.WriteLine($"SSHH: z_cash {z_cash:F2}");

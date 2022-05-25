@@ -25,5 +25,10 @@ namespace Finance
 
             return (withdrawalAmount1, withdrawalAmount2);
         }
+
+        public static decimal Pow(decimal a, int b)
+        {
+            return (decimal)Math.Pow((double)a, b);
+        }
     }
 }
