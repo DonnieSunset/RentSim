@@ -8,6 +8,6 @@
 
     public class MarketAssumptions
     {
-        public double inflationRate = 3.0;
+        //public double inflationRate = 3.0;
     }
 }

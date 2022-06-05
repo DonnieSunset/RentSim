@@ -1,5 +1,8 @@
 ﻿namespace Domain
 {
+    /// <summary>
+    /// This class holds all input data in a flat hierarchy
+    /// </summary>
     public class LifeAssumptions
     {
         public int ageCurrent = 42;
@@ -19,26 +22,54 @@
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 
-        public decimal needsNowMinimum = 1900;
-        public decimal needsNowComfort = 2600;
+        public decimal needsCurrentAgeMinimal = 1900;
+        public decimal needsCurrentAgeComfort = 2600;
+
+        public double inflationRate = 1.03d;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
         private decimal netStateRentFromCurrentAge = 827;
         private decimal netStateRentFromRentStartAge = 2025;
 
+        public decimal rentPhase_InterestRate_Cash = 1.01m;
+        public decimal rentPhase_InterestRate_Stocks_GoodCase = 1.06m;
+        public decimal rentPhase_InterestRate_Stocks_BadCase = 1.01m;
+        public decimal rentPhase_CrashFactor_Stocks_BadCase = 0.5m;
+
+
         public Rent Rent { get; private set; }
-        public RentPhase RentPhase { get; private set; }
+        public RentPhaseInputData RentPhase { get; private set; }
 
         public LifeAssumptions()
         {
-            RentPhase = new RentPhase
-            {
-                Cash_InerestRate = 1.01m,
-                Stocks_InterestRate_BadCase = 1.01m,
-                Stocks_InterestRate_GoodCase = 1.06m,
-                Stocks_CrashFactor_BadCase = 0.5m,
-                DurationInYears = ageEnd - ageRentStart,
-            };
+            ///Rent phases will get their flat data here. In the constructor, they create the more complex structures that reqire calculations..
+            RentPhase = new RentPhaseInputData(
+                ageCurrent,
+                ageRentStart,
+                ageEnd,
+                inflationRate,
+                needsCurrentAgeMinimal,
+                needsCurrentAgeComfort,
+                rentPhase_InterestRate_Cash,
+                rentPhase_InterestRate_Stocks_GoodCase,
+                rentPhase_InterestRate_Stocks_BadCase,
+                rentPhase_CrashFactor_Stocks_BadCase
+                );
+            //{
+                //InterestRate_Cash = rentPhase_InterestRate_Cash,
+                //InterestRate_Stocks_BadCase = rentPhase_InterestRate_Stocks_BadCase,
+                //InterestRate_Stocks_GoodCase = rentPhase_InterestRate_Stocks_GoodCase,
+                //CrashFactor_Stocks_BadCase = rentPhase_CrashFactor_Stocks_BadCase,
+
+                //InflationRate = inflationRate,
+
+                //AgeCurrent = ageCurrent,
+                //AgeRentStart = ageRentStart,
+                //AgeEnd = ageEnd,
+
+                //NeedsCurrentAgeMinimal = needsNowMinimum,
+                //NeedsCurrentAgeComfort = needsNowComfort
+            //};
 
             Rent = new Rent(netStateRentFromCurrentAge, netStateRentFromRentStartAge, RentPhase.DurationInYears);
         }

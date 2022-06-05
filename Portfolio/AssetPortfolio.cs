@@ -7,12 +7,11 @@ namespace Portfolio
     public class AssetPortfolio
     {
         private readonly Cash myCash;
-        private readonly MarketAssumptions myMarketAssumptions;
+        //private readonly MarketAssumptions myMarketAssumptions;
         private readonly LifeAssumptions myLifeAssumptions;
 
-        public AssetPortfolio(LifeAssumptions lifeAssumptions, MarketAssumptions marketAssumptions)
+        public AssetPortfolio(LifeAssumptions lifeAssumptions)
         {
-            myMarketAssumptions = marketAssumptions;
             myLifeAssumptions = lifeAssumptions;
             myCash = new Cash(lifeAssumptions.cash, lifeAssumptions.cashGrowthRate);
         }

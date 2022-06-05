@@ -123,13 +123,13 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsNowMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsNowComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@marketAssumptions.inflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -330,7 +330,7 @@
     IEnumerable<ResultRow> resultRows;
     //Portfolio portfolio = null;
 
-    MarketAssumptions marketAssumptions = new();
+    //MarketAssumptions marketAssumptions = new();
     LifeAssumptions lifeAssumptions = new ();
 
 
@@ -409,15 +409,15 @@
             Inflation.Calc(
                 lifeAssumptions.ageCurrent, 
                 lifeAssumptions.ageRentStart, 
-                lifeAssumptions.needsNowMinimum, 
-                marketAssumptions.inflationRate));
+                lifeAssumptions.needsCurrentAgeMinimal, 
+                lifeAssumptions.inflationRate));
 
         FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
             Inflation.Calc(
                 lifeAssumptions.ageCurrent, 
                 lifeAssumptions.ageRentStart, 
-                lifeAssumptions.needsNowComfort, 
-                marketAssumptions.inflationRate));
+                lifeAssumptions.needsCurrentAgeComfort, 
+                lifeAssumptions.inflationRate));
 
         FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
             RentCalculator.ApproxNetRent(
@@ -429,7 +429,7 @@
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
-        var portfolio = new AssetPortfolio(lifeAssumptions, marketAssumptions);
+        var portfolio = new AssetPortfolio(lifeAssumptions);
 
         var savingStrategy = new SavingStrategy(
             portfolio,

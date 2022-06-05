@@ -38,7 +38,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocol", "Protocol\Protoc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance_uTests", "Finance_uTests\Finance_uTests.csproj", "{9BBEE812-3E98-4F99-A616-2DE8AD5CCE34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{B6CD71A8-0063-470B-AEAE-DF9F59327E1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{B6CD71A8-0063-470B-AEAE-DF9F59327E1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6D91397-5A7D-46A8-825E-B1A04826A65D} = {D6D91397-5A7D-46A8-825E-B1A04826A65D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
