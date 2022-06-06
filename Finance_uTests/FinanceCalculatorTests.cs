@@ -12,21 +12,15 @@ namespace Finance_uTests
         public void Blubb_Comfort()
         {
             var lifeAssumptions = new LifeAssumptions();
-            var rent = lifeAssumptions.Rent;
             var rentPhase = lifeAssumptions.RentPhase;
-
-            //RENAME TO: savings_needed....
-            //Create class like: Rent.PerMonth
-            decimal comfort_total_needed_Year = 5000 - rent.FromRentStartAge.PerYear;
-            decimal minimum_total_needed_Year = 3500 - rent.FromRentStartAge.PerYear;
 
             BlaResult blaResult = FinanceCalculator.BlaCalculate(
                 rentPhase.InterestRate_Stocks_GoodCase,
                 rentPhase.InterestRate_Stocks_BadCase,
                 rentPhase.InterestRate_Cash,
                 rentPhase.DurationInYears,
-                rentPhase.NeedsComfort.PerYear,
-                rentPhase.NeedsMinimum.PerYear,
+                rentPhase.NeedsComfort_PerYear,
+                rentPhase.NeedsMinimum_PerYear,
                 rentPhase.CrashFactor_Stocks_BadCase
                 );
 
@@ -60,21 +54,15 @@ namespace Finance_uTests
         public void Blubb_Crash()
         {
             var lifeAssumptions = new LifeAssumptions();
-            var rent = lifeAssumptions.Rent;
             var rentPhase = lifeAssumptions.RentPhase;
-
-            //RENAME TO: savings_needed....
-            //Create class like: Rent.PerMonth
-            decimal comfort_total_needed_Year = 5000 - rent.FromRentStartAge.PerYear;
-            decimal minimum_total_needed_Year = 3500 - rent.FromRentStartAge.PerYear;
 
             BlaResult blaResult = FinanceCalculator.BlaCalculate(
                 rentPhase.InterestRate_Stocks_GoodCase,
                 rentPhase.InterestRate_Stocks_BadCase,
                 rentPhase.InterestRate_Cash,
                 rentPhase.DurationInYears,
-                rentPhase.NeedsComfort.PerYear,
-                rentPhase.NeedsMinimum.PerYear,
+                rentPhase.NeedsComfort_PerYear,
+                rentPhase.NeedsMinimum_PerYear,
                 rentPhase.CrashFactor_Stocks_BadCase
                 );
 

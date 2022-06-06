@@ -2,47 +2,29 @@
 
 namespace Domain
 {
-    public class RentPhaseInputData //: BaseData
+    public class RentPhaseInputData
     {
-        //internal decimal InterestRate_Stocks_GoodCase { get; set; }
-        //internal decimal InterestRate_Stocks_BadCase { get; set; }
-        //internal decimal CrashFactor_Stocks_BadCase { get; set; }
-        //internal decimal InterestRate_Cash { get; set; }
-
-        //internal int AgeCurrent { get; set; }
-        //internal int AgeRentStart { get; set; }
-        //internal int AgeEnd { get; set; }
-
-        //internal double InflationRate { get; set; }
-        //internal decimal NeedsCurrentAgeMinimal { get; set; }
-        //internal decimal NeedsCurrentAgeComfort { get; set; }
-
-
         public RentPhaseInputData(
             int ageCurrent,
             int ageRentStart,
             int ageEnd,
             double inflationRate,
-            decimal needsCurrentAgeMinimal,
-            decimal needsCurrentAgeComfort,
+            decimal needsCurrentAgeMinimal_perMonth,
+            decimal needsCurrentAgeComfort_perMonth,
             decimal interestRate_Cash,
             decimal interestRate_Stocks_GoodCase,
             decimal interestRate_Stocks_BadCase,
-            decimal crashFactor_Stocks_BadCase
+            decimal crashFactor_Stocks_BadCase,
+            decimal assumedRent_perMonth
             )
         {
             DurationInYears = ageEnd - ageRentStart;
-
             int inflationYears = ageRentStart - ageCurrent;
 
-            //hier muss man noch die staatliche rente abziehen
-            //zwei schritte: 1) inflation anwenden 2) staatliche rente abziehen
-            //vllt sollte man den teil auscarven
-            var NeedsCurrentAgeMinimalInf = Inflation.Calc(inflationYears, needsCurrentAgeMinimal, inflationRate);
-            var NeedsCurrentAgeComfortInf = Inflation.Calc(inflationYears, needsCurrentAgeComfort, inflationRate);
-
-            NeedsMinimum = new AmountInternal(amountPerMonth: NeedsCurrentAgeMinimalInf, durationInYears: DurationInYears);
-            NeedsComfort = new AmountInternal(amountPerMonth: NeedsCurrentAgeComfortInf, durationInYears: DurationInYears);
+            NeedsMinimum_PerMonth = Inflation.Calc(inflationYears, needsCurrentAgeMinimal_perMonth, inflationRate);
+            NeedsMinimum_PerMonth -= assumedRent_perMonth;
+            NeedsComfort_PerMonth = Inflation.Calc(inflationYears, needsCurrentAgeComfort_perMonth, inflationRate);
+            NeedsComfort_PerMonth -= assumedRent_perMonth;
 
             InterestRate_Cash = interestRate_Cash;
             InterestRate_Stocks_GoodCase = interestRate_Stocks_GoodCase;
@@ -50,9 +32,12 @@ namespace Domain
             CrashFactor_Stocks_BadCase = crashFactor_Stocks_BadCase;
         }
 
-        // muss ma auch noch inflation berücksichtigen
-        public AmountInternal NeedsComfort { get; private set; }
-        public AmountInternal NeedsMinimum { get; private set; }
+        public decimal NeedsMinimum_PerMonth { get; private set; }
+        public decimal NeedsMinimum_PerYear => NeedsMinimum_PerMonth * 12;
+        public decimal NeedsMinimum_PerPhase => NeedsMinimum_PerYear * DurationInYears;
+        public decimal NeedsComfort_PerMonth { get; private set; }
+        public decimal NeedsComfort_PerYear => NeedsComfort_PerMonth * 12;
+        public decimal NeedsComfort_PerPhase => NeedsComfort_PerYear * DurationInYears;
 
         public int DurationInYears { get; private set; }
 

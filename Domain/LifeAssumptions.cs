@@ -28,8 +28,8 @@
         public double inflationRate = 1.03d;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        private decimal netStateRentFromCurrentAge = 827;
-        private decimal netStateRentFromRentStartAge = 2025;
+        private decimal netStateRentFromCurrentAge_perMonth = 827;
+        private decimal netStateRentFromRentStartAge_perMonth = 2025;
 
         public decimal rentPhase_InterestRate_Cash = 1.01m;
         public decimal rentPhase_InterestRate_Stocks_GoodCase = 1.06m;
@@ -37,7 +37,7 @@
         public decimal rentPhase_CrashFactor_Stocks_BadCase = 0.5m;
 
 
-        public Rent Rent { get; private set; }
+        //public Rent Rent { get; private set; }
         public RentPhaseInputData RentPhase { get; private set; }
 
         public LifeAssumptions()
@@ -53,7 +53,8 @@
                 rentPhase_InterestRate_Cash,
                 rentPhase_InterestRate_Stocks_GoodCase,
                 rentPhase_InterestRate_Stocks_BadCase,
-                rentPhase_CrashFactor_Stocks_BadCase
+                rentPhase_CrashFactor_Stocks_BadCase,
+                netStateRentFromRentStartAge_perMonth
                 );
             //{
                 //InterestRate_Cash = rentPhase_InterestRate_Cash,
@@ -71,7 +72,7 @@
                 //NeedsCurrentAgeComfort = needsNowComfort
             //};
 
-            Rent = new Rent(netStateRentFromCurrentAge, netStateRentFromRentStartAge, RentPhase.DurationInYears);
+            //Rent = new Rent(netStateRentFromCurrentAge_perMonth, netStateRentFromRentStartAge_perMonth, RentPhase.DurationInYears);
         }
     }
 }
