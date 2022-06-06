@@ -45,9 +45,13 @@
         {
             var result = new BlaResult();
 
-            var z_stocks_max = (-(FinanceCalculator.Pow(InterestRate_Stocks_GoodCase, DurationInYears) - 1) / ((InterestRate_Stocks_GoodCase - 1) * (FinanceCalculator.Pow(InterestRate_Stocks_GoodCase, DurationInYears))));
-            var z_stocks_min = (-(FinanceCalculator.Pow(InterestRate_Stocks_BadCase, DurationInYears) - 1) / ((InterestRate_Stocks_BadCase - 1) * (FinanceCalculator.Pow(InterestRate_Stocks_BadCase, DurationInYears))));
-            var z_cash = (-(FinanceCalculator.Pow(InterestRate_Cash, DurationInYears) - 1) / ((InterestRate_Cash - 1) * (FinanceCalculator.Pow(InterestRate_Cash, DurationInYears))));
+            decimal InterestFactor_Stocks_GoodCase = InterestRate_Stocks_GoodCase + 1;
+            decimal InterestFactor_Stocks_BadCase = InterestRate_Stocks_BadCase + 1;
+            decimal InterestFactor_Cash = InterestRate_Cash + 1;
+
+            var z_stocks_max = (-(FinanceCalculator.Pow(InterestFactor_Stocks_GoodCase, DurationInYears) - 1) / ((InterestFactor_Stocks_GoodCase - 1) * (FinanceCalculator.Pow(InterestFactor_Stocks_GoodCase, DurationInYears))));
+            var z_stocks_min = (-(FinanceCalculator.Pow(InterestFactor_Stocks_BadCase, DurationInYears) - 1) / ((InterestFactor_Stocks_BadCase - 1) * (FinanceCalculator.Pow(InterestFactor_Stocks_BadCase, DurationInYears))));
+            var z_cash = (-(FinanceCalculator.Pow(InterestFactor_Cash, DurationInYears) - 1) / ((InterestFactor_Cash - 1) * (FinanceCalculator.Pow(InterestFactor_Cash, DurationInYears))));
 
             Console.WriteLine($"SSHH: z_stocks_min {z_stocks_min:F2} z_stocks_max {z_stocks_max:F2}");
             Console.WriteLine($"SSHH: z_cash {z_cash:F2}");

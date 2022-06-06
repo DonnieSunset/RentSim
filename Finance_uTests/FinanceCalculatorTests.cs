@@ -32,9 +32,8 @@ namespace Finance_uTests
             {
                 Console.WriteLine($"State Begin Year {i}: Cash: {blaResult.total_Cash:F2} Stocks: {blaResult.total_Stocks:F2} Total: {blaResult.total_Stocks + blaResult.total_Cash:F2}");
 
-                //todo: convenience methid for interests
-                var interests_Cash = blaResult.total_Cash * (rentPhase.InterestRate_Cash - 1);
-                var interests_Stocks = blaResult.total_Stocks * (rentPhase.InterestRate_Stocks_GoodCase - 1);
+                var interests_Cash = blaResult.total_Cash * rentPhase.InterestRate_Cash;
+                var interests_Stocks = blaResult.total_Stocks * rentPhase.InterestRate_Stocks_GoodCase;
                 blaResult.total_Cash += interests_Cash;
                 blaResult.total_Stocks += interests_Stocks;
                 Console.WriteLine($"\tInterests: Cash: {interests_Cash:F2} Stocks: {interests_Stocks:F2} Total: {interests_Cash + interests_Stocks:F2}");
@@ -77,9 +76,8 @@ namespace Finance_uTests
             {
                 Console.WriteLine($"State Begin Year {i}: Cash: {blaResult.total_Cash:F2} Stocks: {blaResult.total_Stocks:F2} Total: {blaResult.total_Stocks + blaResult.total_Cash:F2}");
 
-                //todo: convenience methid for interests
-                var interests_Cash = blaResult.total_Cash * (rentPhase.InterestRate_Cash - 1);
-                var interests_Stocks = blaResult.total_Stocks * (rentPhase.InterestRate_Stocks_BadCase - 1);
+                var interests_Cash = blaResult.total_Cash * rentPhase.InterestRate_Cash;
+                var interests_Stocks = blaResult.total_Stocks * rentPhase.InterestRate_Stocks_BadCase;
                 blaResult.total_Cash += interests_Cash;
                 blaResult.total_Stocks += interests_Stocks;
                 Console.WriteLine($"\tInterests: Cash: {interests_Cash:F2} Stocks: {interests_Stocks:F2} Total: {interests_Cash + interests_Stocks:F2}");
