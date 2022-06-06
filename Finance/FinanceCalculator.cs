@@ -34,6 +34,16 @@
             return (decimal)Math.Pow((double)a, b);
         }
 
+        public static decimal Sparkassenformel(decimal K0, decimal q, int n)
+        {
+            //decimal K0 = R * -(Pow(q,n) - 1) / ((q - 1) * (Pow(q,n)));
+
+            decimal R = K0 / (-(Pow(q, n) - 1) / ((q - 1) * (Pow(q, n))));
+
+            return R;
+
+        }
+
         public static BlaResult BlaCalculate(
             decimal InterestRate_Stocks_GoodCase,
             decimal InterestRate_Stocks_BadCase,
@@ -53,8 +63,8 @@
             var z_stocks_min = (-(FinanceCalculator.Pow(InterestFactor_Stocks_BadCase, DurationInYears) - 1) / ((InterestFactor_Stocks_BadCase - 1) * (FinanceCalculator.Pow(InterestFactor_Stocks_BadCase, DurationInYears))));
             var z_cash = (-(FinanceCalculator.Pow(InterestFactor_Cash, DurationInYears) - 1) / ((InterestFactor_Cash - 1) * (FinanceCalculator.Pow(InterestFactor_Cash, DurationInYears))));
 
-            Console.WriteLine($"SSHH: z_stocks_min {z_stocks_min:F2} z_stocks_max {z_stocks_max:F2}");
-            Console.WriteLine($"SSHH: z_cash {z_cash:F2}");
+            //Console.WriteLine($"SSHH: z_stocks_min {z_stocks_min:F2} z_stocks_max {z_stocks_max:F2}");
+            //Console.WriteLine($"SSHH: z_cash {z_cash:F2}");
 
             
 
@@ -64,11 +74,13 @@
             result.total_Cash = z_cash * (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
             result.total_Stocks = z_stocks_max * z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
 
+            Console.WriteLine($"==========================================================");
             Console.WriteLine($"Rate_Cash: {result.rate_Cash:F2}");
             Console.WriteLine($"Rate_Stocks_Max: {result.rate_Stocks_Max:F2}");
             Console.WriteLine($"Rate_Stocks_Min: {result.rate_Stocks_Min:F2}");
             Console.WriteLine($"Total_Cash: {result.total_Cash:F2}");
             Console.WriteLine($"Total_Stocks: {result.total_Stocks:F2}");
+            Console.WriteLine($"==========================================================");
 
             return result;
         }
