@@ -161,11 +161,11 @@
             //result.taxesPerYear_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.rateStocks_ExcludedTaxes_GoodCase;
             //result.taxesPerYear_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.rateStocks_ExcludedTaxes_BadCase;
 
-            result.taxesPerYear_GoodCase = result.rateStocks_ExcludedTaxes_GoodCase * (stocks_taxFactor - 1);
-            result.taxesPerYear_BadCase = result.rateStocks_ExcludedTaxes_BadCase * (stocks_taxFactor - 1);
+            result.taxesPerYear_GoodCase = - result.rateStocks_ExcludedTaxes_GoodCase * (stocks_taxFactor - 1);
+            result.taxesPerYear_BadCase = - result.rateStocks_ExcludedTaxes_BadCase * (stocks_taxFactor - 1);
 
-            result.rateStocks_ExcludedTaxes_GoodCase += result.taxesPerYear_GoodCase;
-            result.rateStocks_ExcludedTaxes_BadCase += result.taxesPerYear_BadCase;
+            result.rateStocks_ExcludedTaxes_GoodCase -= result.taxesPerYear_GoodCase;
+            result.rateStocks_ExcludedTaxes_BadCase -= result.taxesPerYear_BadCase;
 
             Console.WriteLine($"==========================================================");
             Console.WriteLine($"Rate_Cash:                         {result.rate_Cash:F2}");

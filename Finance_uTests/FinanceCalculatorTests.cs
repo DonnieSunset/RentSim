@@ -143,7 +143,7 @@ namespace Finance_uTests
                 blaResult.total_Stocks -= blaResult.rateStocks_ExcludedTaxes_GoodCase;
                 Console.WriteLine($"\tWithdrawal: Cash: {blaResult.rate_Cash:F2} Stocks: {blaResult.rateStocks_ExcludedTaxes_GoodCase:F2} Total: {blaResult.rate_Cash + blaResult.rateStocks_ExcludedTaxes_GoodCase:F2}");
 
-                blaResult.total_Stocks += blaResult.taxesPerYear_GoodCase;
+                blaResult.total_Stocks -= blaResult.taxesPerYear_GoodCase;
                 Console.WriteLine($"\tWithdrawal: taxes: {blaResult.taxesPerYear_GoodCase:F2}");
 
                 Console.WriteLine($"\tEnd Year {i}: Cash: {blaResult.total_Cash:F2} Stocks: {blaResult.total_Stocks:F2} Total: {blaResult.total_Stocks + blaResult.total_Cash:F2}");
@@ -188,7 +188,7 @@ namespace Finance_uTests
                 blaResult.total_Stocks -= blaResult.rateStocks_ExcludedTaxes_BadCase;
                 Console.WriteLine($"\tWithdrawal: Cash: {blaResult.rate_Cash:F2} Stocks: {blaResult.rateStocks_ExcludedTaxes_BadCase:F2} Total: {blaResult.rate_Cash + blaResult.rateStocks_ExcludedTaxes_BadCase:F2}");
 
-                blaResult.total_Stocks += blaResult.taxesPerYear_BadCase;
+                blaResult.total_Stocks -= blaResult.taxesPerYear_BadCase;
                 Console.WriteLine($"\tWithdrawal: taxes: {blaResult.taxesPerYear_BadCase:F2}");
 
                 Console.WriteLine($"\tEnd Year {i}: Cash: {blaResult.total_Cash:F2} Stocks: {blaResult.total_Stocks:F2} Total: {blaResult.total_Stocks + blaResult.total_Cash:F2}");
