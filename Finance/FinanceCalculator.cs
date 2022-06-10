@@ -3,6 +3,8 @@
     public struct BlaResult
     {
         public decimal rate_Cash;
+        public decimal rateStocks_IncludedTaxes_BadCase;
+        public decimal rateStocks_IncludedTaxes_GoodCase;
         public decimal rateStocks_ExcludedTaxes_BadCase;
         public decimal rateStocks_ExcludedTaxes_GoodCase;
         public decimal total_Cash;
@@ -76,8 +78,8 @@
           
             // Calculate the results without taxes
             result.rate_Cash = (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-            result.rateStocks_ExcludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) / stocks_taxFactor;
-            result.rateStocks_ExcludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) / stocks_taxFactor;
+            result.rateStocks_IncludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) / stocks_taxFactor;
+            result.rateStocks_IncludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) / stocks_taxFactor;
             result.total_Cash = z_cash * (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
             result.total_Stocks = z_stocks_max * z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
 
@@ -101,6 +103,8 @@
             Console.WriteLine($"Rate_Cash:                         {result.rate_Cash:F2}");
             Console.WriteLine($"rateStocks_ExcludedTaxes_GoodCase: {result.rateStocks_ExcludedTaxes_GoodCase:F2}");
             Console.WriteLine($"rateStocks_ExcludedTaxes_BadCase:  {result.rateStocks_ExcludedTaxes_BadCase:F2}");
+            Console.WriteLine($"rateStocks_IncludedTaxes_GoodCase: {result.rateStocks_IncludedTaxes_GoodCase:F2}");
+            Console.WriteLine($"rateStocks_IncludedTaxes_BadCase:  {result.rateStocks_IncludedTaxes_BadCase:F2}");
             Console.WriteLine($"Total_Cash:                        {result.total_Cash:F2}");
             Console.WriteLine($"Total_Stocks:                      {result.total_Stocks:F2}");
             //Console.WriteLine($"rateStocks_IncludedTaxes_GoodCase: {result.rateStocks_IncludedTaxes_GoodCase:F2}");
@@ -141,8 +145,8 @@
 
             // Calculate the results without taxes
             result.rate_Cash = (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-            result.rateStocks_ExcludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min)                             * stocks_taxFactor;
-            result.rateStocks_ExcludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) * stocks_taxFactor;
+            result.rateStocks_IncludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min)                             * stocks_taxFactor;
+            result.rateStocks_IncludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) * stocks_taxFactor;
             result.total_Cash = z_cash * (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
             result.total_Stocks = z_stocks_max * z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
 
@@ -161,16 +165,22 @@
             //result.taxesPerYear_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.rateStocks_ExcludedTaxes_GoodCase;
             //result.taxesPerYear_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.rateStocks_ExcludedTaxes_BadCase;
 
-            result.taxesPerYear_GoodCase = - result.rateStocks_ExcludedTaxes_GoodCase * (1/stocks_taxFactor - 1);
-            result.taxesPerYear_BadCase = - result.rateStocks_ExcludedTaxes_BadCase * (1/stocks_taxFactor - 1);
+            //result.taxesPerYear_GoodCase = - result.rateStocks_IncludedTaxes_GoodCase * (1/stocks_taxFactor - 1);
+            //result.taxesPerYear_BadCase = - result.rateStocks_IncludedTaxes_BadCase * (1/stocks_taxFactor - 1);
 
-            result.rateStocks_ExcludedTaxes_GoodCase -= result.taxesPerYear_GoodCase;
-            result.rateStocks_ExcludedTaxes_BadCase -= result.taxesPerYear_BadCase;
+            result.taxesPerYear_GoodCase = result.rateStocks_IncludedTaxes_GoodCase * (1- 1/stocks_taxFactor );
+            result.taxesPerYear_BadCase = result.rateStocks_IncludedTaxes_BadCase * (1- 1/stocks_taxFactor);
+
+
+            result.rateStocks_ExcludedTaxes_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.taxesPerYear_GoodCase;
+            result.rateStocks_ExcludedTaxes_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.taxesPerYear_BadCase;
 
             Console.WriteLine($"==========================================================");
             Console.WriteLine($"Rate_Cash:                         {result.rate_Cash:F2}");
             Console.WriteLine($"rateStocks_ExcludedTaxes_GoodCase: {result.rateStocks_ExcludedTaxes_GoodCase:F2}");
             Console.WriteLine($"rateStocks_ExcludedTaxes_BadCase:  {result.rateStocks_ExcludedTaxes_BadCase:F2}");
+            Console.WriteLine($"rateStocks_IncludedTaxes_GoodCase: {result.rateStocks_IncludedTaxes_GoodCase:F2}");
+            Console.WriteLine($"rateStocks_IncludedTaxes_BadCase:  {result.rateStocks_IncludedTaxes_BadCase:F2}");
             Console.WriteLine($"Total_Cash:                        {result.total_Cash:F2}");
             Console.WriteLine($"Total_Stocks:                      {result.total_Stocks:F2}");
             Console.WriteLine($"Taxes_GoodCase:                    {result.taxesPerYear_GoodCase:F2}");
