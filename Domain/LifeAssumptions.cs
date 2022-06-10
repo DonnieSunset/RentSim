@@ -36,6 +36,8 @@
         public decimal rentPhase_InterestRate_Stocks_BadCase = 0.01m;
         public decimal rentPhase_CrashFactor_Stocks_BadCase = 0.5m;
 
+        public decimal taxFactor_Stocks = 1.26m;
+
 
         //public Rent Rent { get; private set; }
         public RentPhaseInputData RentPhase { get; private set; }
@@ -54,7 +56,8 @@
                 rentPhase_InterestRate_Stocks_GoodCase,
                 rentPhase_InterestRate_Stocks_BadCase,
                 rentPhase_CrashFactor_Stocks_BadCase,
-                netStateRentFromRentStartAge_perMonth
+                netStateRentFromRentStartAge_perMonth,
+                taxFactor_Stocks
                 );
             //{
                 //InterestRate_Cash = rentPhase_InterestRate_Cash,

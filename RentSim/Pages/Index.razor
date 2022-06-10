@@ -422,9 +422,9 @@
         FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
             RentCalculator.ApproxNetRent(
                 lifeAssumptions.ageCurrent,
-                lifeAssumptions.Rent.FromCurrentAge.PerMonth,
+                0,
                 lifeAssumptions.ageRentStart,
-                lifeAssumptions.Rent.FromRentStartAge.PerMonth,
+                0,
                 lifeAssumptions.ageStopWork));
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();

@@ -15,7 +15,8 @@ namespace Domain
             decimal interestRate_Stocks_GoodCase,
             decimal interestRate_Stocks_BadCase,
             decimal crashFactor_Stocks_BadCase,
-            decimal assumedRent_perMonth
+            decimal assumedRent_perMonth,
+            decimal taxFactor_Stocks
             )
         {
             DurationInYears = ageEnd - ageRentStart;
@@ -30,6 +31,8 @@ namespace Domain
             InterestRate_Stocks_GoodCase = interestRate_Stocks_GoodCase;
             InterestRate_Stocks_BadCase = interestRate_Stocks_BadCase;
             CrashFactor_Stocks_BadCase = crashFactor_Stocks_BadCase;
+
+            TaxFactor_Stocks = taxFactor_Stocks;
         }
 
         public decimal NeedsMinimum_PerMonth { get; private set; }
@@ -45,5 +48,6 @@ namespace Domain
         public decimal InterestRate_Stocks_GoodCase { get; private set; }
         public decimal InterestRate_Stocks_BadCase { get; private set; }
         public decimal CrashFactor_Stocks_BadCase { get; private set; }
+        public decimal TaxFactor_Stocks { get; private set; }
     }
 }
