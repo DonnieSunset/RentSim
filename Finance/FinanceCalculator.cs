@@ -129,20 +129,20 @@
         {
             var result = new BlaResult();
             
-            stocks_taxFactor = 1 / stocks_taxFactor;
+            //stocks_taxFactor = 1 / stocks_taxFactor;
 
             decimal InterestFactor_Stocks_GoodCase = InterestRate_Stocks_GoodCase + 1;
             decimal InterestFactor_Stocks_BadCase = InterestRate_Stocks_BadCase + 1;
             decimal InterestFactor_Cash = InterestRate_Cash + 1;
 
             var z_cash =       Pow(InterestFactor_Cash, -DurationInYears) * ((Pow(InterestFactor_Cash, DurationInYears) - 1) / (InterestFactor_Cash - 1));  
-            var z_stocks_max = Pow(InterestFactor_Stocks_GoodCase, -DurationInYears) * ((Pow(InterestFactor_Stocks_GoodCase, DurationInYears) - 1) / (InterestFactor_Stocks_GoodCase - 1))      / stocks_taxFactor;
-            var z_stocks_min = Pow(InterestFactor_Stocks_BadCase, -DurationInYears) * ((Pow(InterestFactor_Stocks_BadCase, DurationInYears) - 1) / (InterestFactor_Stocks_BadCase - 1))         / stocks_taxFactor;
+            var z_stocks_max = Pow(InterestFactor_Stocks_GoodCase, -DurationInYears) * ((Pow(InterestFactor_Stocks_GoodCase, DurationInYears) - 1) / (InterestFactor_Stocks_GoodCase - 1))      * stocks_taxFactor;
+            var z_stocks_min = Pow(InterestFactor_Stocks_BadCase, -DurationInYears) * ((Pow(InterestFactor_Stocks_BadCase, DurationInYears) - 1) / (InterestFactor_Stocks_BadCase - 1))         * stocks_taxFactor;
 
             // Calculate the results without taxes
             result.rate_Cash = (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-            result.rateStocks_ExcludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min)                             / stocks_taxFactor;
-            result.rateStocks_ExcludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) / stocks_taxFactor;
+            result.rateStocks_ExcludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min)                             * stocks_taxFactor;
+            result.rateStocks_ExcludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) * stocks_taxFactor;
             result.total_Cash = z_cash * (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
             result.total_Stocks = z_stocks_max * z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
 
@@ -161,8 +161,8 @@
             //result.taxesPerYear_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.rateStocks_ExcludedTaxes_GoodCase;
             //result.taxesPerYear_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.rateStocks_ExcludedTaxes_BadCase;
 
-            result.taxesPerYear_GoodCase = - result.rateStocks_ExcludedTaxes_GoodCase * (stocks_taxFactor - 1);
-            result.taxesPerYear_BadCase = - result.rateStocks_ExcludedTaxes_BadCase * (stocks_taxFactor - 1);
+            result.taxesPerYear_GoodCase = - result.rateStocks_ExcludedTaxes_GoodCase * (1/stocks_taxFactor - 1);
+            result.taxesPerYear_BadCase = - result.rateStocks_ExcludedTaxes_BadCase * (1/stocks_taxFactor - 1);
 
             result.rateStocks_ExcludedTaxes_GoodCase -= result.taxesPerYear_GoodCase;
             result.rateStocks_ExcludedTaxes_BadCase -= result.taxesPerYear_BadCase;
