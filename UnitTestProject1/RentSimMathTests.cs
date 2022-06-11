@@ -25,5 +25,15 @@ namespace Processing_uTest
 
             Assert.AreEqual(expectedResult, result, 0.01f);
         }
+
+        [DataTestMethod]
+        [DataRow(15.4d, 5.4d,10.4d)]
+        [DataRow(10d, 19d, 14.5d)]
+        public void Middle_TwoDoubles_DoubleRecognizedAsDouble(double left, double right, double expectedResult)
+        {
+            double result = RentSimMath.Middle(left, right);
+
+            Assert.AreEqual(expectedResult, result, 0.01f);
+        }
     }
 }

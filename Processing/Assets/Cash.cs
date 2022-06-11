@@ -8,21 +8,21 @@ namespace Processing.Assets
     {
         public Cash(Input _input, Portfolio portfolio) : base(_input, portfolio)
         {
-            switch (input.interestRateType)
-            {
-                case InterestRateType.Relativ:
-                    growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
-                    break;
-                case InterestRateType.Konform:
-                    growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.cashGrowthRate);
-                    break;
-                default:
-                    throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
-            }
+            //switch (input.interestRateType)
+            //{
+            //    case InterestRateType.Relativ:
+            //        growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonthRelative(input.cashGrowthRate);
+            //        break;
+            //    case InterestRateType.Konform:
+            //        growthRatePerMonth = RentSimMath.InterestPerYearToInterestPerMonth(input.cashGrowthRate);
+            //        break;
+            //    default:
+            //        throw new Exception($"Unsupported Interest Rate Type: <{input.interestRateType}>.");
+            //}
             growthRatePerYear = input.cashGrowthRate;
 
-            this.Protocol.Last().yearBegin = _input.cash;
-            this.Protocol.Last().yearEnd = _input.cash;
+            //this.Protocol.Last().yearBegin = _input.cash;
+            //this.Protocol.Last().yearEnd = _input.cash;
         }
 
         public Cash Save(double amount)
@@ -37,7 +37,7 @@ namespace Processing.Assets
 
         public Cash ApplyInterests(double interestRate)
         {
-            return (Cash)base.ApplyGrowth(interestRate);
+            return (Cash)base.ApplyYearlyGrowth(interestRate);
         }
 
         public void PayTaxesForInterests()
@@ -45,33 +45,42 @@ namespace Processing.Assets
             throw new NotImplementedException();
         }
 
-        public override void Process()
-        {
-            for (int i = input.ageCurrent; i < input.ageStopWork; i++)
-            {
-                for (int month = 1; month <= 12; month++)
-                {
-                    this
-                       .Save(input.cashMonthlyInvestAmount)
-                       .ApplyInterests(this.growthRatePerMonth);
-                }
+        //public override void Process()
+        //{
+        //    for (int i = input.ageCurrent; i < input.ageStopWork; i++)
+        //    {
+        //        for (int month = 1; month <= 12; month++)
+        //        {
+        //            this
+        //               .Save(input.cashMonthlyInvestAmount)
+        //               .ApplyInterests(this.growthRatePerMonth);
+        //        }
 
-                base.MoveToNextYear();
-            }
-        }
+        //        base.MoveToNextYear();
+        //    }
+        //}
 
-        public override void Process2()
-        {
-            double withdrawalAmount = BasePortfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork, this.GetType());
+        //public override void Process2(AssetWithdrawalRateInfo withdrawalRateInfo)
+        //{
+        //    double withdrawalAmount = withdrawalRateInfo.RateStopWorkGross;
+        //    for (int i = input.ageStopWork; i < input.ageRentStart; i++)
+        //    {
+        //        this
+        //            .Withdraw(withdrawalAmount)
+        //            .ApplyInterests(this.growthRatePerYear);
 
-            for (int i = input.ageStopWork; i < input.ageRentStart; i++)
-            {
-                this
-                    .Withdraw(withdrawalAmount)
-                    .ApplyInterests(this.growthRatePerYear);
+        //        base.MoveToNextYear();
+        //    }
 
-                base.MoveToNextYear();
-            }
-        }
+        //    withdrawalAmount = withdrawalRateInfo.RateRentStartGross;
+        //    for (int i = input.ageRentStart; i < input.ageEnd; i++)
+        //    {
+        //        this
+        //            .Withdraw(withdrawalAmount)
+        //            .ApplyInterests(this.growthRatePerYear);
+
+        //        base.MoveToNextYear();
+        //    }
+        //}
     }
 }

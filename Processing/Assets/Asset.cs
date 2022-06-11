@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Processing.Withdrawal;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,11 +23,22 @@ namespace Processing.Assets
 
     public abstract class Asset
     {
-        protected double growthRatePerMonth;
+        //protected double growthRatePerMonth;
         protected double growthRatePerYear;
+        
+        public double CurrentAmount
+        {
+            get; protected set;
+        }
+
+        public double CurrentGrowth
+        {
+            get; protected set;
+        }
+
         protected Input input;
 
-        private List<ProtocolEntry> protocol = new List<ProtocolEntry>();
+        //private List<ProtocolEntry> protocol = new List<ProtocolEntry>();
 
         /// <summary>
         /// 
@@ -34,9 +46,23 @@ namespace Processing.Assets
         /// <remarks>
         /// We need to ensure that protocol entries can only be written in the Asset class.
         /// </remarks>
-        public ReadOnlyCollection<ProtocolEntry> Protocol
+        //public ReadOnlyCollection<ProtocolEntry> Protocol
+        //{
+        //    get { return protocol.AsReadOnly(); }
+        //}
+
+        /// <summary>
+        /// For testing purposes only.
+        /// </summary>
+        //internal List<ProtocolEntry> ProtocolInternal
+        //{
+        //    get { return protocol; }
+        //}
+
+
+        public double GrowthRatePerYear
         {
-            get { return protocol.AsReadOnly(); }
+            get => growthRatePerYear;
         }
 
         protected Asset(Input _input, Portfolio portfolio)
@@ -44,9 +70,9 @@ namespace Processing.Assets
             input = _input;
             BasePortfolio = portfolio;
 
-            protocol.Add(new ProtocolEntry {
-                age = input.ageCurrent,
-            });
+            //protocol.Add(new ProtocolEntry {
+            //    age = input.ageCurrent,
+            //});
         }
 
         public Portfolio BasePortfolio
@@ -57,36 +83,56 @@ namespace Processing.Assets
 
         protected Asset ApplyInvests(double invest)
         {
-            protocol.Last().invests += invest;
-            protocol.Last().yearEnd += invest;
+            //protocol.Last().invests += invest;
+            //protocol.Last().yearEnd += invest;
+            this.CurrentAmount += invest;
 
             return this;
         }
 
-        protected Asset ApplyGrowth(double growthRate)
+        /// <summary>
+        /// Applies growth rate to asset, typically in terms of interests for cash
+        /// or growth rate in terms of stocks / metals.
+        /// </summary>
+        /// <param name="growthRate">The growth rate in % (e.g. 3 corresponds to 3% groths)</param>
+        /// <returns></returns>
+        protected Asset ApplyYearlyGrowth(double growthRate)
         {
-            var current = protocol.Last();
-            double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
-            current.growth += thisMonthGrowth;
-            current.yearEnd += thisMonthGrowth;
+            //var current = protocol.Last();
+            //double thisMonthGrowth = current.yearEnd * (growthRate / 100d);
+            double growthFactor = 1 + (growthRate / 100);
+            double growth = this.CurrentAmount * growthFactor;
+
+            this.CurrentAmount += growth;
+            this.CurrentGrowth += growth;
 
             return this;
         }
 
-        public Asset MoveToNextYear()
+        //protected double GetAllGrowth()
+        //{
+        //    return this.CurrentGrowth;
+        //}
+
+        protected double GetFractionOfGrowthAccordingToAmount(double amount)
         {
-            protocol.Add(new ProtocolEntry
-            {
-                age = protocol.Last().age + 1,
-                yearBegin = protocol.Last().yearEnd,
-                yearEnd = protocol.Last().yearEnd
-            });
-
-            return this;
+            throw new NotImplementedException();
         }
 
-        public abstract void Process();
+        //public Asset MoveToNextYear()
+        //{
+        //    protocol.Add(new ProtocolEntry
+        //    {
+        //        age = protocol.Last().age + 1,
+        //        yearBegin = protocol.Last().yearEnd,
+        //        yearEnd = protocol.Last().yearEnd
+        //    });
 
-        public abstract void Process2();
+        //    return this;
+        //}
+
+        //public abstract void Process();
+
+        //public abstract void Process2(AssetWithdrawalRateInfo withdrawalRateInfo);
     }
 }

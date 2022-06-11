@@ -1,9 +1,6 @@
-﻿using Processing.Assets;
-using Processing.Withdrawal;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
-namespace Processing
+namespace Processing.Withdrawal
 {
     /// <summary>
     /// This class provides helper methods for fincanial calculations.
@@ -24,17 +21,18 @@ namespace Processing
             return rateVorschuessig;
         }
 
-        public static (double ratePhaseRent, double ratePhaseStopWork) CalculatePayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent, Func<double, double> calcTaxes)
+        public static (double ratePhaseRent, double ratePhaseStopWork) CalculateGrossPayoutRateWithRent(double startCapital, int yearsStopWorkPhase, int yearsRentPhase, double interestRate, double endCapital, double rent, Func<double, double> calcTaxes)
         {
             double left = 0;
             double right = startCapital;
-            double middle = SparkassenFormel.Middle(left, right);
+            double middle = RentSimMath.Middle(left, right);
 
             int i = 0;
 
             double diff;
-            double ratePhaseRent, ratePhaseStopWork;
-            double ratePhaseRentperMonth, ratePhaseStopWorkperMonth;
+            double ratePhaseRentNet, ratePhaseStopWorkNet;
+            double ratePhaseRentGross, ratePhaseStopWorkGross;
+            //double ratePhaseRentperMonth, ratePhaseStopWorkperMonth;
 
             double taxesRatePhaseStopWork, taxesratePhaseRent;
 
@@ -44,19 +42,21 @@ namespace Processing
             // verbraucht werden dürfen und die Rate würde immernoch under der erwarteten Rente liegen, dann haben wir
             // zu wenig Kapital um eine gleichmäßige Rente zu erzielen.
             var rateCompleteStopWorkPhase = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, endCapital);
-            rateCompleteStopWorkPhase = Math.Round(-rateCompleteStopWorkPhase / 12, 2); //todo: maybe this rounding can be avoided once we migrate from double to decimal
+            rateCompleteStopWorkPhase = Math.Round(-rateCompleteStopWorkPhase / 12d, 2); //todo: maybe this rounding can be avoided once we migrate from double to decimal
             if (rateCompleteStopWorkPhase < rent)
             {
                 throw new Exception($"Vermögen <{startCapital}> mit zu erzielbarem Restkapital von <{endCapital}> reicht nicht zur Mindestrente von <{rent}> aus bei StopWork Phase von <{yearsStopWorkPhase}> Jahren. Erzielbare monatliche Rate wäre maximal <{rateCompleteStopWorkPhase}>.");
             }
 
 
-            if (yearsStopWorkPhase == 0)
-            {
-                ratePhaseRent = SparkassenFormel.BerechneRate(startCapital, yearsRentPhase, interestRate, endCapital);
-                ratePhaseRentperMonth = -ratePhaseRent / 12;
-                return (ratePhaseRentperMonth, 0);
-            }
+            //if (yearsStopWorkPhase == 0)
+            //{
+            //    ratePhaseRent = SparkassenFormel.BerechneRate(startCapital, yearsRentPhase, interestRate, endCapital);
+            //    taxesratePhaseRent = calcTaxes(ratePhaseRent);
+            //    ratePhaseRent -= taxesratePhaseRent;
+            //    ratePhaseRentperMonth = -ratePhaseRent / 12d;
+            //    return (ratePhaseRentperMonth, 0);
+            //}
 
             do
             {
@@ -67,33 +67,33 @@ namespace Processing
                 //zurückliefern, am besten als tuple (nettorate, taxes)
                 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                ratePhaseStopWork = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
-                ratePhaseRent = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
+                ratePhaseStopWorkGross = SparkassenFormel.BerechneRate(startCapital, yearsStopWorkPhase, interestRate, middle);
+                ratePhaseRentGross = SparkassenFormel.BerechneRate(middle, yearsRentPhase, interestRate, endCapital);
 
                 //we have to substract taxes from both rates to be realistic
                 // be careful, tax results are negative numbers
-                taxesRatePhaseStopWork = calcTaxes(ratePhaseStopWork);
-                taxesratePhaseRent = calcTaxes(ratePhaseRent);
+                taxesRatePhaseStopWork = calcTaxes(ratePhaseStopWorkGross);
+                taxesratePhaseRent = calcTaxes(ratePhaseRentGross);
 
-                ratePhaseStopWork -= taxesRatePhaseStopWork;
-                ratePhaseRent -= taxesratePhaseRent;
+                ratePhaseStopWorkNet = ratePhaseStopWorkGross - taxesRatePhaseStopWork;
+                ratePhaseRentNet = ratePhaseRentGross - taxesratePhaseRent;
 
                 //korrektur: auf eine rate muss rente ausaddiert werden
-                double ratePhaseRentplusRent = ratePhaseRent - (rent * 12);
+                double ratePhaseRentplusRent = ratePhaseRentNet - (rent * 12);
 
-                diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWork);
+                diff = Math.Abs(ratePhaseRentplusRent - ratePhaseStopWorkNet);
 
-                if (ratePhaseRentplusRent > ratePhaseStopWork)
+                if (ratePhaseRentplusRent > ratePhaseStopWorkNet)
                 {
                     //Console.WriteLine("Moving to the right! ------>");
                     left = middle;
-                    middle = SparkassenFormel.Middle(left, right);
+                    middle = RentSimMath.Middle(left, right);
                 }
                 else
                 {
                     //Console.WriteLine("<------ Moving to the left!");
                     right = middle;
-                    middle = SparkassenFormel.Middle(left, right);
+                    middle = RentSimMath.Middle(left, right);
                 }
                 //Console.WriteLine("");
             }
@@ -102,17 +102,12 @@ namespace Processing
             //Console.WriteLine("Geschafft! nach iteration " + i);
 
 
-            ratePhaseRentperMonth = -ratePhaseRent / 12;
-            ratePhaseStopWorkperMonth = -ratePhaseStopWork / 12;
-            Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
-            Console.WriteLine($"Tax rate {taxesRatePhaseStopWork} / {taxesratePhaseRent}");
+            var ratePhaseRentperMonth = -ratePhaseRentGross / 12d;
+            var ratePhaseStopWorkperMonth = -ratePhaseStopWorkGross / 12d;
+            //Console.WriteLine($"Rate pro Monat: {ratePhaseStopWorkperMonth} / {ratePhaseRentperMonth} ... bei rente {rent}  und umschwungpunkt {middle}");
+            //Console.WriteLine($"Tax rate {taxesRatePhaseStopWork} / {taxesratePhaseRent}");
 
-            return (ratePhaseRentperMonth, ratePhaseStopWorkperMonth);
-        }
-
-        private static double Middle(double left, double right)
-        {
-            return left + (right - left) / 2;
+            return (ratePhaseRentGross,  ratePhaseStopWorkGross);
         }
     }
 }

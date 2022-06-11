@@ -1,7 +1,13 @@
-﻿@using Processing;
+﻿@*@using Processing;
 @using Processing.Assets;
-@using Processing.Withdrawal; 
+@using Processing.Withdrawal; *@
 @using System.Globalization;
+@using Domain;
+@using Protocol;
+@using Strategy;
+@using Portfolio;
+@using Finance;
+@using System.Collections.ObjectModel
 
 @page "/"
 
@@ -9,16 +15,16 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldAgeEnd" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageEnd" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -32,68 +38,129 @@
         </RadioGroup>
     </FieldBody>
 
-</Field>
+    @code {
+        InterestRateType interestRateType = InterestRateType.Relativ;
+
+        async void OnInterestRateCheckedValueChanged(InterestRateType value)
+        {
+            interestRateType = value;
+            await HandleRedraw();
+        }
+    }
+ </Field>
+
+
+
+
+
 
 <Divider DividerType="DividerType.TextContent" Text="Initial Assets"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldCashSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldStocksSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@FieldMetalsSaveAmount" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
+
+
+
+
+
+
+
 
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Current Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromCurrentAge" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until Rent Start Age):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@FieldNetStateRentFromRentStartAge" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
+
+
+
+
+
+
+
+
+
+<Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+
+</Field>
+
+
+
+
+
+
+
+
+
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @FieldAgeStopWork</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @FieldAgeStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsNetStateRent" DelayTextOnKeyPress="false" /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeStopWork - @FieldAgeRentStart):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageStopWork - @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@FieldAgeRentStart - @FieldAgeEnd):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageRentStart - @lifeAssumptions.ageEnd):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
 
 
 
@@ -102,13 +169,12 @@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4">
-        <LineChart @ref="lineChart" TItem="double" />
+        <LineChart @ref="lineChart" TItem="double"/>
     </Column>
-    <Column ColumnSize="ColumnSize.Is4">
-        @*<BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />*@
-        @* <BarChart @ref="barChart" TItem="double" OptionsJsonString="@myStackedOptions" />*@
-        <BarChart @ref="barChart" TItem="double" OptionsObject="@myScales" />
+   <Column ColumnSize="ColumnSize.Is4">
+        <BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />
     </Column>
+
 </Row>
 
 
@@ -120,56 +186,64 @@
           ReadData="@OnReadData"
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
-    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.age)" Caption="Age" />
+    
+    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.ageAbsolute)" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+    </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="total.yearBegin" Caption="total.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="balanceYearBegin" Caption="Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearBegin" Caption="stocks.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="balanceYearEnd" Caption="Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearEnd)) </DisplayTemplate>
+    </DataGridColumn>
+    @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.invests)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.invests)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.growth)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.growth)) </DisplayTemplate>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearEnd)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.Right>
+    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>
+    </DataGridColumn>*@
 
 </DataGrid>
 
@@ -180,7 +254,10 @@
 
     async Task OnReadData(DataGridReadDataEventArgs<ResultRow> e)
     {
-        totalRows = resultRows.Count; // this is used to tell datagrid how many items are available so that pagination will work
+        // this is used to tell datagrid how many items are available so that pagination will work
+        totalRows = resultRows != null
+            ? resultRows.Count()
+            : 0;
 
         // always call StateHasChanged!
         StateHasChanged();
@@ -194,28 +271,32 @@
 
     async Task LoaderDefault()
     {
-        FieldAgeCurrent = 41;
-        FieldAgeStopWork = 60;
-        FieldAgeRentStart = 67;
-        FieldAgeEnd = 80;
+        //FieldAgeCurrent = 42;
+        //FieldAgeStopWork = 60;
+        //FieldAgeRentStart = 67;
+        //FieldAgeEnd = 80;
 
         interestRateType = InterestRateType.Relativ;
 
-        FieldStocks = 60000;
-        FieldStocksGrowthRate = 7;
-        FieldStocksSaveAmount = 700;
+        //FieldStocks = 88800;
+        //FieldStocksGrowthRate = 7;
+        //FieldStocksSaveAmount = 700;
 
-        FieldCash = 60000;
-        FieldCashGrowthRate = 0;
-        FieldCashSaveAmount = 350;
+        //FieldCash = 58000;
+        //FieldCashGrowthRate = 0;
+        //FieldCashSaveAmount = 350;
 
-        FieldMetals = 20000;
-        FieldMetalsGrowthRate = 1;
-        FieldMetalsSaveAmount = 0;
+        //FieldMetals = 21400;
+        //FieldMetalsGrowthRate = 1;
+        //FieldMetalsSaveAmount = 0;
 
-        //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        FieldNetStateRentFromCurrentAge = 762;
-        FieldNetStateRentFromRentStartAge = 2015;
+        ////https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
+        //FieldNetStateRentFromCurrentAge = 762;
+        //FieldNetStateRentFromRentStartAge = 2015;
+
+        //FieldNeedsNowMinimum = 1575;
+        //FieldNeedsNowComfort = 2200;
+        //FieldInflationRate = 3;
 
         FieldResultsTotalSavingStopWorkAge = "0";
         FieldResultsNetStateRent = "0";
@@ -225,99 +306,166 @@
         await Task.Delay(0);
     }
 
-    public string BeautifyToCurrenctWith2Decimals(double? num)
+    public string BeautifyToCurrenctWith2Decimals(decimal? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", num);
     }
 
-    public string BeautifyToCurrenctWith0Decimals(double? num)
+    public string BeautifyToCurrenctWith0Decimals(decimal? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
     }
 
 }
 
-@code{
-    InterestRateType interestRateType = InterestRateType.Relativ;
 
-    async void OnInterestRateCheckedValueChanged(InterestRateType value)
-    {
-        interestRateType = value;
-        await HandleRedraw();
-    }
-}
 
 @code{
     LineChart<double> lineChart;
     BarChart<double> barChart;
     BarChartOptions dataBarChartOptions;
-    Scales myScales;
-    ResultSet resultSet;
-    List<ResultRow> resultRows = new List<ResultRow>();
-    Portfolio portfolio = null;
+    LineChartOptions dataLineChartOptions;
+    ChartScales myScales;
+    //ResultSet resultSet;
+    IEnumerable<ResultRow> resultRows;
+    //Portfolio portfolio = null;
+
+    //MarketAssumptions marketAssumptions = new();
+    LifeAssumptions lifeAssumptions = new ();
+
 
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
 
-    int FieldAgeCurrent;
-    int FieldAgeStopWork;
-    int FieldAgeRentStart;
-    int FieldAgeEnd;
+    //int FieldAgeCurrent;
+    //int FieldAgeStopWork;
+    //int FieldAgeRentStart;
+    //int FieldAgeEnd;
 
 
-    int FieldStocks;
-    int FieldStocksGrowthRate;
-    int FieldStocksSaveAmount;
+    //int FieldStocks;
+    //int FieldStocksGrowthRate;
+    //int FieldStocksSaveAmount;
 
-    int FieldCash;
-    int FieldCashGrowthRate;
-    int FieldCashSaveAmount;
+    //int FieldCash;
+    //int FieldCashGrowthRate;
+    //int FieldCashSaveAmount;
 
-    int FieldMetals;
-    int FieldMetalsGrowthRate;
-    int FieldMetalsSaveAmount;
+    //int FieldMetals;
+    //int FieldMetalsGrowthRate;
+    //int FieldMetalsSaveAmount;
 
-    int FieldNetStateRentFromCurrentAge;
-    int FieldNetStateRentFromRentStartAge;
+    //int FieldNetStateRentFromCurrentAge;
+    //int FieldNetStateRentFromRentStartAge;
+
+    //int FieldNeedsNowMinimum;
+    //int FieldNeedsNowComfort;
+    //int FieldInflationRate;
+
+    string FieldNeedsRentStartMinimum;
+    string FieldNeedsRentStartComfort;
 
     string FieldResultsTotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
     string FieldResultsRatePhaseRent;
     string FieldResultsRatePhaseStopWork;
 
+    string FieldNetRentAgeStopWork;
+
     async Task HandleRedraw()
     {
-        Input input = new Input();
-        input.ageCurrent = FieldAgeCurrent;
-        input.ageStopWork = FieldAgeStopWork;
-        input.ageRentStart = FieldAgeRentStart;
-        input.ageEnd = FieldAgeEnd;
+        //Input input = new Input();
+        //input.ageCurrent = FieldAgeCurrent;
+        //input.ageStopWork = FieldAgeStopWork;
+        //input.ageRentStart = FieldAgeRentStart;
+        //input.ageEnd = FieldAgeEnd;
 
-        input.interestRateType = interestRateType;
+        //input.interestRateType = interestRateType;
 
-        input.stocks = FieldStocks;
-        input.stocksGrowthRate = FieldStocksGrowthRate;
-        input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
+        //input.stocks = FieldStocks;
+        //input.stocksGrowthRate = FieldStocksGrowthRate;
+        //input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
 
-        input.cash = FieldCash;
-        input.cashGrowthRate = FieldCashGrowthRate;
-        input.cashMonthlyInvestAmount = FieldCashSaveAmount;
+        //input.cash = FieldCash;
+        //input.cashGrowthRate = FieldCashGrowthRate;
+        //input.cashMonthlyInvestAmount = FieldCashSaveAmount;
 
-        input.metals = FieldMetals;
-        input.metalsGrowthRate = FieldMetalsGrowthRate;
-        input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
+        //input.metals = FieldMetals;
+        //input.metalsGrowthRate = FieldMetalsGrowthRate;
+        //input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
 
-        input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
-        input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
+        //input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
+        //input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
 
-        portfolio = new Portfolio(input);
-        portfolio.Process();
+        //input.NeedsNowMinimum = FieldNeedsNowMinimum;
+        //input.NeedsNowComfort = FieldNeedsNowComfort;
+
+        //FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
+        //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
+
+
+        Age.SetCurrent(lifeAssumptions.ageCurrent);
+
+        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(
+            Inflation.Calc(
+                lifeAssumptions.ageCurrent, 
+                lifeAssumptions.ageRentStart, 
+                lifeAssumptions.needsCurrentAgeMinimal, 
+                lifeAssumptions.inflationRate));
+
+        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
+            Inflation.Calc(
+                lifeAssumptions.ageCurrent, 
+                lifeAssumptions.ageRentStart, 
+                lifeAssumptions.needsCurrentAgeComfort, 
+                lifeAssumptions.inflationRate));
+
+        FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
+            RentCalculator.ApproxNetRent(
+                lifeAssumptions.ageCurrent,
+                0,
+                lifeAssumptions.ageRentStart,
+                0,
+                lifeAssumptions.ageStopWork));
+
+        IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+
+        var portfolio = new AssetPortfolio(lifeAssumptions);
+
+        var savingStrategy = new SavingStrategy(
+            portfolio,
+            lifeAssumptions,
+            protocolWriter);
+
+        savingStrategy.Process();
+
+        var rentStartStrategy = new RentStartStrategy(
+            portfolio,
+            lifeAssumptions,
+            protocolWriter);
+
+        rentStartStrategy.Process(2000);
+        
+
+
+        //portfolio.Process();
+
+        resultRows = protocolWriter.Protocol;
+
+
+
+
+
+
+
+
+
 
         //results
-        int index = FieldAgeStopWork - FieldAgeCurrent;
-        double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
-        FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
-        double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
-        FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
+        //int index = FieldAgeStopWork - FieldAgeCurrent;
+        //double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
+        //FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
+        //double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
+        //FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
 
         //double averageGrowthRate = portfolio.GetAverageGrowthRate();
         //(double ratePhaseRent, double ratePhaseStopWork) = SparkassenFormel.CalculatePayoutRateWithRent(
@@ -330,89 +478,101 @@
         //    calcTaxes: portfolio.WithdrawalStrategy.SimulateTaxesAtWithdrawal
         //);
 
+        //portfolio.WithdrawalStrategy.Calculate();
+        //var withdrawalResults = portfolio.WithdrawalStrategy.GetResults();
+        //double ratePhaseStopWork = withdrawalResults.Total.RateStopWorkNet;
+        //double ratePhaseRent = withdrawalResults.Total.RateRentStartNet;
 
-        double ratePhaseStopWork = portfolio.WithdrawalStrategy.GetWithdrawalAmount(input.ageStopWork);
-        double ratePhaseRent = ratePhaseStopWork - (approxStopWorkAgeNetRent * 12);
+        //FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
+        //FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
-        FieldResultsRatePhaseRent = BeautifyToCurrenctWith0Decimals(ratePhaseRent/12d);
-        FieldResultsRatePhaseStopWork = BeautifyToCurrenctWith0Decimals(ratePhaseStopWork/12d);
 
-        portfolio.Process2();
-
-        resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
-        resultRows = resultSet.ProcessAssets();
+        //resultSet = new ResultSet(input, portfolio.Cash, portfolio.Stocks, portfolio.Metals, portfolio.Total);
+        //resultRows = resultSet.ProcessAssets();
         //resultRows = rSet.ProcessAssets();//.OrderByDescending(x => x.age).ToList();
 
 
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(input.ageCurrent, input.ageRentStart - input.ageCurrent + 1)
-            .ToArray()
-            .Select(x => x.ToString())
-            .ToArray();
+        //string[] labels = Enumerable.Range(input.ageCurrent, input.ageEnd - input.ageCurrent + 1)
+        //    .ToArray()
+        //    .Select(x => x.ToString())
+        //    .ToArray();
 
-        LineChartDataset<double> data = new LineChartDataset<double>
-        {
-            BackgroundColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 0.5f) },
-            Label = "Total",
-            BorderColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 1f) },
-            Fill = true,
-            PointRadius = 2,
-            BorderDash = new List<int> { },
-            //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
-            Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //LineChartDataset<double> data = new LineChartDataset<double>
+        //{
+        //    BackgroundColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 0.5f) },
+        //    Label = "Total",
+        //    BorderColor = new List<string> { ChartColor.FromRgba(51, 153, 102, 1f) },
+        //    Fill = true,
+        //    PointRadius = 2,
+        //    BorderDash = new List<int> { },
+        //    //Data = resultRows.Select(x => x.total.yearBegin).ToList(),
+        //    Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
-        BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
-            Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
-            Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
+        //    Label = "Cash",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
-        BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-            Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-            Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
+        //    Label = "Stocks",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
-        BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
-        {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
-            Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
-            Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
-        };
+        //BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
+        //{
+        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
+        //    Label = "Metals",
+        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
+        //    Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
+        //};
 
 
-        dataBarChartOptions = new BarChartOptions()
-        {
-            Scales = new Scales
-            {
-                //XAxes = new List<Axis> { new Axis { Stacked = true} },
-                //YAxes = new List<Axis> { new Axis { Stacked = true} },
-                XAxes = new List<Axis>() { new Axis { Stacked = true } },
-                YAxes = new List<Axis>() { new Axis { Stacked = true } },
-            },
-        };
+        //dataBarChartOptions = new BarChartOptions()
+        //{
 
-        myScales = new Scales
-        {
-            //XAxes = new List<Axis> { new Axis { Stacked = true} },
-            //YAxes = new List<Axis> { new Axis { Stacked = true} },
-            XAxes = new List<Axis>() { new Axis { Stacked = true } },
-            YAxes = new List<Axis>() { new Axis { Stacked = true } },
-        };
+        //    Scales = new ChartScales
+        //    {
+        //        //XAxes = new List<Axis> { new Axis { Stacked = true} },
+        //        //YAxes = new List<Axis> { new Axis { Stacked = true} },
+        //        //X = new List<Axis>() { new Axis { Stacked = true } },
+        //        //YAxes = new List<Axis>() { new Axis { Stacked = true } },
+        //        X = new ChartAxis { Stacked = true },
+        //        Y = new ChartAxis { Stacked = true }
 
-        await lineChart.Clear();
-        await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
+        //    },
+        //};
 
-        await barChart.Clear();
-        await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
+        //dataLineChartOptions = new LineChartOptions()
+        //{
+        //    Scales = new ChartScales
+        //    {
+        //        X = new ChartAxis { Stacked = true },
+        //        Y = new ChartAxis { Stacked = true }
+
+        //    },
+        //};
+
+        //myScales = new ChartScales
+        //{
+        //    X = new ChartAxis { Stacked = true },
+        //    Y = new ChartAxis { Stacked = true }
+        //};
+
+        //await lineChart.Clear();
+        //await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
+
+        //await barChart.Clear();
+        //await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
 
     }
 }
