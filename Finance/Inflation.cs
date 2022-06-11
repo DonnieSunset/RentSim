@@ -2,20 +2,22 @@
 {
     public static class Inflation
     {
-        public static decimal Calc(int startAge, int endAge, decimal amount, double inflationRateFactor)
+        public static decimal Calc(int startAge, int endAge, decimal amount, double inflationRate)
         {
-            return Calc(endAge - startAge, amount, inflationRateFactor);
+            return Calc(endAge - startAge, amount, inflationRate);
         }
 
 
-        public static decimal Calc(int numYears, decimal amount, double inflationRateFactor)
+        public static decimal Calc(int numYears, decimal amount, double inflationRate)
         {
-            if (inflationRateFactor < 1 || inflationRateFactor >= 2)
+            double inflationFactor = inflationRate + 1;
+
+            if (inflationFactor < 1 || inflationFactor >= 2)
             {
-                throw new ArgumentException($"{nameof(inflationRateFactor)}: {inflationRateFactor}");
+                throw new ArgumentException($"{nameof(inflationFactor)}: {inflationFactor}");
             }
 
-            double finalInflationFactor = Math.Pow(inflationRateFactor, numYears);
+            double finalInflationFactor = Math.Pow(inflationFactor, numYears);
             return amount * (decimal)finalInflationFactor;
         }
     }

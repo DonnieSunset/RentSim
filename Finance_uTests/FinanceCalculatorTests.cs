@@ -88,7 +88,7 @@ namespace Finance_uTests
                 ageCurrent:42,
                 ageRentStart:67,
                 ageEnd:80,
-                inflationRate:1.03d,
+                inflationRate:0.03d,
                 needsCurrentAgeMinimal_perMonth:1900,
                 needsCurrentAgeComfort_perMonth:2600,
                 interestRate_Cash:0m,

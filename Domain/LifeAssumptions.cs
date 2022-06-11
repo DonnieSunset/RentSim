@@ -25,7 +25,7 @@
         public decimal needsCurrentAgeMinimal = 1900;
         public decimal needsCurrentAgeComfort = 2600;
 
-        public double inflationRate = 1.03d;
+        public double inflationRate = 0.03d;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
         private decimal netStateRentFromCurrentAge_perMonth = 827;
