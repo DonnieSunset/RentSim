@@ -45,7 +45,7 @@ namespace Strategy
             myProtocolWriter = protocolWriter;
         }
 
-        public void Process(decimal neededMonthlyAmount)
+        public void Process()
         {
             //initial cash amount
             //myProtocolWriter.LogBalanceYearBegin(
@@ -55,13 +55,13 @@ namespace Strategy
 
             for (int i = myLifeAssumptions.ageRentStart; i < myLifeAssumptions.ageEnd; i++)
             {
-                Age age = Age.NewByAbsoluteAge(i);
+                //Age age = Age.NewByAbsoluteAge(i);
 
-                TransactionDetails transAction = myPortfolio.WithdrawCash(neededMonthlyAmount * 12);
-                myProtocolWriter.Log(age, transAction);
+                //TransactionDetails transAction = myPortfolio.WithdrawCash(neededMonthlyAmount * 12);
+                //myProtocolWriter.Log(age, transAction);
 
-                transAction = myPortfolio.GetInterestsForCash();
-                myProtocolWriter.Log(age, transAction);
+                //transAction = myPortfolio.GetInterestsForCash();
+                //myProtocolWriter.Log(age, transAction);
             }
         }
     }

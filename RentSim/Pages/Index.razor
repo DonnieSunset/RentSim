@@ -332,6 +332,7 @@
 
     //MarketAssumptions marketAssumptions = new();
     LifeAssumptions lifeAssumptions = new ();
+    Inflation myRentStartInflation;
 
 
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
@@ -402,22 +403,14 @@
         //FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
         //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
 
-
+        myRentStartInflation = new Inflation(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.inflationRate);
         Age.SetCurrent(lifeAssumptions.ageCurrent);
 
         FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(
-            Inflation.Calc(
-                lifeAssumptions.ageCurrent, 
-                lifeAssumptions.ageRentStart, 
-                lifeAssumptions.needsCurrentAgeMinimal, 
-                lifeAssumptions.inflationRate));
+            myRentStartInflation.Calc(lifeAssumptions.needsCurrentAgeMinimal));
 
         FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
-            Inflation.Calc(
-                lifeAssumptions.ageCurrent, 
-                lifeAssumptions.ageRentStart, 
-                lifeAssumptions.needsCurrentAgeComfort, 
-                lifeAssumptions.inflationRate));
+            myRentStartInflation.Calc(lifeAssumptions.needsCurrentAgeComfort));
 
         FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
             RentCalculator.ApproxNetRent(
@@ -431,19 +424,19 @@
 
         var portfolio = new AssetPortfolio(lifeAssumptions);
 
-        var savingStrategy = new SavingStrategy(
-            portfolio,
-            lifeAssumptions,
-            protocolWriter);
+        //var savingStrategy = new SavingStrategy(
+        //    portfolio,
+        //    lifeAssumptions,
+        //    protocolWriter);
 
-        savingStrategy.Process();
+        //savingStrategy.Process();
 
         var rentStartStrategy = new RentStartStrategy(
             portfolio,
             lifeAssumptions,
             protocolWriter);
 
-        rentStartStrategy.Process(2000);
+        rentStartStrategy.Process();
         
 
 
