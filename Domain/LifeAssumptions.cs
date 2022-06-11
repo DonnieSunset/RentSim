@@ -31,9 +31,9 @@
         private decimal netStateRentFromCurrentAge_perMonth = 827;
         private decimal netStateRentFromRentStartAge_perMonth = 2025;
 
-        public decimal rentPhase_InterestRate_Cash = 0.01m;
+        public decimal rentPhase_InterestRate_Cash = 0m;
         public decimal rentPhase_InterestRate_Stocks_GoodCase = 0.06m;
-        public decimal rentPhase_InterestRate_Stocks_BadCase = 0.01m;
+        public decimal rentPhase_InterestRate_Stocks_BadCase = 0m;
         public decimal rentPhase_CrashFactor_Stocks_BadCase = 0.5m;
 
         public decimal taxFactor_Stocks = 1.26m;
