@@ -129,7 +129,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" DelayTextOnKeyPress="false" Step=0.01m/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@Field_RentPhaseInputData_InflationRate" DelayTextOnKeyPress="false" Step=0.01m onchange="@HandleRedraw()"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -161,6 +161,50 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
+
+
+
+
+<Divider DividerType="DividerType.TextContent" Text="Rent Phase"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Savings Needed: </FieldLabel>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Cash </FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_SavingsNeededCash" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Stocks</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_SavingsNeededStocks" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_SavingsNeededTotal" DelayTextOnKeyPress="false" /> </FieldBody>
+</Field>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Good Case: </FieldLabel>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Rate Cash pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_GoodCase_RateCash"  DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Rate Stocks pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_GoodCase_RateStocks"  DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Taxes pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_GoodCase_Taxes"  DelayTextOnKeyPress="false" /> </FieldBody>
+</Field>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Bad Case: </FieldLabel>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Rate Cash pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_BadCase_RateCash"  DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Rate Stocks pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_BadCase_RateStocks"  DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Taxes pY</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_RentPhaseResult_BadCase_Taxes"  DelayTextOnKeyPress="false" /> </FieldBody>
+</Field>
 
 
 
@@ -332,6 +376,8 @@
 
     //MarketAssumptions marketAssumptions = new();
     LifeAssumptions lifeAssumptions = new ();
+    RentPhaseResult myRentPhaseResult = new ();
+    
     Inflation myRentStartInflation;
 
 
@@ -362,6 +408,16 @@
     //int FieldNeedsNowComfort;
     //int FieldInflationRate;
 
+    //string Field_RentPhaseResult_RateCash {
+    //    get
+    //    { 
+    //        return BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);    
+    //    }
+    //    set { }
+    //}
+
+
+
     string FieldNeedsRentStartMinimum;
     string FieldNeedsRentStartComfort;
 
@@ -371,6 +427,34 @@
     string FieldResultsRatePhaseStopWork;
 
     string FieldNetRentAgeStopWork;
+
+    // Input data must have getter and setter becasue they can be changed via the UI, thus have bi-directional binding
+    double Field_RentPhaseInputData_InflationRate
+    {
+        get { return lifeAssumptions.inflationRate; }
+        set { lifeAssumptions.inflationRate = value; }
+    }
+
+    string Field_RentPhaseResult_GoodCase_RateCash;
+    string Field_RentPhaseResult_GoodCase_RateStocks;
+    string Field_RentPhaseResult_GoodCase_Taxes;
+    string Field_RentPhaseResult_BadCase_RateCash;
+    string Field_RentPhaseResult_BadCase_RateStocks;
+    string Field_RentPhaseResult_BadCase_Taxes;
+    string Field_RentPhaseResult_SavingsNeededCash;
+    string Field_RentPhaseResult_SavingsNeededStocks;
+    string Field_RentPhaseResult_SavingsNeededTotal;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // execute conditionally for loading data, otherwise this will load
+        // every time the page refreshes
+        if(firstRender)
+        {
+            // Do work to load page data and set properties
+            HandleRedraw();
+        }
+    }
 
     async Task HandleRedraw()
     {
@@ -412,6 +496,7 @@
         FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
             myRentStartInflation.Calc(lifeAssumptions.needsCurrentAgeComfort));
 
+        //??? was sollen die nullen
         FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
             RentCalculator.ApproxNetRent(
                 lifeAssumptions.ageCurrent,
@@ -431,13 +516,26 @@
 
         //savingStrategy.Process();
 
+        RentPhaseInputData rentPhase = lifeAssumptions.RentPhase;
+        myRentPhaseResult = FinanceCalculator.CalculateRentPhaseResult(
+                rentPhase.InterestRate_Stocks_GoodCase,
+                rentPhase.InterestRate_Stocks_BadCase,
+                rentPhase.InterestRate_Cash,
+                rentPhase.DurationInYears,
+                rentPhase.NeedsComfort_PerYear,
+                rentPhase.NeedsMinimum_PerYear,
+                rentPhase.CrashFactor_Stocks_BadCase,
+                rentPhase.TaxFactor_Stocks
+                );
+
+
         var rentStartStrategy = new RentStartStrategy(
             portfolio,
-            lifeAssumptions,
+            rentPhase,
             protocolWriter);
 
         rentStartStrategy.Process();
-        
+
 
 
         //portfolio.Process();
@@ -450,8 +548,17 @@
 
 
 
+        Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
+        Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
+        Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);
+        Field_RentPhaseResult_BadCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
+        Field_RentPhaseResult_BadCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_BadCase);
+        Field_RentPhaseResult_BadCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_BadCase);
+        Field_RentPhaseResult_SavingsNeededCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash);
+        Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Stocks);
+        Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash + myRentPhaseResult.total_Stocks);
 
-
+        Console.WriteLine("SH: " + Field_RentPhaseResult_GoodCase_RateCash);
 
         //results
         //int index = FieldAgeStopWork - FieldAgeCurrent;

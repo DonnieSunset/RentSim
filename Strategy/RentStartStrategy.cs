@@ -36,12 +36,12 @@ namespace Strategy
     {
         private AssetPortfolio myPortfolio;
         private IProtocolWriter myProtocolWriter;
-        private LifeAssumptions myLifeAssumptions;
+        private RentPhaseInputData myRentPhaseInputData;
 
-        public RentStartStrategy(AssetPortfolio portfolio, LifeAssumptions lifeAssumptions, IProtocolWriter protocolWriter)
+        public RentStartStrategy(AssetPortfolio portfolio, RentPhaseInputData rentPhaseInputData, IProtocolWriter protocolWriter)
         {
             myPortfolio = portfolio;
-            myLifeAssumptions = lifeAssumptions;
+            myRentPhaseInputData = rentPhaseInputData;
             myProtocolWriter = protocolWriter;
         }
 
@@ -53,7 +53,8 @@ namespace Strategy
             //    myLifeAssumptions.cash
             //    );
 
-            for (int i = myLifeAssumptions.ageRentStart; i < myLifeAssumptions.ageEnd; i++)
+
+            for (int i = myRentPhaseInputData.AgeRentStart; i < myRentPhaseInputData.AgeEnd; i++)
             {
                 //Age age = Age.NewByAbsoluteAge(i);
 

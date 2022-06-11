@@ -40,25 +40,32 @@
 
 
         //public Rent Rent { get; private set; }
-        public RentPhaseInputData RentPhase { get; private set; }
+        public RentPhaseInputData RentPhase 
+        {
+            get 
+            {
+                return new RentPhaseInputData(
+                    ageCurrent,
+                    ageRentStart,
+                    ageEnd,
+                    inflationRate,
+                    needsCurrentAgeMinimal,
+                    needsCurrentAgeComfort,
+                    rentPhase_InterestRate_Cash,
+                    rentPhase_InterestRate_Stocks_GoodCase,
+                    rentPhase_InterestRate_Stocks_BadCase,
+                    rentPhase_CrashFactor_Stocks_BadCase,
+                    netStateRentFromRentStartAge_perMonth,
+                    taxFactor_Stocks
+                    );
+            }
+            //private set { }; 
+        }
 
         public LifeAssumptions()
         {
             ///Rent phases will get their flat data here. In the constructor, they create the more complex structures that reqire calculations..
-            RentPhase = new RentPhaseInputData(
-                ageCurrent,
-                ageRentStart,
-                ageEnd,
-                inflationRate,
-                needsCurrentAgeMinimal,
-                needsCurrentAgeComfort,
-                rentPhase_InterestRate_Cash,
-                rentPhase_InterestRate_Stocks_GoodCase,
-                rentPhase_InterestRate_Stocks_BadCase,
-                rentPhase_CrashFactor_Stocks_BadCase,
-                netStateRentFromRentStartAge_perMonth,
-                taxFactor_Stocks
-                );
+
             //{
                 //InterestRate_Cash = rentPhase_InterestRate_Cash,
                 //InterestRate_Stocks_BadCase = rentPhase_InterestRate_Stocks_BadCase,

@@ -20,6 +20,8 @@ namespace Domain
             )
         {
             DurationInYears = ageEnd - ageRentStart;
+            AgeRentStart = ageRentStart;
+            AgeEnd = ageEnd;
             int inflationYears = ageRentStart - ageCurrent;
 
             NeedsMinimum_PerMonth = Inflation.Calc(inflationYears, needsCurrentAgeMinimal_perMonth, inflationRate);
@@ -42,6 +44,8 @@ namespace Domain
         public decimal NeedsComfort_PerYear => NeedsComfort_PerMonth * 12;
         public decimal NeedsComfort_PerPhase => NeedsComfort_PerYear * DurationInYears;
 
+        public int AgeRentStart { get; private set; }
+        public int AgeEnd { get; private set; }
         public int DurationInYears { get; private set; }
 
         public decimal InterestRate_Cash { get; private set; }
