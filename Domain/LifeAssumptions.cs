@@ -1,4 +1,6 @@
-﻿namespace Domain
+﻿using Finance;
+
+namespace Domain
 {
     /// <summary>
     /// This class holds all input data in a flat hierarchy
@@ -28,8 +30,8 @@
         public double inflationRate = 0.03d;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        private decimal netStateRentFromCurrentAge_perMonth = 827;
-        private decimal netStateRentFromRentStartAge_perMonth = 2025;
+        public decimal netStateRentFromCurrentAge_perMonth = 827;
+        public decimal netStateRentFromRentStartAge_perMonth = 2025;
 
         public decimal rentPhase_InterestRate_Cash = 0m;
         public decimal rentPhase_InterestRate_Stocks_GoodCase = 0.06m;
@@ -38,29 +40,42 @@
 
         public decimal taxFactor_Stocks = 1.26m;
 
+        //public decimal NetStateRentFromStopWorkAge_perMonth
+        //{
+        //    get
+        //    {
+        //        return RentCalculator.ApproxNetRent(
+        //            ageCurrent,
+        //            netStateRentFromCurrentAge_perMonth,
+        //            ageRentStart,
+        //            netStateRentFromRentStartAge_perMonth,
+        //            ageStopWork);
+        //    }
+        //}
+
 
         //public Rent Rent { get; private set; }
-        public RentPhaseInputData RentPhase 
-        {
-            get 
-            {
-                return new RentPhaseInputData(
-                    ageCurrent,
-                    ageRentStart,
-                    ageEnd,
-                    inflationRate,
-                    needsCurrentAgeMinimal,
-                    needsCurrentAgeComfort,
-                    rentPhase_InterestRate_Cash,
-                    rentPhase_InterestRate_Stocks_GoodCase,
-                    rentPhase_InterestRate_Stocks_BadCase,
-                    rentPhase_CrashFactor_Stocks_BadCase,
-                    netStateRentFromRentStartAge_perMonth,
-                    taxFactor_Stocks
-                    );
-            }
-            //private set { }; 
-        }
+        //public RentPhaseInputData RentPhase 
+        //{
+        //    get 
+        //    {
+        //        return new RentPhaseInputData(
+        //            ageCurrent,
+        //            ageRentStart,
+        //            ageEnd,
+        //            inflationRate,
+        //            needsCurrentAgeMinimal,
+        //            needsCurrentAgeComfort,
+        //            rentPhase_InterestRate_Cash,
+        //            rentPhase_InterestRate_Stocks_GoodCase,
+        //            rentPhase_InterestRate_Stocks_BadCase,
+        //            rentPhase_CrashFactor_Stocks_BadCase,
+        //            NetStateRentFromStopWorkAge_perMonth,
+        //            taxFactor_Stocks
+        //            );
+        //    }
+        //    //private set { }; 
+        //}
 
         public LifeAssumptions()
         {

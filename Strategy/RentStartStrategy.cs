@@ -34,16 +34,16 @@ namespace Strategy
 
     public class RentStartStrategy
     {
-        private AssetPortfolio myPortfolio;
-        private IProtocolWriter myProtocolWriter;
-        private RentPhaseInputData myRentPhaseInputData;
+        //private AssetPortfolio myPortfolio;
+        //private IProtocolWriter myProtocolWriter;
+        //private RentPhaseInputData myRentPhaseInputData;
 
-        public RentStartStrategy(AssetPortfolio portfolio, RentPhaseInputData rentPhaseInputData, IProtocolWriter protocolWriter)
-        {
-            myPortfolio = portfolio;
-            myRentPhaseInputData = rentPhaseInputData;
-            myProtocolWriter = protocolWriter;
-        }
+        //public RentStartStrategy(AssetPortfolio portfolio, RentPhaseInputData rentPhaseInputData, IProtocolWriter protocolWriter)
+        //{
+        //    myPortfolio = portfolio;
+        //    myRentPhaseInputData = rentPhaseInputData;
+        //    myProtocolWriter = protocolWriter;
+        //}
 
         public void Process()
         {
@@ -54,16 +54,16 @@ namespace Strategy
             //    );
 
 
-            for (int i = myRentPhaseInputData.AgeRentStart; i < myRentPhaseInputData.AgeEnd; i++)
-            {
-                //Age age = Age.NewByAbsoluteAge(i);
+            //for (int i = myRentPhaseInputData.AgeRentStart; i < myRentPhaseInputData.AgeEnd; i++)
+            //{
+            //    //Age age = Age.NewByAbsoluteAge(i);
 
-                //TransactionDetails transAction = myPortfolio.WithdrawCash(neededMonthlyAmount * 12);
-                //myProtocolWriter.Log(age, transAction);
+            //    //TransactionDetails transAction = myPortfolio.WithdrawCash(neededMonthlyAmount * 12);
+            //    //myProtocolWriter.Log(age, transAction);
 
-                //transAction = myPortfolio.GetInterestsForCash();
-                //myProtocolWriter.Log(age, transAction);
-            }
+            //    //transAction = myPortfolio.GetInterestsForCash();
+            //    //myProtocolWriter.Log(age, transAction);
+            //}
         }
     }
 }

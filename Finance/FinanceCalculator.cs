@@ -1,4 +1,6 @@
-﻿namespace Finance
+﻿using Finance.Results;
+
+namespace Finance
 {
     public class FinanceCalculator
     {

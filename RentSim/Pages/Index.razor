@@ -3,6 +3,7 @@
 @using Processing.Withdrawal; *@
 @using System.Globalization;
 @using Domain;
+@using Finance.Results
 @using Protocol;
 @using Strategy;
 @using Portfolio;
@@ -101,13 +102,13 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw()"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw()"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 
@@ -375,10 +376,13 @@
     //Portfolio portfolio = null;
 
     //MarketAssumptions marketAssumptions = new();
-    LifeAssumptions lifeAssumptions = new ();
-    RentPhaseResult myRentPhaseResult = new ();
-    
-    Inflation myRentStartInflation;
+    LifeAssumptions lifeAssumptions = new();
+    //NetRentResultData myNetRentResultData = new();
+    RentPhaseResult myRentPhaseResult = new();
+    StateRentResult myStateRentResult = new();
+    LaterNeedsResult myLaterNeedsResult = new();
+
+    //Inflation myRentStartInflation;
 
 
     string myStackedOptions = "{\"scales\": {\"xAxes\": [{\"stacked\": true}],\"yAxes\": [{\"stacked\": true}]}}";
@@ -426,15 +430,33 @@
     string FieldResultsRatePhaseRent;
     string FieldResultsRatePhaseStopWork;
 
-    string FieldNetRentAgeStopWork;
+    string FieldNetRentAgeFromStopWork_perMonth;
 
-    // Input data must have getter and setter becasue they can be changed via the UI, thus have bi-directional binding
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // INPUT DATA
+    // Input data must have getter and setter because they can be changed via the UI, thus have bi-directional binding
     double Field_RentPhaseInputData_InflationRate
     {
         get { return lifeAssumptions.inflationRate; }
         set { lifeAssumptions.inflationRate = value; }
     }
 
+    //decimal Field_InputData_NetStateRent_FromCurrentAge_PerMonth
+    //{
+    //    get { return lifeAssumptions.netStateRentFromCurrentAge_perMonth; }
+    //    set { lifeAssumptions.netStateRentFromCurrentAge_perMonth = value; }
+    //}
+
+    //decimal Field_InputData_NetStateRent_FromRentStartAge_PerMonth
+    //{
+    //    get { return lifeAssumptions.netStateRentFromRentStartAge_perMonth; }
+    //    set { lifeAssumptions.netStateRentFromRentStartAge_perMonth = value; }
+    //}
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // RESULT DATA
     string Field_RentPhaseResult_GoodCase_RateCash;
     string Field_RentPhaseResult_GoodCase_RateStocks;
     string Field_RentPhaseResult_GoodCase_Taxes;
@@ -487,23 +509,19 @@
         //FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
         //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
 
-        myRentStartInflation = new Inflation(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.inflationRate);
+
         Age.SetCurrent(lifeAssumptions.ageCurrent);
 
-        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(
-            myRentStartInflation.Calc(lifeAssumptions.needsCurrentAgeMinimal));
+        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear);
+        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear);
+        
+        /////////////////////////////////
+        //Net state Rent @ Stop Work Age
 
-        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(
-            myRentStartInflation.Calc(lifeAssumptions.needsCurrentAgeComfort));
 
-        //??? was sollen die nullen
-        FieldNetRentAgeStopWork = BeautifyToCurrenctWith0Decimals(
-            RentCalculator.ApproxNetRent(
-                lifeAssumptions.ageCurrent,
-                0,
-                lifeAssumptions.ageRentStart,
-                0,
-                lifeAssumptions.ageStopWork));
+
+        FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(
+            myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
@@ -516,25 +534,51 @@
 
         //savingStrategy.Process();
 
-        RentPhaseInputData rentPhase = lifeAssumptions.RentPhase;
+        //NetRentInputData netRentInputData = lifeAssumptions.NetRent;
+        //myNetRentResultData = RentCalculator.ApproxNetRent(
+        //    netRentInputData.AgeCurrent,
+        //    netRentInputData.NetRentAgeCurrent,
+        //    netRentInputData.AgeRentStart,
+        //    netRentInputData.NetRentAgeRentStart,
+        //    netRentInputData.AgeStopWork
+        //);
+
+        //todo: this is diuplicated code 
+        myStateRentResult = RentCalculator.ApproxStateRent(
+            lifeAssumptions.ageCurrent,
+            lifeAssumptions.netStateRentFromCurrentAge_perMonth,
+            lifeAssumptions.ageRentStart,
+            lifeAssumptions.netStateRentFromRentStartAge_perMonth,
+            lifeAssumptions.ageStopWork
+        );
+
+        myLaterNeedsResult = RentCalculator.CalculateLaterNeeds(
+            lifeAssumptions.ageCurrent,
+            lifeAssumptions.ageRentStart,
+            lifeAssumptions.inflationRate,
+            lifeAssumptions.needsCurrentAgeMinimal,
+            lifeAssumptions.needsCurrentAgeComfort,
+            myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
+        );
+
         myRentPhaseResult = FinanceCalculator.CalculateRentPhaseResult(
-                rentPhase.InterestRate_Stocks_GoodCase,
-                rentPhase.InterestRate_Stocks_BadCase,
-                rentPhase.InterestRate_Cash,
-                rentPhase.DurationInYears,
-                rentPhase.NeedsComfort_PerYear,
-                rentPhase.NeedsMinimum_PerYear,
-                rentPhase.CrashFactor_Stocks_BadCase,
-                rentPhase.TaxFactor_Stocks
-                );
+            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+            lifeAssumptions.rentPhase_InterestRate_Cash,
+            lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
+            myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear,
+            myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear,
+            lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+            lifeAssumptions.taxFactor_Stocks
+        );
 
 
-        var rentStartStrategy = new RentStartStrategy(
-            portfolio,
-            rentPhase,
-            protocolWriter);
+        //var rentStartStrategy = new RentStartStrategy(
+        //    portfolio,
+        //    rentPhase,
+        //    protocolWriter);
 
-        rentStartStrategy.Process();
+        //rentStartStrategy.Process();
 
 
 
