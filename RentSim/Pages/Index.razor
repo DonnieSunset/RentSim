@@ -133,10 +133,10 @@
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@Field_RentPhaseInputData_InflationRate" DelayTextOnKeyPress="false" Step=0.01m onchange="@HandleRedraw()"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 
 </Field>
 
@@ -422,8 +422,8 @@
 
 
 
-    string FieldNeedsRentStartMinimum;
-    string FieldNeedsRentStartComfort;
+    string FieldNeedsRentStartMinimum_perMonth;
+    string FieldNeedsRentStartComfort_perMonth;
 
     string FieldResultsTotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
@@ -512,8 +512,8 @@
 
         Age.SetCurrent(lifeAssumptions.ageCurrent);
 
-        FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear);
-        FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear);
+        FieldNeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
+        FieldNeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
         
         /////////////////////////////////
         //Net state Rent @ Stop Work Age
