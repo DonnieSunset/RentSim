@@ -1,6 +1,6 @@
 ﻿
 using Domain;
-using Finance;
+using Protocol;
 
 namespace Portfolio
 {
@@ -26,27 +26,27 @@ namespace Portfolio
             };
         }
 
-        public TransactionDetails WithdrawCash(decimal amount)
-        {
-            myCash.Withdraw(amount);
+        //public TransactionDetails WithdrawCash(decimal amount)
+        //{
+        //    myCash.Withdraw(amount);
 
-            return new TransactionDetails()
-            {
-                cashDeposits = -amount,
-            };
-        }
+        //    return new TransactionDetails()
+        //    {
+        //        cashDeposits = -amount,
+        //    };
+        //}
 
-        public TransactionDetails GetInterestsForCash()
-        {
-            decimal amount = InterestCalculator.GetInterestsFor(myCash.Total, myCash.InterestsPercent);
+        //public TransactionDetails GetInterestsForCash()
+        //{
+        //    //decimal amount = InterestCalculator.GetInterestsFor(myCash.Total, myCash.InterestsPercent);
 
-            myCash.ApplyInterests(amount);
+        //    //myCash.ApplyInterests(amount);
 
-            return new TransactionDetails()
-            {
-                cashInterests = amount,
-            };
-        }
+        //    //return new TransactionDetails()
+        //    //{
+        //    //    cashInterests = amount,
+        //    //};
+        //}
 
     }
 }

@@ -25,6 +25,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio", "Portfolio\Portfolio.csproj", "{DA38CD7A-401D-46E4-B7EC-ED626B2AD0F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance", "Finance\Finance.csproj", "{D6D91397-5A7D-46A8-825E-B1A04826A65D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F765C451-BFB9-4876-92C4-7F60CC37FBB6} = {F765C451-BFB9-4876-92C4-7F60CC37FBB6}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategy", "Strategy\Strategy.csproj", "{350901B1-1ADE-4257-8056-35B4C97AC239}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -32,9 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategy", "Strategy\Strate
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocol", "Protocol\Protocol.csproj", "{F765C451-BFB9-4876-92C4-7F60CC37FBB6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B6CD71A8-0063-470B-AEAE-DF9F59327E1F} = {B6CD71A8-0063-470B-AEAE-DF9F59327E1F}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance_uTests", "Finance_uTests\Finance_uTests.csproj", "{9BBEE812-3E98-4F99-A616-2DE8AD5CCE34}"
 EndProject

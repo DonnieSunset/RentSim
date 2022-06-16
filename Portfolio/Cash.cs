@@ -1,4 +1,4 @@
-﻿using Finance;
+﻿//using Finance;
 
 namespace Portfolio
 {
@@ -38,15 +38,15 @@ namespace Portfolio
             return this;
         }
 
-        public Cash Withdraw(decimal amount)
-        {
-            (decimal withdrawalSavings, decimal withdrawalInterests) = FinanceCalculator.WithdrawUniformFromTwoAmounts(base.SavingsPart, base.GrowthPart, amount);
+        //public Cash Withdraw(decimal amount)
+        //{
+        //    (decimal withdrawalSavings, decimal withdrawalInterests) = FinanceCalculator.WithdrawUniformFromTwoAmounts(base.SavingsPart, base.GrowthPart, amount);
 
-            base.SavingsPart -= withdrawalSavings; 
-            base.GrowthPart -= withdrawalInterests;
+        //    base.SavingsPart -= withdrawalSavings; 
+        //    base.GrowthPart -= withdrawalInterests;
 
-            return this;
-        }
+        //    return this;
+        //}
 
         public Cash ApplyInterests(decimal amount)
         {

@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Finance;
+using Protocol;
 using Finance.Results;
 using NUnit.Framework;
 
@@ -9,6 +10,9 @@ namespace Finance_uTests
     [TestFixture]
     public class FinanceCalculatorTests
     {
+        /// <summary>
+        /// This is not a real test because it uses product code in order to validate product code.
+        /// </summary>
         [Test, TestCaseSource(nameof(lifeAssumptionsList))]
         public void CalculateRentPhaseResult_SimulateRentPhase_SavingsEndAtZero(LifeAssumptions lifeAssumptions)
         {
@@ -25,27 +29,46 @@ namespace Finance_uTests
                     Is.EqualTo(laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear).Within(1),
                     "Both bad-case rates should sum up to the minimum needs per year.");
 
+                MemoryProtocolWriter protoWriterGoodCase = new();
+
                 //good scenario
-                SimulateRentPhase(
+                RentCalculator.Simulate(
+                    lifeAssumptions.ageRentStart,
+                    lifeAssumptions.ageEnd,
                     rentPhaseResult.total_Cash,
                     rentPhaseResult.total_Stocks,
                     rentPhaseResult.rate_Cash,
                     rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                     lifeAssumptions.rentPhase_InterestRate_Cash,
-                    lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
-                    rentPhaseResult.taxesPerYear_GoodCase);
+                    rentPhaseResult.taxesPerYear_GoodCase,
+                    protoWriterGoodCase);
+
+                var finalRowGoodCase = protoWriterGoodCase.Protocol.Single(x => x.age == lifeAssumptions.ageEnd-1);
+                Assert.That(finalRowGoodCase.cashYearEnd, Is.EqualTo(0).Within(1), $"{nameof(finalRowGoodCase.cashYearEnd)} after Simulation.");
+                Assert.That(finalRowGoodCase.stocksYearEnd, Is.EqualTo(0).Within(1), $"{nameof(finalRowGoodCase.stocksYearEnd)} after Simulation.");
+
+                MemoryProtocolWriter protoWriterBadCase = new();
 
                 //crash scenario
-                SimulateRentPhase(
+                RentCalculator.Simulate(
+                    lifeAssumptions.ageRentStart,
+                    lifeAssumptions.ageEnd,
                     rentPhaseResult.total_Cash,
                     rentPhaseResult.total_Stocks * lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                     rentPhaseResult.rate_Cash,
                     rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Cash,
-                    lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
-                    rentPhaseResult.taxesPerYear_BadCase);
+                    rentPhaseResult.taxesPerYear_BadCase,
+                    protoWriterBadCase);
+
+                var finalRowBadCase = protoWriterBadCase.Protocol.Single(x => x.age == lifeAssumptions.ageEnd-1);
+                Assert.That(finalRowBadCase.cashYearEnd, Is.EqualTo(0).Within(1), $"{nameof(finalRowBadCase.cashYearEnd)} after Simulation.");
+                Assert.That(finalRowBadCase.stocksYearEnd, Is.EqualTo(0).Within(1), $"{nameof(finalRowBadCase.stocksYearEnd)} after Simulation.");
+
+                Console.Write("");
+                //todo assert protocol
             });
         }
 
@@ -121,29 +144,9 @@ namespace Finance_uTests
 
         private static void SimulateRentPhase(decimal totalCash, decimal totalStocks, decimal rateCash_perYear, decimal rateStocks_ExcludedTaxes_perYear, decimal interestRate_Stocks, decimal interestRate_Cash, int durationInYears, decimal taxesPerYear)
         {
-            Console.WriteLine(Environment.NewLine);
-            for (int i = 0; i < durationInYears; i++)
-            {
-                Console.WriteLine($"State Begin Year {i}: Cash: {totalCash:F2} Stocks: {totalStocks:F2} Total: {totalStocks + totalCash:F2}");
 
-                var interests_Cash = totalCash * interestRate_Cash;
-                var interests_Stocks = totalStocks * interestRate_Stocks;
-                totalCash += interests_Cash;
-                totalStocks += interests_Stocks;
-                Console.WriteLine($"\tInterests: Cash: {interests_Cash:F2} Stocks: {interests_Stocks:F2} Total: {interests_Cash + interests_Stocks:F2}");
 
-                totalCash -= rateCash_perYear;
-                totalStocks -= rateStocks_ExcludedTaxes_perYear;
-                Console.WriteLine($"\tWithdrawal: Cash: {interestRate_Cash:F2} Stocks: {rateStocks_ExcludedTaxes_perYear:F2} Total: {rateCash_perYear + rateStocks_ExcludedTaxes_perYear:F2}");
 
-                totalStocks -= taxesPerYear;
-                Console.WriteLine($"\tWithdrawal: taxes: {taxesPerYear:F2}");
-
-                Console.WriteLine($"\tEnd Year {i}: Cash: {totalCash:F2} Stocks: {totalStocks:F2} Total: {totalStocks + totalCash:F2}");
-            }
-
-            Assert.That(totalCash, Is.EqualTo(0).Within(1), $"{nameof(totalCash)} after Simulation.");
-            Assert.That(totalStocks, Is.EqualTo(0).Within(1), $"{nameof(totalStocks)} after Simulation.");
         }
 
 

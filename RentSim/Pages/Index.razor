@@ -31,7 +31,7 @@
     <FieldBody ColumnSize="ColumnSize.Is1">
     </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
+@*    <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
     <FieldBody>
         <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
             <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
@@ -47,7 +47,7 @@
             interestRateType = value;
             await HandleRedraw();
         }
-    }
+    }*@
  </Field>
 
 
@@ -102,10 +102,10 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw()"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw()"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
@@ -114,9 +114,9 @@
 
 
 
-
-
-
+@*//you cannot do bind-value and @onchange same time
+https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inputtext-not-fire-in-blazor
+*@
 
 
 
@@ -124,13 +124,35 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" /> </FieldBody>
+    @*<FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" Step=100m ValueChanged="HandleRedraw()" /> </FieldBody>*@
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" Value="@lifeAssumptions.needsCurrentAgeMinimal" ValueChanged="needsCurrentAgeMinimalChanged" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+    @code {
+        private void needsCurrentAgeMinimalChanged(decimal value)
+        {
+            lifeAssumptions.needsCurrentAgeMinimal = value;
+            HandleRedraw();
+        }
+    }
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" Value="@lifeAssumptions.needsCurrentAgeComfort" ValueChanged="needsCurrentAgeComfortChanged" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+    @code {
+        private void needsCurrentAgeComfortChanged(decimal value)
+        {
+            lifeAssumptions.needsCurrentAgeComfort = value;
+            HandleRedraw();
+        }
+    }
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@Field_RentPhaseInputData_InflationRate" DelayTextOnKeyPress="false" Step=0.01m onchange="@HandleRedraw()"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" Value="@lifeAssumptions.inflationRate" ValueChanged="inflationRateChanged" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
+        @code {
+        private void inflationRateChanged(double value)
+        {
+            lifeAssumptions.inflationRate = value;
+            HandleRedraw();
+        }
+    }
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -209,8 +231,8 @@
 
 
 
-<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
-<Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>
+@*<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
+<Button Clicked="@(async () => await LoaderDefault())">LoadDefault</Button>*@
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4">
@@ -232,20 +254,20 @@
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
     
-    <DataGridColumn TItem="ResultRow" Field="@nameof(ResultRow.ageAbsolute)" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+    <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="balanceYearBegin" Caption="Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearBegin)) </DisplayTemplate>
+    <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.TotalYearBegin)) </DisplayTemplate>
     </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+    @*<DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="balanceYearEnd" Caption="Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.balanceYearEnd)) </DisplayTemplate>
+    </DataGridColumn>*@
+    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
+        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.TotalYearEnd)) </DisplayTemplate>
     </DataGridColumn>
     @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
@@ -309,47 +331,6 @@
 
         await Task.Delay(0);
     }
-}
-
-
-@functions {
-
-    async Task LoaderDefault()
-    {
-        //FieldAgeCurrent = 42;
-        //FieldAgeStopWork = 60;
-        //FieldAgeRentStart = 67;
-        //FieldAgeEnd = 80;
-
-        interestRateType = InterestRateType.Relativ;
-
-        //FieldStocks = 88800;
-        //FieldStocksGrowthRate = 7;
-        //FieldStocksSaveAmount = 700;
-
-        //FieldCash = 58000;
-        //FieldCashGrowthRate = 0;
-        //FieldCashSaveAmount = 350;
-
-        //FieldMetals = 21400;
-        //FieldMetalsGrowthRate = 1;
-        //FieldMetalsSaveAmount = 0;
-
-        ////https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        //FieldNetStateRentFromCurrentAge = 762;
-        //FieldNetStateRentFromRentStartAge = 2015;
-
-        //FieldNeedsNowMinimum = 1575;
-        //FieldNeedsNowComfort = 2200;
-        //FieldInflationRate = 3;
-
-        FieldResultsTotalSavingStopWorkAge = "0";
-        FieldResultsNetStateRent = "0";
-        FieldResultsRatePhaseRent = "0";
-        FieldResultsRatePhaseStopWork = "0";
-
-        await Task.Delay(0);
-    }
 
     public string BeautifyToCurrenctWith2Decimals(decimal? num)
     {
@@ -360,8 +341,8 @@
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
     }
-
 }
+
 
 
 
@@ -435,11 +416,11 @@
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // INPUT DATA
     // Input data must have getter and setter because they can be changed via the UI, thus have bi-directional binding
-    double Field_RentPhaseInputData_InflationRate
-    {
-        get { return lifeAssumptions.inflationRate; }
-        set { lifeAssumptions.inflationRate = value; }
-    }
+    //double Field_RentPhaseInputData_InflationRate
+    //{
+    //    get { return lifeAssumptions.inflationRate; }
+    //    set { lifeAssumptions.inflationRate = value; }
+    //}
 
     //decimal Field_InputData_NetStateRent_FromCurrentAge_PerMonth
     //{
@@ -478,8 +459,10 @@
         }
     }
 
-    async Task HandleRedraw()
+    //async Task HandleRedraw()
+    public void HandleRedraw()
     {
+        Console.WriteLine("SH: HandleRedraw");
         //Input input = new Input();
         //input.ageCurrent = FieldAgeCurrent;
         //input.ageStopWork = FieldAgeStopWork;
@@ -510,20 +493,9 @@
         //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
 
 
-        Age.SetCurrent(lifeAssumptions.ageCurrent);
-
-        FieldNeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
-        FieldNeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
-        
-        /////////////////////////////////
-        //Net state Rent @ Stop Work Age
+        //Age.SetCurrent(lifeAssumptions.ageCurrent);
 
 
-
-        FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(
-            myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
-
-        IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
         var portfolio = new AssetPortfolio(lifeAssumptions);
 
@@ -572,6 +544,18 @@
             lifeAssumptions.taxFactor_Stocks
         );
 
+        IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+        RentCalculator.Simulate(
+                    lifeAssumptions.ageRentStart,
+                    lifeAssumptions.ageEnd,
+                    myRentPhaseResult.total_Cash,
+                    myRentPhaseResult.total_Stocks,
+                    myRentPhaseResult.rate_Cash,
+                    myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                    lifeAssumptions.rentPhase_InterestRate_Cash,
+                    myRentPhaseResult.taxesPerYear_GoodCase,
+                    protocolWriter);
 
         //var rentStartStrategy = new RentStartStrategy(
         //    portfolio,
@@ -591,7 +575,7 @@
 
 
 
-
+        //this part must come AFTER all calculations are done, otherwise the UI-bindings wont work
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
         Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);
@@ -602,7 +586,10 @@
         Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Stocks);
         Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash + myRentPhaseResult.total_Stocks);
 
-        Console.WriteLine("SH: " + Field_RentPhaseResult_GoodCase_RateCash);
+        FieldNeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
+        FieldNeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
+        FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
+
 
         //results
         //int index = FieldAgeStopWork - FieldAgeCurrent;

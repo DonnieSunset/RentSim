@@ -21,19 +21,20 @@ namespace Strategy
         {
             //initial cash amount
             myProtocolWriter.LogBalanceYearBegin(
-                Age.NewByAbsoluteAge(myLifeAssumptions.ageCurrent),
-                myLifeAssumptions.cash 
+                myLifeAssumptions.ageCurrent,
+                myLifeAssumptions.cash,
+                myLifeAssumptions.stocks
                 );
 
-            for (int i = myLifeAssumptions.ageCurrent; i < myLifeAssumptions.ageStopWork; i++)
+            for (int age = myLifeAssumptions.ageCurrent; age < myLifeAssumptions.ageStopWork; age++)
             {
-                Age age = Age.NewByAbsoluteAge(i);
+                //Age age = Age.NewByAbsoluteAge(i);
 
                 TransactionDetails transAction = myPortfolio.SaveCash(myLifeAssumptions.cashSaveAmountPerMonth * 12);
                 myProtocolWriter.Log(age, transAction);
 
-                transAction = myPortfolio.GetInterestsForCash();
-                myProtocolWriter.Log(age, transAction);
+                //transAction = myPortfolio.GetInterestsForCash();
+                //myProtocolWriter.Log(age, transAction);
             }
         }
     }
