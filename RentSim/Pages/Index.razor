@@ -228,6 +228,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 <DataGrid TItem="ResultRow"
+          Narrow="true"
           Data="@resultRows"
           ReadData="@OnReadData"
           TotalItems="@totalRows">
@@ -532,8 +533,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 
-
-        //this part must come AFTER all calculations are done, otherwise the UI-bindings wont work
+        // RESULTS
+        // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
         Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);

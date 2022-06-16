@@ -35,9 +35,9 @@ namespace Protocol
             affectedResultRow.stocksYearEnd = affectedResultRow.stocksYearBegin - affectedResultRow.stocksDeposits + affectedResultRow.stocksInterests - affectedResultRow.stocksTaxes;
 
             //calculate year begin of next row
-            var affectedResultRowNext = GetOrCreateRow(age + 1);
-            affectedResultRowNext.cashYearBegin = affectedResultRow.cashYearEnd;
-            affectedResultRowNext.stocksYearBegin = affectedResultRow.stocksYearEnd;
+            //var affectedResultRowNext = GetOrCreateRow(age + 1);
+            //affectedResultRowNext.cashYearBegin = affectedResultRow.cashYearEnd;
+            //affectedResultRowNext.stocksYearBegin = affectedResultRow.stocksYearEnd;
         }
 
         private ResultRow GetOrCreateRow(int age)
