@@ -125,34 +125,13 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
     @*<FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" Step=100m ValueChanged="HandleRedraw()" /> </FieldBody>*@
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" Value="@lifeAssumptions.needsCurrentAgeMinimal" ValueChanged="needsCurrentAgeMinimalChanged" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-    @code {
-        private void needsCurrentAgeMinimalChanged(decimal value)
-        {
-            lifeAssumptions.needsCurrentAgeMinimal = value;
-            HandleRedraw();
-        }
-    }
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" Value="@lifeAssumptions.needsCurrentAgeComfort" ValueChanged="needsCurrentAgeComfortChanged" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-    @code {
-        private void needsCurrentAgeComfortChanged(decimal value)
-        {
-            lifeAssumptions.needsCurrentAgeComfort = value;
-            HandleRedraw();
-        }
-    }
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" Value="@lifeAssumptions.inflationRate" ValueChanged="inflationRateChanged" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
-        @code {
-        private void inflationRateChanged(double value)
-        {
-            lifeAssumptions.inflationRate = value;
-            HandleRedraw();
-        }
-    }
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
@@ -403,36 +382,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 
-    string FieldNeedsRentStartMinimum_perMonth;
-    string FieldNeedsRentStartComfort_perMonth;
-
-    string FieldResultsTotalSavingStopWorkAge;
-    string FieldResultsNetStateRent;
-    string FieldResultsRatePhaseRent;
-    string FieldResultsRatePhaseStopWork;
-
-    string FieldNetRentAgeFromStopWork_perMonth;
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // INPUT DATA
-    // Input data must have getter and setter because they can be changed via the UI, thus have bi-directional binding
-    //double Field_RentPhaseInputData_InflationRate
-    //{
-    //    get { return lifeAssumptions.inflationRate; }
-    //    set { lifeAssumptions.inflationRate = value; }
-    //}
-
-    //decimal Field_InputData_NetStateRent_FromCurrentAge_PerMonth
-    //{
-    //    get { return lifeAssumptions.netStateRentFromCurrentAge_perMonth; }
-    //    set { lifeAssumptions.netStateRentFromCurrentAge_perMonth = value; }
-    //}
-
-    //decimal Field_InputData_NetStateRent_FromRentStartAge_PerMonth
-    //{
-    //    get { return lifeAssumptions.netStateRentFromRentStartAge_perMonth; }
-    //    set { lifeAssumptions.netStateRentFromRentStartAge_perMonth = value; }
-    //}
 
 
 
@@ -447,6 +396,15 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     string Field_RentPhaseResult_SavingsNeededCash;
     string Field_RentPhaseResult_SavingsNeededStocks;
     string Field_RentPhaseResult_SavingsNeededTotal;
+    string FieldNeedsRentStartMinimum_perMonth;
+    string FieldNeedsRentStartComfort_perMonth;
+
+    string FieldResultsTotalSavingStopWorkAge;
+    string FieldResultsNetStateRent;
+    string FieldResultsRatePhaseRent;
+    string FieldResultsRatePhaseStopWork;
+
+    string FieldNetRentAgeFromStopWork_perMonth;
 
     protected override void OnAfterRender(bool firstRender)
     {
