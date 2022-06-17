@@ -239,18 +239,15 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
     </DataGridColumn>
 
-    <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.TotalYearBegin)) </DisplayTemplate>
-    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+        
     @*<DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
     </DataGridColumn>
     <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
     </DataGridColumn>*@
-    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.TotalYearEnd)) </DisplayTemplate>
-    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
     @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
