@@ -31,6 +31,8 @@
     <FieldBody ColumnSize="ColumnSize.Is1">
     </FieldBody>
 
+    @*I would say we introduce a switch to switch between good case and bad case*@
+
 @*    <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
     <FieldBody>
         <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
@@ -218,7 +220,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         <LineChart @ref="lineChart" TItem="double"/>
     </Column>
    <Column ColumnSize="ColumnSize.Is4">
-        <BarChart @ref="barChart" TItem="double" OptionsObject="@dataBarChartOptions" />
+        <BarChart @ref="barChart" TItem="decimal" OptionsObject="@dataBarChartOptions" />
     </Column>
 
 </Row>
@@ -328,7 +330,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 @code{
     LineChart<double> lineChart;
-    BarChart<double> barChart;
+    BarChart<decimal> barChart;
     BarChartOptions dataBarChartOptions;
     LineChartOptions dataLineChartOptions;
     ChartScales myScales;
@@ -584,10 +586,9 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         //todo: add end amount of last result row to show it in chart
 
-        //string[] labels = Enumerable.Range(input.ageCurrent, input.ageEnd - input.ageCurrent + 1)
-        //    .ToArray()
-        //    .Select(x => x.ToString())
-        //    .ToArray();
+        string[] labels = Enumerable.Range(lifeAssumptions.ageRentStart, lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart)
+            .Select(x => x.ToString())
+            .ToArray();
 
         //LineChartDataset<double> data = new LineChartDataset<double>
         //{
@@ -601,21 +602,21 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //    Data = portfolio.Total.Protocol.Select(x => x.yearBegin).ToList(),
         //};
 
-        //BarChartDataset<double> dataBarChartCash = new BarChartDataset<double>
-        //{
-        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), portfolio.Cash.Protocol.Count).ToList<string>(),
-        //    Label = "Cash",
-        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), portfolio.Cash.Protocol.Count).ToList<string>(),
-        //    Data = portfolio.Cash.Protocol.Select(x => x.yearBegin).ToList(),
-        //};
+        BarChartDataset<decimal> dataBarChartCash = new BarChartDataset<decimal>
+        {
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRows.Count()).ToList<string>(),
+            Label = "Cash",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRows.Count()).ToList<string>(),
+            Data = resultRows.Select(x => x.cashYearBegin).ToList(),
+        };
 
-        //BarChartDataset<double> dataBarChartStocks = new BarChartDataset<double>
-        //{
-        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-        //    Label = "Stocks",
-        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), portfolio.Stocks.Protocol.Count).ToList<string>(),
-        //    Data = portfolio.Stocks.Protocol.Select(x => x.yearBegin).ToList(),
-        //};
+        BarChartDataset<decimal> dataBarChartStocks = new BarChartDataset<decimal>
+        {
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRows.Count()).ToList<string>(),
+            Label = "Stocks",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
+            Data = resultRows.Select(x => x.stocksYearBegin).ToList(),
+        };
         //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
         //BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
@@ -627,20 +628,14 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //};
 
 
-        //dataBarChartOptions = new BarChartOptions()
-        //{
-
-        //    Scales = new ChartScales
-        //    {
-        //        //XAxes = new List<Axis> { new Axis { Stacked = true} },
-        //        //YAxes = new List<Axis> { new Axis { Stacked = true} },
-        //        //X = new List<Axis>() { new Axis { Stacked = true } },
-        //        //YAxes = new List<Axis>() { new Axis { Stacked = true } },
-        //        X = new ChartAxis { Stacked = true },
-        //        Y = new ChartAxis { Stacked = true }
-
-        //    },
-        //};
+        BarChartOptions dataBarChartOptions = new BarChartOptions()
+        {
+            Scales = new ChartScales
+            {
+                X = new ChartAxis { Stacked = true },
+                Y = new ChartAxis { Stacked = true }
+            },
+        };
 
         //dataLineChartOptions = new LineChartOptions()
         //{
@@ -661,8 +656,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //await lineChart.Clear();
         //await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
 
-        //await barChart.Clear();
-        //await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
+        barChart.Clear();
+        barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks/*, dataBarChartMetals*/);
 
     }
 }
