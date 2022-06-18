@@ -17,35 +17,16 @@
 <Field Horizontal="true">
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> 
-        <Validation Validator="ValidateCurrentAge">
-            <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" > 
-                <Feedback>
-                    <ValidationNone>The current age.</ValidationNone>
-                    <ValidationError>Current age is invalid!</ValidationError>
-                </Feedback>
-            </NumericEdit>
-        </Validation>
-    </FieldBody>
-    @code{
-        void ValidateCurrentAge( ValidatorEventArgs e )
-        {
-            int currentAge = (int)e.Value;
-            if ((currentAge <= 0) || (currentAge > @lifeAssumptions.ageStopWork))
-            {
-                e.Status = ValidationStatus.Error;
-            }
-        }
-    }
+    <Age @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@lifeAssumptions.ageStopWork"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
+    <Age @bind-Value="@lifeAssumptions.ageStopWork" @bind-Lower="lifeAssumptions.ageCurrent" @bind-Upper="@lifeAssumptions.ageRentStart" />
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageRentStart" DelayTextOnKeyPress="false" /> </FieldBody>
+    <Age @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="lifeAssumptions.ageStopWork" @bind-Upper="@lifeAssumptions.ageEnd"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageEnd" DelayTextOnKeyPress="false" /> </FieldBody>
+    <Age @bind-Value="@lifeAssumptions.ageEnd" @bind-Lower="lifeAssumptions.ageRentStart" Upper="100"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1">
@@ -71,8 +52,6 @@
         }
     }*@
  </Field>
-
-
 
 
 

@@ -1,0 +1,75 @@
+﻿
+@*https://stackoverflow.com/questions/67159943/how-can-i-use-a-custom-component-in-a-blazorise-datagrid-edittemplate*@
+@*https://stackoverflow.com/questions/57932850/how-to-make-two-way-binding-on-blazor-component*@
+
+<FieldBody ColumnSize="ColumnSize.Is1"> 
+    <Validation Validator="ValidateAge">
+        <NumericEdit TValue="int" DelayTextOnKeyPress="false" @bind-Value="Value" > 
+            <Feedback>
+                <ValidationError>Age is invalid!</ValidationError>
+            </Feedback>
+        </NumericEdit>
+    </Validation>
+</FieldBody>
+
+@code{
+    private int _value;
+    private int _upper;
+    private int _lower;
+
+    [Parameter]
+    public int Value 
+    { 
+        get => _value; 
+        set 
+        {
+            if (_value == value) return;
+
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public int Upper 
+    {
+        get => _upper;
+        set
+        {
+            if (_upper == value) return;
+
+            _upper = value;
+            UpperChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public int Lower 
+    { 
+        get => _lower; 
+        set
+        {
+            if (_lower == value) return;
+
+            _lower = value;
+            LowerChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<int> UpperChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<int> LowerChanged { get; set; }
+
+    void ValidateAge(ValidatorEventArgs e)
+    {
+        int currentAge = (int)e.Value;
+        if ((currentAge < Lower) || (currentAge > Upper))
+        {
+            e.Status = ValidationStatus.Error;
+        }
+    }
+}
