@@ -3,20 +3,30 @@
     public class ResultRow : IComparable<ResultRow>
     {
         public int age;
+        
+        public decimal cashYearBegin;
+        public decimal cashDeposits;
+        public decimal cashWithdrawals;
+        public decimal cashInterests;
+        public decimal cashTaxes;
+        public decimal cashYearEnd;
+
         public decimal stocksYearBegin;
         public decimal stocksDeposits;
+        public decimal stocksWithdrawals;
         public decimal stocksInterests;
         public decimal stocksTaxes;
         public decimal stocksYearEnd;
 
-        public decimal cashYearBegin;
-        public decimal cashDeposits;
-        public decimal cashInterests;
-        public decimal cashtaxes;
-        public decimal cashYearEnd;
+        public decimal metalsYearBegin;
+        public decimal metalsDeposits;
+        public decimal metalsWithdrawals;
+        public decimal metalsInterests;
+        public decimal metalsTaxes;
+        public decimal metalsYearEnd;
 
-        public decimal TotalYearBegin => stocksYearBegin + cashYearBegin;
-        public decimal TotalYearEnd => stocksYearEnd + cashYearEnd;
+        public decimal TotalYearBegin => stocksYearBegin + cashYearBegin + metalsYearBegin;
+        public decimal TotalYearEnd => stocksYearEnd + cashYearEnd + metalsYearBegin;
 
         public int CompareTo(ResultRow? other)
         {

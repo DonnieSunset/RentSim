@@ -11,28 +11,38 @@ namespace Protocol
             get { return myProtocol.AsReadOnly(); }
         }
 
-        public void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks)
+        public void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks, decimal amountMetals)
         {
             var affectedResultRow = GetOrCreateRow(age);
             affectedResultRow.cashYearBegin = amountCash;
             affectedResultRow.stocksYearBegin = amountStocks;
+            affectedResultRow.metalsYearBegin = amountMetals;
         }
 
         public void Log(int age, TransactionDetails transactionDetails)
         {
             var affectedResultRow = GetOrCreateRow(age);
 
-            affectedResultRow.cashDeposits += transactionDetails.cashDeposits;
-            affectedResultRow.stocksDeposits += transactionDetails.stockDeposits;
+            affectedResultRow.cashDeposits += transactionDetails.cashDeposit;
+            affectedResultRow.stocksDeposits += transactionDetails.stockDeposit;
+            affectedResultRow.metalsDeposits += transactionDetails.metalDeposit;
 
+            affectedResultRow.cashWithdrawals += transactionDetails.cashWithdrawal;
+            affectedResultRow.stocksWithdrawals += transactionDetails.stockWithdrawal;
+            affectedResultRow.metalsWithdrawals += transactionDetails.metalWithdrawal;
+
+            affectedResultRow.cashTaxes += transactionDetails.cashTaxes;
             affectedResultRow.stocksTaxes += transactionDetails.stockTaxes;
+            affectedResultRow.metalsTaxes += transactionDetails.metalTaxes;
 
             affectedResultRow.cashInterests += transactionDetails.cashInterests;
             affectedResultRow.stocksInterests += transactionDetails.stockInterests;
+            affectedResultRow.metalsInterests += transactionDetails.metalInterests;
 
             //calculate year end
-            affectedResultRow.cashYearEnd = affectedResultRow.cashYearBegin - affectedResultRow.cashDeposits + affectedResultRow.cashInterests;
-            affectedResultRow.stocksYearEnd = affectedResultRow.stocksYearBegin - affectedResultRow.stocksDeposits + affectedResultRow.stocksInterests - affectedResultRow.stocksTaxes;
+            affectedResultRow.cashYearEnd = affectedResultRow.cashYearBegin + affectedResultRow.cashDeposits + affectedResultRow.cashInterests - affectedResultRow.cashTaxes - affectedResultRow.cashWithdrawals;
+            affectedResultRow.stocksYearEnd = affectedResultRow.stocksYearBegin + affectedResultRow.stocksDeposits + affectedResultRow.stocksInterests - affectedResultRow.stocksTaxes - affectedResultRow.stocksWithdrawals;
+            affectedResultRow.metalsYearEnd = affectedResultRow.metalsYearBegin + affectedResultRow.metalsDeposits + affectedResultRow.metalsInterests - affectedResultRow.metalsTaxes - affectedResultRow.metalsWithdrawals;
 
             //calculate year begin of next row
             //var affectedResultRowNext = GetOrCreateRow(age + 1);

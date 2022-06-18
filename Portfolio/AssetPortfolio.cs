@@ -22,7 +22,7 @@ namespace Portfolio
 
             return new TransactionDetails()
             {
-                cashDeposits = amount
+                cashWithdrawal = amount
             };
         }
 

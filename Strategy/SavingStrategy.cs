@@ -23,7 +23,8 @@ namespace Strategy
             myProtocolWriter.LogBalanceYearBegin(
                 myLifeAssumptions.ageCurrent,
                 myLifeAssumptions.cash,
-                myLifeAssumptions.stocks
+                myLifeAssumptions.stocks,
+                myLifeAssumptions.metals
                 );
 
             for (int age = myLifeAssumptions.ageCurrent; age < myLifeAssumptions.ageStopWork; age++)

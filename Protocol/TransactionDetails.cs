@@ -5,17 +5,20 @@
         //public int age;
         //public decimal balanceYearBegin;
         //public decimal balanceYearEnd;
-        public decimal cashDeposits;
+        public decimal cashDeposit;
+        public decimal cashWithdrawal;
         public decimal cashInterests;
-        //public decimal cashTaxes;
+        public decimal cashTaxes;
 
-        public decimal stockDeposits;
+        public decimal stockDeposit;
+        public decimal stockWithdrawal;
         public decimal stockInterests;
         public decimal stockTaxes;
 
-        public decimal metalDeposits;
-       // public decimal metalInterests;
-        //public decimal metalTaxes;
+        public decimal metalDeposit;
+        public decimal metalWithdrawal;
+        public decimal metalInterests;
+        public decimal metalTaxes;
 
     }
 }

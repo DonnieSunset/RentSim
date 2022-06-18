@@ -25,6 +25,24 @@
             return (decimal)Math.Pow((double)a, b);
         }
 
+        public static decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)
+        {
+            decimal zinsFaktor_d = (decimal)zinsFaktor;
+
+            decimal endKapital;
+            if (zinsFaktor_d == 1)
+            {
+                endKapital = anfangskapital + rate_proJahr * anzahlJahre;
+            }
+            else
+            {
+                //endKapital = anfangskapital * Pow(zinsFaktor_d, anzahlJahre) + (rate_proJahr * zinsFaktor_d * ((Pow(zinsFaktor_d, anzahlJahre)) - 1) / (zinsFaktor_d - 1));
+                endKapital = anfangskapital * Pow(zinsFaktor_d, anzahlJahre) + (rate_proJahr * 1 * ((Pow(zinsFaktor_d, anzahlJahre)) - 1) / (zinsFaktor_d - 1));
+            }
+            
+            return endKapital;
+        }
+
         public static decimal GetZFactorForSparkassenformel(int durationInYears, decimal interestFactor)
         {
             if (interestFactor < 1 || interestFactor > 2)

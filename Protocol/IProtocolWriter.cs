@@ -6,6 +6,6 @@ namespace Protocol
     {
         public ReadOnlyCollection<ResultRow> Protocol { get; }
         void Log(int age, TransactionDetails transactionDetails);
-        void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks);
+        void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks, decimal amountMetals);
     }
 }
