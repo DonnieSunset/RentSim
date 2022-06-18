@@ -1,7 +1,4 @@
-﻿@*@using Processing;
-@using Processing.Assets;
-@using Processing.Withdrawal; *@
-@using System.Globalization;
+﻿@using System.Globalization;
 @using Domain;
 @using Finance.Results
 @using Protocol;
@@ -28,29 +25,6 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
     <Age @bind-Value="@lifeAssumptions.ageEnd" @bind-Lower="lifeAssumptions.ageRentStart" Upper="100"/>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1"></FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1">
-    </FieldBody>
-
-    @*I would say we introduce a switch to switch between good case and bad case*@
-
-@*    <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate Type:</FieldLabel>
-    <FieldBody>
-        <RadioGroup ColumnSize="ColumnSize.Is1" TValue="InterestRateType" Name="InterestRateType" Buttons="true" Color="Color.Light" CheckedValue="@interestRateType" CheckedValueChanged="@OnInterestRateCheckedValueChanged">
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Relativ">Relativ</Radio>
-            <Radio TValue="InterestRateType" Value="@InterestRateType.Konform">Konform</Radio>
-        </RadioGroup>
-    </FieldBody>
-
-    @code {
-        InterestRateType interestRateType = InterestRateType.Relativ;
-
-        async void OnInterestRateCheckedValueChanged(InterestRateType value)
-        {
-            interestRateType = value;
-            await HandleRedraw();
-        }
-    }*@
  </Field>
 
 
