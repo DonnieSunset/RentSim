@@ -32,7 +32,7 @@ namespace Finance_uTests
                 MemoryProtocolWriter protoWriterGoodCase = new();
 
                 //good scenario
-                RentCalculator.Simulate(
+                RentPhaseCalculator.Simulate(
                     lifeAssumptions.ageRentStart,
                     lifeAssumptions.ageEnd,
                     rentPhaseResult.total_Cash,
@@ -51,7 +51,7 @@ namespace Finance_uTests
                 MemoryProtocolWriter protoWriterBadCase = new();
 
                 //crash scenario
-                RentCalculator.Simulate(
+                RentPhaseCalculator.Simulate(
                     lifeAssumptions.ageRentStart,
                     lifeAssumptions.ageEnd,
                     rentPhaseResult.total_Cash,
@@ -111,7 +111,7 @@ namespace Finance_uTests
 
         private (StateRentResult, LaterNeedsResult, RentPhaseResult) CalculateResults(LifeAssumptions lifeAssumptions)
         {
-            var stateRentResult = RentCalculator.ApproxStateRent(
+            var stateRentResult = RentPhaseCalculator.ApproxStateRent(
                 lifeAssumptions.ageCurrent,
                 lifeAssumptions.netStateRentFromCurrentAge_perMonth,
                 lifeAssumptions.ageRentStart,
@@ -119,7 +119,7 @@ namespace Finance_uTests
                 lifeAssumptions.ageStopWork
             );
 
-            var laterNeedsResult = RentCalculator.CalculateLaterNeeds(
+            var laterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
                 lifeAssumptions.ageCurrent,
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.inflationRate,
@@ -128,7 +128,7 @@ namespace Finance_uTests
                 stateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
             );
 
-            var rentPhaseResult = FinanceCalculator.CalculateRentPhaseResult(
+            var rentPhaseResult = RentPhaseCalculator.CalculateResult(
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,

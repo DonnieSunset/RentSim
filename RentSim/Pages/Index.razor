@@ -447,7 +447,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //);
 
         //todo: this is diuplicated code 
-        myStateRentResult = RentCalculator.ApproxStateRent(
+        myStateRentResult = RentPhaseCalculator.ApproxStateRent(
             lifeAssumptions.ageCurrent,
             lifeAssumptions.netStateRentFromCurrentAge_perMonth,
             lifeAssumptions.ageRentStart,
@@ -455,7 +455,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             lifeAssumptions.ageStopWork
         );
 
-        myLaterNeedsResult = RentCalculator.CalculateLaterNeeds(
+        myLaterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
             lifeAssumptions.ageCurrent,
             lifeAssumptions.ageRentStart,
             lifeAssumptions.inflationRate,
@@ -464,7 +464,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
         );
 
-        myRentPhaseResult = FinanceCalculator.CalculateRentPhaseResult(
+        myRentPhaseResult = RentPhaseCalculator.CalculateResult(
             lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
             lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
             lifeAssumptions.rentPhase_InterestRate_Cash,
@@ -476,7 +476,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         );
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
-        RentCalculator.Simulate(
+        RentPhaseCalculator.Simulate(
                     lifeAssumptions.ageRentStart,
                     lifeAssumptions.ageEnd,
                     myRentPhaseResult.total_Cash,

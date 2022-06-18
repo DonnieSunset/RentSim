@@ -1,6 +1,4 @@
-﻿using Finance.Results;
-
-namespace Finance
+﻿namespace Finance
 {
     public class FinanceCalculator
     {
@@ -27,7 +25,7 @@ namespace Finance
             return (decimal)Math.Pow((double)a, b);
         }
 
-        private static decimal GetZFactorForSparkassenformel(int durationInYears, decimal interestFactor)
+        public static decimal GetZFactorForSparkassenformel(int durationInYears, decimal interestFactor)
         {
             if (interestFactor < 1 || interestFactor > 2)
             {
@@ -40,42 +38,6 @@ namespace Finance
             }
 
             return Pow(interestFactor, -durationInYears) * ((Pow(interestFactor, durationInYears) - 1) / (interestFactor - 1));
-        }
-
-        public static RentPhaseResult CalculateRentPhaseResult(
-            decimal interestRate_Stocks_GoodCase,
-            decimal interestRate_Stocks_BadCase,
-            decimal InterestRate_Cash,
-            int durationInYears,
-            decimal comfort_total_needed_Year,
-            decimal minimum_total_needed_Year,
-            decimal crashFactor_Stocks_BadCase,
-            decimal stocks_taxFactor)
-        {
-            var result = new RentPhaseResult();
-            
-            decimal interestFactor_Stocks_GoodCase = interestRate_Stocks_GoodCase + 1;
-            decimal interestFactor_Stocks_BadCase = interestRate_Stocks_BadCase + 1;
-            decimal interestFactor_Cash = InterestRate_Cash + 1;
-
-            var z_cash = GetZFactorForSparkassenformel(durationInYears, interestFactor_Cash);
-            var z_stocks_max = GetZFactorForSparkassenformel(durationInYears, interestFactor_Stocks_GoodCase) * stocks_taxFactor;
-            var z_stocks_min = GetZFactorForSparkassenformel(durationInYears, interestFactor_Stocks_BadCase) * stocks_taxFactor;
-
-            // Calculate the results
-            result.rate_Cash = (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-            result.rateStocks_IncludedTaxes_GoodCase = z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min)                             * stocks_taxFactor;
-            result.rateStocks_IncludedTaxes_BadCase = crashFactor_Stocks_BadCase * z_stocks_max * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min) * stocks_taxFactor;
-            result.total_Cash = z_cash * (comfort_total_needed_Year * crashFactor_Stocks_BadCase * z_stocks_max - minimum_total_needed_Year * z_stocks_min) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-            result.total_Stocks = z_stocks_max * z_stocks_min * (-comfort_total_needed_Year + minimum_total_needed_Year) / (crashFactor_Stocks_BadCase * z_stocks_max - z_stocks_min);
-
-            result.taxesPerYear_GoodCase = result.rateStocks_IncludedTaxes_GoodCase * (1- 1/stocks_taxFactor );
-            result.taxesPerYear_BadCase = result.rateStocks_IncludedTaxes_BadCase * (1- 1/stocks_taxFactor);
-
-            result.rateStocks_ExcludedTaxes_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.taxesPerYear_GoodCase;
-            result.rateStocks_ExcludedTaxes_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.taxesPerYear_BadCase;
-
-            return result;
         }
     }
 }
