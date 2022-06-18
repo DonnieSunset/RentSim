@@ -15,8 +15,28 @@
 <Divider DividerType="DividerType.TextContent" Text="Timeline Data"></Divider>
 
 <Field Horizontal="true">
+
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> 
+        <Validation Validator="ValidateCurrentAge">
+            <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageCurrent" DelayTextOnKeyPress="false" > 
+                <Feedback>
+                    <ValidationNone>The current age.</ValidationNone>
+                    <ValidationError>Current age is invalid!</ValidationError>
+                </Feedback>
+            </NumericEdit>
+        </Validation>
+    </FieldBody>
+    @code{
+        void ValidateCurrentAge( ValidatorEventArgs e )
+        {
+            int currentAge = (int)e.Value;
+            if ((currentAge <= 0) || (currentAge > @lifeAssumptions.ageStopWork))
+            {
+                e.Status = ValidationStatus.Error;
+            }
+        }
+    }
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="int" @bind-Value="@lifeAssumptions.ageStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
