@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Finance_uTests
 {
     [TestFixture]
-    public class FinanceCalculatorTests
+    public class RentPhaseCalculatorTests
     {
         /// <summary>
         /// This is not a real test because it uses product code in order to validate product code.
@@ -141,15 +141,6 @@ namespace Finance_uTests
 
             return (stateRentResult, laterNeedsResult, rentPhaseResult);
         }
-
-        private static void SimulateRentPhase(decimal totalCash, decimal totalStocks, decimal rateCash_perYear, decimal rateStocks_ExcludedTaxes_perYear, decimal interestRate_Stocks, decimal interestRate_Cash, int durationInYears, decimal taxesPerYear)
-        {
-
-
-
-        }
-
-
 
         private static LifeAssumptions[] lifeAssumptionsList = new LifeAssumptions[]
 {
