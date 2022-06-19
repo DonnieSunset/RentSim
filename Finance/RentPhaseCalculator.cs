@@ -21,17 +21,15 @@ namespace Finance
         /// <summary>
         /// Todo: carve out, it does not belong to here
         /// </summary>
-        public static LaterNeedsResult CalculateLaterNeeds(int ageCurrent, int ageRentStart, double inflationRate, decimal needsCurrentAgeMinimal, decimal needsCurrentAgeComfort, decimal assumedStateRent_FromStopWorkAge_PerMonth)
+        public static LaterNeedsResult CalculateLaterNeeds(int ageCurrent, int ageStopWork, int ageRentStart, double inflationRate, decimal needsCurrentAgeMinimal, decimal needsCurrentAgeComfort, decimal assumedStateRent_FromStopWorkAge_PerMonth)
         {
             var result = new LaterNeedsResult();
 
-            var myRentStartInflation = new Inflation(ageCurrent, ageRentStart, inflationRate);
+            result.needsMinimum_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeMinimal, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
+            result.needsComfort_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeComfort, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
 
-            result.needsMinimum_AgeRentStart_WithInflation_PerMonth = myRentStartInflation.Calc(needsCurrentAgeMinimal) - assumedStateRent_FromStopWorkAge_PerMonth;
-            result.needsComfort_AgeRentStart_WithInflation_PerMonth = myRentStartInflation.Calc(needsCurrentAgeComfort) - assumedStateRent_FromStopWorkAge_PerMonth;
-
-            result.needsMinimum_AgeRentStart_WithInflation_PerYear = result.needsMinimum_AgeRentStart_WithInflation_PerMonth * 12;
-            result.needsComfort_AgeRentStart_WithInflation_PerYear = result.needsComfort_AgeRentStart_WithInflation_PerMonth * 12;
+            result.needsMinimum_AgeRentStart_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageRentStart, needsCurrentAgeMinimal, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
+            result.needsComfort_AgeRentStart_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageRentStart, needsCurrentAgeComfort, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
 
             return result;
         }

@@ -22,11 +22,11 @@ namespace Finance_uTests
             Assert.Multiple(() =>
             {
                 Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                    Is.EqualTo(laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear).Within(1),
+                    Is.EqualTo(laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear).Within(1),
                     "Both good-case rates should sum up to the comfort needs per year.");
 
                 Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
-                    Is.EqualTo(laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear).Within(1),
+                    Is.EqualTo(laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear).Within(1),
                     "Both bad-case rates should sum up to the minimum needs per year.");
 
                 MemoryProtocolWriter protoWriterGoodCase = new();
@@ -121,6 +121,7 @@ namespace Finance_uTests
 
             var laterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
                 lifeAssumptions.ageCurrent,
+                lifeAssumptions.ageStopWork,
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.inflationRate,
                 lifeAssumptions.needsCurrentAgeMinimal,
@@ -133,8 +134,8 @@ namespace Finance_uTests
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
-                laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear,
-                laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear,
+                laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear,
+                laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                 lifeAssumptions.taxFactor_Stocks
                 );

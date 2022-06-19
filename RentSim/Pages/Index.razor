@@ -27,6 +27,46 @@
 
  </Field>
 
+<Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw"/> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw"/> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
+
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
+</Field>
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Stop Work Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsStopWorkMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Stop Work Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsStopWorkComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+</Field>
+<Field Horizontal="true">
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsRentStartComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+</Field>
+
  <Divider DividerType="DividerType.TextContent" Text="Savings Phase"></Divider>
 
 <Field Horizontal="true">
@@ -78,18 +118,7 @@
 
 
 
-<Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
-<Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
-</Field>
 
 
 
@@ -100,26 +129,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 
-<Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
-
-<Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
-    @*<FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" DelayTextOnKeyPress="false" Step=100m ValueChanged="HandleRedraw()" /> </FieldBody>*@
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
-
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@FieldNeedsRentStartComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
-
-</Field>
 
 
 
@@ -130,7 +139,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 
-<Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
+
+@*<Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageStopWork - @lifeAssumptions.ageRentStart):</FieldLabel>
@@ -138,7 +148,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageRentStart - @lifeAssumptions.ageEnd):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseRent" DelayTextOnKeyPress="false" /> </FieldBody>
-</Field>
+</Field>*@
 
 
 
@@ -372,8 +382,11 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     string Field_RentPhaseResult_SavingsNeededCash;
     string Field_RentPhaseResult_SavingsNeededStocks;
     string Field_RentPhaseResult_SavingsNeededTotal;
-    string FieldNeedsRentStartMinimum_perMonth;
-    string FieldNeedsRentStartComfort_perMonth;
+    
+    string Field_NeedsStopWorkMinimum_perMonth;
+    string Field_NeedsStopWorkComfort_perMonth;
+    string Field_NeedsRentStartMinimum_perMonth;
+    string Field_NeedsRentStartComfort_perMonth;
 
     string Field_SavingPÜhaseResults_TotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
@@ -474,6 +487,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         myLaterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
             lifeAssumptions.ageCurrent,
+            lifeAssumptions.ageStopWork,
             lifeAssumptions.ageRentStart,
             lifeAssumptions.inflationRate,
             lifeAssumptions.needsCurrentAgeMinimal,
@@ -486,8 +500,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
             lifeAssumptions.rentPhase_InterestRate_Cash,
             lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
-            myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear,
-            myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear,
+            myLaterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear,
+            myLaterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear,
             lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
             lifeAssumptions.taxFactor_Stocks
         );
@@ -552,8 +566,11 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Stocks);
         Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash + myRentPhaseResult.total_Stocks);
 
-        FieldNeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
-        FieldNeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
+        Field_NeedsStopWorkMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth);
+        Field_NeedsStopWorkComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth);
+        Field_NeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
+        Field_NeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
+        
         FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
 
 
@@ -626,7 +643,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
         {
             BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count()).ToList<string>(),
-            Label = "Stocks",
+            Label = "Metals",
             BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
             Data = resultRows.Select(x => x.metalsYearBegin).ToList(),
         };
