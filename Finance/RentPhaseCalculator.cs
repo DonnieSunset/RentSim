@@ -25,8 +25,8 @@ namespace Finance
         {
             var result = new LaterNeedsResult();
 
-            result.needsMinimum_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeMinimal, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
-            result.needsComfort_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeComfort, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
+            result.needsMinimum_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeMinimal, inflationRate);
+            result.needsComfort_AgeStopWork_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageStopWork, needsCurrentAgeComfort, inflationRate);
 
             result.needsMinimum_AgeRentStart_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageRentStart, needsCurrentAgeMinimal, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
             result.needsComfort_AgeRentStart_WithInflation_PerMonth = Inflation.Calc(ageCurrent, ageRentStart, needsCurrentAgeComfort, inflationRate) - assumedStateRent_FromStopWorkAge_PerMonth;
