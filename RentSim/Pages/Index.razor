@@ -14,56 +14,61 @@
 <Field Horizontal="true">
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <Age @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@lifeAssumptions.ageStopWork"/>
+    <InputAge @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@lifeAssumptions.ageStopWork" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <Age @bind-Value="@lifeAssumptions.ageStopWork" @bind-Lower="lifeAssumptions.ageCurrent" @bind-Upper="@lifeAssumptions.ageRentStart" />
+    <InputAge @bind-Value="@lifeAssumptions.ageStopWork" @bind-Lower="lifeAssumptions.ageCurrent" @bind-Upper="@lifeAssumptions.ageRentStart" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <Age @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="lifeAssumptions.ageStopWork" @bind-Upper="@lifeAssumptions.ageEnd"/>
+    <InputAge @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="lifeAssumptions.ageStopWork" @bind-Upper="@lifeAssumptions.ageEnd" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
-    <Age @bind-Value="@lifeAssumptions.ageEnd" @bind-Lower="lifeAssumptions.ageRentStart" Upper="100"/>
+    <InputAge @bind-Value="@lifeAssumptions.ageEnd" @bind-Lower="lifeAssumptions.ageRentStart" Upper="100" Redraw="@HandleRedraw"/>
 
  </Field>
 
-
-
-
-<Divider DividerType="DividerType.TextContent" Text="Initial Assets"></Divider>
+ <Divider DividerType="DividerType.TextContent" Text="Savings Phase"></Divider>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cash" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <InputAmount @bind-Value="@lifeAssumptions.cash" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash Interest Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputGrowthrate @bind-Value="@lifeAssumptions.cashGrowthRate" Redraw="@HandleRedraw"/> 
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Cash Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputSaverate @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" Redraw="@HandleRedraw"/>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocks" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <InputAmount @bind-Value="@lifeAssumptions.stocks" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputGrowthrate @bind-Value="@lifeAssumptions.stocksGrowthRate" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Stocks Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputSaverate @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" Redraw="@HandleRedraw"/>
 </Field>
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metals" DelayTextOnKeyPress="false" Step="1000" /> </FieldBody>
+    <InputAmount @bind-Value="@lifeAssumptions.metals" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals Growth Rate (%):</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsGrowthRate" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputGrowthrate @bind-Value="@lifeAssumptions.metalsGrowthRate" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" DelayTextOnKeyPress="false" /> </FieldBody>
+    <InputSaverate @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Redraw="@HandleRedraw"/> 
+
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_SavingPÜhaseResults_TotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
+
+
+
+
+
 
 
 
@@ -128,9 +133,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsTotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
-
     <FieldLabel ColumnSize="ColumnSize.Is1">Net Rate (@lifeAssumptions.ageStopWork - @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldResultsRatePhaseStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
@@ -209,10 +211,11 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
     
-    <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
-    </DataGridColumn>
-
+    <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End/>
     <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total Year Begin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+    <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Savings" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+    <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
         
     @*<DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
@@ -220,7 +223,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
     </DataGridColumn>*@
-    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
     @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
     </DataGridColumn>
@@ -311,6 +313,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     //MarketAssumptions marketAssumptions = new();
     LifeAssumptions lifeAssumptions = new();
     //NetRentResultData myNetRentResultData = new();
+    SavingPhaseResult mySavingPhaseResult = new();
     RentPhaseResult myRentPhaseResult = new();
     StateRentResult myStateRentResult = new();
     LaterNeedsResult myLaterNeedsResult = new();
@@ -372,7 +375,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     string FieldNeedsRentStartMinimum_perMonth;
     string FieldNeedsRentStartComfort_perMonth;
 
-    string FieldResultsTotalSavingStopWorkAge;
+    string Field_SavingPÜhaseResults_TotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
     string FieldResultsRatePhaseRent;
     string FieldResultsRatePhaseStopWork;
@@ -446,6 +449,20 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //    netRentInputData.AgeStopWork
         //);
 
+        mySavingPhaseResult = SavingPhaseCalculator.CalculateResult(
+            lifeAssumptions.ageCurrent,
+            lifeAssumptions.ageStopWork,
+            lifeAssumptions.cash,
+            lifeAssumptions.cashGrowthRate,
+            lifeAssumptions.cashSaveAmountPerMonth,
+            lifeAssumptions.stocks,
+            lifeAssumptions.stocksGrowthRate,
+            lifeAssumptions.stocksSaveAmountPerMonth,
+            lifeAssumptions.metals,
+            lifeAssumptions.metalsGrowthRate,
+            lifeAssumptions.metalsSaveAmountPerMonth
+        );
+
         //todo: this is diuplicated code 
         myStateRentResult = RentPhaseCalculator.ApproxStateRent(
             lifeAssumptions.ageCurrent,
@@ -476,17 +493,33 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         );
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+        SavingPhaseCalculator.Simulate(
+            lifeAssumptions.ageCurrent,
+            lifeAssumptions.ageStopWork,
+            lifeAssumptions.cash,
+            lifeAssumptions.cashGrowthRate,
+            lifeAssumptions.cashSaveAmountPerMonth,
+            lifeAssumptions.stocks,
+            lifeAssumptions.stocksGrowthRate,
+            lifeAssumptions.stocksSaveAmountPerMonth,
+            lifeAssumptions.metals,
+            lifeAssumptions.metalsGrowthRate,
+            lifeAssumptions.metalsSaveAmountPerMonth,
+            protocolWriter
+        );
+
         RentPhaseCalculator.Simulate(
-                    lifeAssumptions.ageRentStart,
-                    lifeAssumptions.ageEnd,
-                    myRentPhaseResult.total_Cash,
-                    myRentPhaseResult.total_Stocks,
-                    myRentPhaseResult.rate_Cash,
-                    myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                    lifeAssumptions.rentPhase_InterestRate_Cash,
-                    myRentPhaseResult.taxesPerYear_GoodCase,
-                    protocolWriter);
+            lifeAssumptions.ageRentStart,
+            lifeAssumptions.ageEnd,
+            myRentPhaseResult.total_Cash,
+            myRentPhaseResult.total_Stocks,
+            myRentPhaseResult.rate_Cash,
+            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Cash,
+            myRentPhaseResult.taxesPerYear_GoodCase,
+            protocolWriter
+        );
 
         //var rentStartStrategy = new RentStartStrategy(
         //    portfolio,
@@ -507,6 +540,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
+        Field_SavingPÜhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
+
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
         Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);
@@ -525,7 +560,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //results
         //int index = FieldAgeStopWork - FieldAgeCurrent;
         //double TotalSavingStopWorkAge = portfolio.Total.Protocol[index].yearBegin;  //resultRows[index].total.yearBegin;
-        //FieldResultsTotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(TotalSavingStopWorkAge);
+
         //double approxStopWorkAgeNetRent = RentSimMath.RentStopWorkAgeApproximation(FieldAgeCurrent, FieldAgeStopWork, FieldAgeRentStart, FieldNetStateRentFromCurrentAge, FieldNetStateRentFromRentStartAge);
         //FieldResultsNetStateRent = BeautifyToCurrenctWith0Decimals(approxStopWorkAgeNetRent);
 
@@ -556,7 +591,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(lifeAssumptions.ageRentStart, lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart)
+        string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent)
             .Select(x => x.ToString())
             .ToArray();
 
@@ -587,16 +622,14 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
             Data = resultRows.Select(x => x.stocksYearBegin).ToList(),
         };
-        //todo: hier wirklich yearBegin oder sollte es yearEnd sein?
 
-        //BarChartDataset<double> dataBarChartMetals = new BarChartDataset<double>
-        //{
-        //    BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), portfolio.Metals.Protocol.Count).ToList<string>(),
-        //    Label = "Metals",
-        //    BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 1f), portfolio.Metals.Protocol.Count).ToList<string>(),
-        //    Data = portfolio.Metals.Protocol.Select(x => x.yearBegin).ToList(),
-        //};
-
+        BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
+        {
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count()).ToList<string>(),
+            Label = "Stocks",
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
+            Data = resultRows.Select(x => x.metalsYearBegin).ToList(),
+        };
 
         BarChartOptions dataBarChartOptions = new BarChartOptions()
         {
@@ -626,8 +659,10 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //await lineChart.Clear();
         //await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
 
-        barChart.Clear();
-        barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks/*, dataBarChartMetals*/);
-
+        if (barChart != null)
+        {
+            barChart.Clear();
+            barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
+        }
     }
 }

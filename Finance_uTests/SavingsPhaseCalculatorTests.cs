@@ -21,14 +21,6 @@ namespace Finance_uTests
 
             Assert.Multiple(() =>
             {
-                //Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                //    Is.EqualTo(laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerYear).Within(1),
-                //    "Both good-case rates should sum up to the comfort needs per year.");
-
-                //Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
-                //    Is.EqualTo(laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerYear).Within(1),
-                //    "Both bad-case rates should sum up to the minimum needs per year.");
-
                 MemoryProtocolWriter protoWriter = new();
 
                 //good scenario
