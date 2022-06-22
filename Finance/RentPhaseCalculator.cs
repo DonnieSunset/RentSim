@@ -67,6 +67,22 @@ namespace Finance
             result.rateStocks_ExcludedTaxes_GoodCase = result.rateStocks_IncludedTaxes_GoodCase - result.taxesPerYear_GoodCase;
             result.rateStocks_ExcludedTaxes_BadCase = result.rateStocks_IncludedTaxes_BadCase - result.taxesPerYear_BadCase;
 
+            if (result.rate_Cash < 0 ||
+                result.rateStocks_ExcludedTaxes_BadCase < 0 ||
+                result.rateStocks_ExcludedTaxes_GoodCase < 0 ||
+                result.rateStocks_IncludedTaxes_BadCase < 0 ||
+                result.rateStocks_IncludedTaxes_GoodCase < 0 ||
+                result.total_Cash < 0 ||
+                result.total_Stocks < 0 ||
+                result.taxesPerYear_BadCase < 0 ||
+                result.taxesPerYear_GoodCase < 0
+                )
+            {
+                throw new Exception($"RentPhaseResult calculation failed. " +
+                    $"Possibly the range between {nameof(minimum_total_needed_Year)} and {nameof(comfort_total_needed_Year)} is too large. " +
+                    $"Results: {Environment.NewLine}{result}");
+            }
+
             return result;
         }
 
