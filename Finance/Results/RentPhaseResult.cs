@@ -24,7 +24,7 @@
                             $"Total_Stocks:                      {total_Stocks:F2}" + Environment.NewLine +
                             $"Taxes_GoodCase:                    {taxesPerYear_GoodCase:F2}" + Environment.NewLine +
                             $"Taxes_BadCase:                     {taxesPerYear_BadCase:F2}" + Environment.NewLine +
-                            $"==========================================================";
+                            $"==========================================================" + Environment.NewLine;
 
             return result;
         }

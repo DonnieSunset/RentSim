@@ -8,7 +8,7 @@
         {
             string result = $"===============--- StateRentResult ---====================" + Environment.NewLine +
                             $"Net Rent from stop work age:       {assumedStateRent_FromStopWorkAge_PerMonth:F2}" + Environment.NewLine +
-                            $"==========================================================";
+                            $"==========================================================" + Environment.NewLine;
 
             return result;
         }

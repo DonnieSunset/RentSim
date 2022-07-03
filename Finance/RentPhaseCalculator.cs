@@ -86,6 +86,7 @@ namespace Finance
             return result;
         }
 
+        // todo: this is now only simulating the good case. how shall we treat the crash scenario?
         public static void Simulate(
             int rentPhaseStartAge, 
             int rentPhaseEndAge, 
@@ -98,29 +99,22 @@ namespace Finance
             decimal taxesPerYear, 
             IProtocolWriter protocolWriter)
         {
-            //Console.WriteLine(Environment.NewLine);
             for (int i = rentPhaseStartAge; i < rentPhaseEndAge; i++)
             {
-                //Console.WriteLine($"State Begin Year {i}: Cash: {totalCash:F2} Stocks: {totalStocks:F2} Total: {totalStocks + totalCash:F2}");
                 protocolWriter.LogBalanceYearBegin(i, totalCash, totalStocks, 0);
 
                 var interests_Cash = totalCash * interestRate_Cash;
                 var interests_Stocks = totalStocks * interestRate_Stocks;
                 totalCash += interests_Cash;
                 totalStocks += interests_Stocks;
-                //Console.WriteLine($"\tInterests: Cash: {interests_Cash:F2} Stocks: {interests_Stocks:F2} Total: {interests_Cash + interests_Stocks:F2}");
                 protocolWriter.Log(i, new TransactionDetails() { cashInterests = interests_Cash, stockInterests = interests_Stocks });
 
                 totalCash -= rateCash_perYear;
                 totalStocks -= rateStocks_ExcludedTaxes_perYear;
-                //Console.WriteLine($"\tWithdrawal: Cash: {interestRate_Cash:F2} Stocks: {rateStocks_ExcludedTaxes_perYear:F2} Total: {rateCash_perYear + rateStocks_ExcludedTaxes_perYear:F2}");
                 protocolWriter.Log(i, new TransactionDetails() { cashWithdrawal = rateCash_perYear, stockWithdrawal = rateStocks_ExcludedTaxes_perYear });
 
                 totalStocks -= taxesPerYear;
-                //Console.WriteLine($"\tWithdrawal: taxes: {taxesPerYear:F2}");
                 protocolWriter.Log(i, new TransactionDetails() { stockTaxes = taxesPerYear });
-
-                //Console.WriteLine($"\tEnd Year {i}: Cash: {totalCash:F2} Stocks: {totalStocks:F2} Total: {totalStocks + totalCash:F2}");
             }
         }
     }

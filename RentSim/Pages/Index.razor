@@ -44,10 +44,10 @@
 
 <Field Horizontal="true">
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
@@ -490,8 +490,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             lifeAssumptions.ageStopWork,
             lifeAssumptions.ageRentStart,
             lifeAssumptions.inflationRate,
-            lifeAssumptions.needsCurrentAgeMinimal,
-            lifeAssumptions.needsCurrentAgeComfort,
+            lifeAssumptions.needsCurrentAgeMinimal_perMonth,
+            lifeAssumptions.needsCurrentAgeComfort_perMonth,
             myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
         );
 
@@ -629,7 +629,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Cash",
             BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.cashYearBegin).ToList(),
+            Data = resultRows.Select(x => x.cashYearEnd).ToList(),
         };
 
         BarChartDataset<decimal> dataBarChartStocks = new BarChartDataset<decimal>
@@ -637,7 +637,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Stocks",
             BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.stocksYearBegin).ToList(),
+            Data = resultRows.Select(x => x.stocksYearEnd).ToList(),
         };
 
         BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
@@ -645,7 +645,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Metals",
             BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.metalsYearBegin).ToList(),
+            Data = resultRows.Select(x => x.metalsYearEnd).ToList(),
         };
 
         BarChartOptions dataBarChartOptions = new BarChartOptions()

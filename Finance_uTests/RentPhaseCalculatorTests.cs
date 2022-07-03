@@ -124,8 +124,8 @@ namespace Finance_uTests
                 lifeAssumptions.ageStopWork,
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.inflationRate,
-                lifeAssumptions.needsCurrentAgeMinimal,
-                lifeAssumptions.needsCurrentAgeComfort,
+                lifeAssumptions.needsCurrentAgeMinimal_perMonth,
+                lifeAssumptions.needsCurrentAgeComfort_perMonth,
                 stateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
             );
 
@@ -150,8 +150,8 @@ namespace Finance_uTests
                 ageRentStart = 67,
                 ageEnd = 80,
                 inflationRate = 0.03d,
-                needsCurrentAgeMinimal = 1900,
-                needsCurrentAgeComfort = 2600,
+                needsCurrentAgeMinimal_perMonth = 1900,
+                needsCurrentAgeComfort_perMonth = 2600,
                 rentPhase_InterestRate_Cash = 0m,
                 rentPhase_InterestRate_Stocks_GoodCase = 0.06m,
                 rentPhase_InterestRate_Stocks_BadCase = 0.0m,

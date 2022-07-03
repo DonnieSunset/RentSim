@@ -24,8 +24,8 @@ namespace Domain
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 
-        public decimal needsCurrentAgeMinimal = 1900;
-        public decimal needsCurrentAgeComfort = 2600;
+        public decimal needsCurrentAgeMinimal_perMonth = 1900;
+        public decimal needsCurrentAgeComfort_perMonth = 2600;
 
         public double inflationRate = 0.03d;
 
@@ -33,6 +33,7 @@ namespace Domain
         public decimal netStateRentFromCurrentAge_perMonth = 827;
         public decimal netStateRentFromRentStartAge_perMonth = 2025;
 
+        //TODO: This is also valid for stop work age: rename it accordingly
         public decimal rentPhase_InterestRate_Cash = 0m;
         public decimal rentPhase_InterestRate_Stocks_GoodCase = 0.06m;
         public decimal rentPhase_InterestRate_Stocks_BadCase = 0m;

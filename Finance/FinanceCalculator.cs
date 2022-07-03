@@ -25,6 +25,12 @@
             return (decimal)Math.Pow((double)a, b);
         }
 
+        public static decimal Log(decimal x)
+        {
+            return (decimal)Math.Log((double)x);
+        }
+
+
         public static decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)
         {
             decimal zinsFaktor_d = (decimal)zinsFaktor;
