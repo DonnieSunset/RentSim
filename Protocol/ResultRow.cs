@@ -29,7 +29,7 @@
         public decimal TotalDeposits => stocksDeposits + cashDeposits + metalsDeposits;
         public decimal TotalWithdrawals => stocksWithdrawals + cashWithdrawals + metalsWithdrawals;
         public decimal TotalInterests => stocksInterests + cashInterests + metalsInterests;
-        public decimal TotalTaxes => stocksInterests + cashInterests + metalsInterests;
+        public decimal TotalTaxes => stocksTaxes + cashTaxes + metalsTaxes;
         public decimal TotalYearEnd => stocksYearEnd + cashYearEnd + metalsYearBegin;
 
         public int CompareTo(ResultRow? other)
