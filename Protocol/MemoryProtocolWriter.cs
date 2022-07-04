@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Domain;
+using System.Collections.ObjectModel;
 
 namespace Protocol
 {

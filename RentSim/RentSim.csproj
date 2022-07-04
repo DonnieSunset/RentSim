@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Finance\Finance.csproj" />
     <ProjectReference Include="..\Processing\Processing.csproj" />
     <ProjectReference Include="..\Strategy\Strategy.csproj" />

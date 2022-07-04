@@ -1,4 +1,4 @@
-﻿namespace Protocol
+﻿namespace Domain
 {
     public class ResultRow : IComparable<ResultRow>
     {
