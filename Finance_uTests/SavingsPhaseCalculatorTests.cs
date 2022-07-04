@@ -10,6 +10,8 @@ namespace Finance_uTests
     [TestFixture]
     public class SavingsPhaseCalculatorTests
     {
+        private int myDummyAgeStopWork = 60;
+
         /// <summary>
         /// This is not a real test because it uses product code in order to validate product code.
         /// </summary>
@@ -26,7 +28,7 @@ namespace Finance_uTests
                 //good scenario
                 SavingPhaseCalculator.Simulate(
                     lifeAssumptions.ageCurrent,
-                    lifeAssumptions.ageStopWork,
+                    myDummyAgeStopWork,
                     lifeAssumptions.cash,
                     lifeAssumptions.cashGrowthRate,
                     lifeAssumptions.cashSaveAmountPerMonth,
@@ -38,7 +40,7 @@ namespace Finance_uTests
                     lifeAssumptions.metalsSaveAmountPerMonth,
                     protoWriter);
 
-                var finalRowGoodCase = protoWriter.Protocol.Single(x => x.age == lifeAssumptions.ageStopWork - 1);
+                var finalRowGoodCase = protoWriter.Protocol.Single(x => x.age == myDummyAgeStopWork - 1);
                 Assert.That(finalRowGoodCase.cashYearEnd, Is.EqualTo(savingsPhaseResult.savingsCash).Within(1), $"{nameof(finalRowGoodCase.cashYearEnd)} after Simulation.");
                 Assert.That(finalRowGoodCase.stocksYearEnd, Is.EqualTo(savingsPhaseResult.savingsStocks).Within(1), $"{nameof(finalRowGoodCase.stocksYearEnd)} after Simulation.");
                 Assert.That(finalRowGoodCase.metalsYearEnd, Is.EqualTo(savingsPhaseResult.savingsMetals).Within(1), $"{nameof(finalRowGoodCase.metalsYearEnd)} after Simulation.");
@@ -52,7 +54,7 @@ namespace Finance_uTests
         {
             var savingPhaseResult = SavingPhaseCalculator.CalculateResult(
                 lifeAssumptions.ageCurrent,
-                lifeAssumptions.ageStopWork,
+                myDummyAgeStopWork,
                 lifeAssumptions.cash,
                 lifeAssumptions.cashGrowthRate,
                 lifeAssumptions.cashSaveAmountPerMonth,
@@ -71,7 +73,6 @@ namespace Finance_uTests
 {
             new LifeAssumptions() {
                 ageCurrent = 42,
-                ageStopWork = 60,
                 ageRentStart = 67,
                 ageEnd = 80,
                 

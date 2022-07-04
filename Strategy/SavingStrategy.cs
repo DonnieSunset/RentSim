@@ -10,6 +10,8 @@ namespace Strategy
         private IProtocolWriter myProtocolWriter;
         private LifeAssumptions myLifeAssumptions;
 
+        private int myDummyAgeStopWork = 60;
+
         public SavingStrategy(AssetPortfolio portfolio, LifeAssumptions lifeAssumptions, IProtocolWriter protocolWriter)
         { 
             myPortfolio = portfolio;
@@ -27,7 +29,7 @@ namespace Strategy
                 myLifeAssumptions.metals
                 );
 
-            for (int age = myLifeAssumptions.ageCurrent; age < myLifeAssumptions.ageStopWork; age++)
+            for (int age = myLifeAssumptions.ageCurrent; age < myDummyAgeStopWork; age++)
             {
                 //Age age = Age.NewByAbsoluteAge(i);
 

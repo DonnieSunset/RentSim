@@ -9,7 +9,7 @@ namespace Finance
         {
             var result = new StateRentResult();
 
-            if (ageInQuestion <= ageCurrent || ageInQuestion >= ageRentStart)
+            if (ageInQuestion < ageCurrent || ageInQuestion > ageRentStart)
             {
                 throw new InvalidDataException($"Param: {nameof(ageInQuestion)} is {ageInQuestion} but should be between {ageCurrent} and {ageRentStart}.");
             }

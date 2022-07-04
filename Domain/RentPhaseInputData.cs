@@ -1,6 +1,4 @@
-﻿using Finance;
-
-namespace Domain
+﻿namespace Domain
 {
     //public class RentPhaseInputData
     //{

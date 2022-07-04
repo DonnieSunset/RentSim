@@ -10,6 +10,7 @@ namespace Finance_uTests
     [TestFixture]
     public class StopWorkPhaseCalculatorTests
     {
+        private int myDummyAgeStopWork = 60;
         /// <summary>
         /// This is not a real test because it uses product code in order to validate product code.
         /// </summary>
@@ -17,7 +18,7 @@ namespace Finance_uTests
         public void CalculateStopWorkPhaseResult_SimulateStopWorkPhase(LifeAssumptions lifeAssumptions, SavingPhaseResult savingPhaseResult, RentPhaseResult rentPhaseResult)
         {
             var stopWorkPhaseResult = StopWorkPhaseCalculator.Calculate(
-                lifeAssumptions.ageStopWork,
+                myDummyAgeStopWork,
                 lifeAssumptions.ageRentStart,
                 rentPhaseResult.total_Cash,
                 rentPhaseResult.total_Stocks,
@@ -96,7 +97,6 @@ namespace Finance_uTests
             {
                 new LifeAssumptions() {
                     ageCurrent = 42,
-                    ageStopWork = 64,
                     ageRentStart = 67,
                     ageEnd = 80,
                     inflationRate = 0.03d,
@@ -121,10 +121,8 @@ namespace Finance_uTests
                     rate_Cash = 10000,
                     rateStocks_ExcludedTaxes_GoodCase = 10000,
                     rateStocks_ExcludedTaxes_BadCase = 5000,
-
                 }
             },
         };
-    
     }
 }

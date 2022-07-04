@@ -14,13 +14,13 @@
 <Field Horizontal="true">
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Current Age:</FieldLabel>
-    <InputAge @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@lifeAssumptions.ageStopWork" Redraw="@HandleRedraw"/>
+    <InputAge @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@Field_Result_AgeStopWork" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <InputAge @bind-Value="@lifeAssumptions.ageStopWork" @bind-Lower="lifeAssumptions.ageCurrent" @bind-Upper="@lifeAssumptions.ageRentStart" Redraw="@HandleRedraw"/>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true"  @bind-Value="@Field_Result_AgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
-    <InputAge @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="lifeAssumptions.ageStopWork" @bind-Upper="@lifeAssumptions.ageEnd" Redraw="@HandleRedraw"/>
+    <InputAge @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="Field_Result_AgeStopWork" @bind-Upper="@lifeAssumptions.ageEnd" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">End Age:</FieldLabel>
     <InputAge @bind-Value="@lifeAssumptions.ageEnd" @bind-Lower="lifeAssumptions.ageRentStart" Upper="100" Redraw="@HandleRedraw"/>
@@ -36,7 +36,7 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw"/> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageStopWork):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @Field_Result_AgeStopWork):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
@@ -101,8 +101,8 @@
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Metals Save Amount:</FieldLabel>
     <InputSaverate @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Redraw="@HandleRedraw"/> 
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @lifeAssumptions.ageStopWork</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_SavingPÜhaseResults_TotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Total Savings at @Field_Result_AgeStopWork</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@Field_SavingPhaseResults_TotalSavingStopWorkAge" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
 
@@ -327,6 +327,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     RentPhaseResult myRentPhaseResult = new();
     StateRentResult myStateRentResult = new();
     LaterNeedsResult myLaterNeedsResult = new();
+    StopWorkPhaseResult myStopWorkPhaseResult = new();
 
     //Inflation myRentStartInflation;
 
@@ -382,18 +383,19 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     string Field_RentPhaseResult_SavingsNeededCash;
     string Field_RentPhaseResult_SavingsNeededStocks;
     string Field_RentPhaseResult_SavingsNeededTotal;
-    
+
     string Field_NeedsStopWorkMinimum_perMonth;
     string Field_NeedsStopWorkComfort_perMonth;
     string Field_NeedsRentStartMinimum_perMonth;
     string Field_NeedsRentStartComfort_perMonth;
 
-    string Field_SavingPÜhaseResults_TotalSavingStopWorkAge;
+    string Field_SavingPhaseResults_TotalSavingStopWorkAge;
     string FieldResultsNetStateRent;
     string FieldResultsRatePhaseRent;
     string FieldResultsRatePhaseStopWork;
 
     string FieldNetRentAgeFromStopWork_perMonth;
+    int Field_Result_AgeStopWork;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -409,107 +411,18 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     //async Task HandleRedraw()
     public void HandleRedraw()
     {
-        Console.WriteLine("SH: HandleRedraw");
-        //Input input = new Input();
-        //input.ageCurrent = FieldAgeCurrent;
-        //input.ageStopWork = FieldAgeStopWork;
-        //input.ageRentStart = FieldAgeRentStart;
-        //input.ageEnd = FieldAgeEnd;
+        var phaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
 
-        //input.interestRateType = interestRateType;
-
-        //input.stocks = FieldStocks;
-        //input.stocksGrowthRate = FieldStocksGrowthRate;
-        //input.stocksMonthlyInvestAmount = FieldStocksSaveAmount;
-
-        //input.cash = FieldCash;
-        //input.cashGrowthRate = FieldCashGrowthRate;
-        //input.cashMonthlyInvestAmount = FieldCashSaveAmount;
-
-        //input.metals = FieldMetals;
-        //input.metalsGrowthRate = FieldMetalsGrowthRate;
-        //input.metalsMonthlyInvestAmount = FieldMetalsSaveAmount;
-
-        //input.netStateRentFromCurrentAge = FieldNetStateRentFromCurrentAge;
-        //input.netStateRentFromRentStartAge = FieldNetStateRentFromRentStartAge;
-
-        //input.NeedsNowMinimum = FieldNeedsNowMinimum;
-        //input.NeedsNowComfort = FieldNeedsNowComfort;
-
-        //FieldNeedsRentStartMinimum = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowMinimum, FieldInflationRate));
-        //FieldNeedsRentStartComfort = BeautifyToCurrenctWith0Decimals(RentSimMath.InflationAdjusted(input.ageCurrent, input.ageRentStart, FieldNeedsNowComfort, FieldInflationRate));
-
-
-        //Age.SetCurrent(lifeAssumptions.ageCurrent);
-
-
-
-        var portfolio = new AssetPortfolio(lifeAssumptions);
-
-        //var savingStrategy = new SavingStrategy(
-        //    portfolio,
-        //    lifeAssumptions,
-        //    protocolWriter);
-
-        //savingStrategy.Process();
-
-        //NetRentInputData netRentInputData = lifeAssumptions.NetRent;
-        //myNetRentResultData = RentCalculator.ApproxNetRent(
-        //    netRentInputData.AgeCurrent,
-        //    netRentInputData.NetRentAgeCurrent,
-        //    netRentInputData.AgeRentStart,
-        //    netRentInputData.NetRentAgeRentStart,
-        //    netRentInputData.AgeStopWork
-        //);
-
-        mySavingPhaseResult = SavingPhaseCalculator.CalculateResult(
-            lifeAssumptions.ageCurrent,
-            lifeAssumptions.ageStopWork,
-            lifeAssumptions.cash,
-            lifeAssumptions.cashGrowthRate,
-            lifeAssumptions.cashSaveAmountPerMonth,
-            lifeAssumptions.stocks,
-            lifeAssumptions.stocksGrowthRate,
-            lifeAssumptions.stocksSaveAmountPerMonth,
-            lifeAssumptions.metals,
-            lifeAssumptions.metalsGrowthRate,
-            lifeAssumptions.metalsSaveAmountPerMonth
-        );
-
-        //todo: this is diuplicated code 
-        myStateRentResult = RentPhaseCalculator.ApproxStateRent(
-            lifeAssumptions.ageCurrent,
-            lifeAssumptions.netStateRentFromCurrentAge_perMonth,
-            lifeAssumptions.ageRentStart,
-            lifeAssumptions.netStateRentFromRentStartAge_perMonth,
-            lifeAssumptions.ageStopWork
-        );
-
-        myLaterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
-            lifeAssumptions.ageCurrent,
-            lifeAssumptions.ageStopWork,
-            lifeAssumptions.ageRentStart,
-            lifeAssumptions.inflationRate,
-            lifeAssumptions.needsCurrentAgeMinimal_perMonth,
-            lifeAssumptions.needsCurrentAgeComfort_perMonth,
-            myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
-        );
-
-        myRentPhaseResult = RentPhaseCalculator.CalculateResult(
-            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-            lifeAssumptions.rentPhase_InterestRate_Cash,
-            lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
-            myLaterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear,
-            myLaterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear,
-            lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
-            lifeAssumptions.taxFactor_Stocks
-        );
+        Field_Result_AgeStopWork = phaseIntegratorResult.ageStopWork;
+        mySavingPhaseResult = phaseIntegratorResult.savingPhaseResult;
+        myRentPhaseResult = phaseIntegratorResult.rentPhaseResult;
+        myStopWorkPhaseResult = phaseIntegratorResult.stopWorkPhaseResult;
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+
         SavingPhaseCalculator.Simulate(
             lifeAssumptions.ageCurrent,
-            lifeAssumptions.ageStopWork,
+            Field_Result_AgeStopWork,
             lifeAssumptions.cash,
             lifeAssumptions.cashGrowthRate,
             lifeAssumptions.cashSaveAmountPerMonth,
@@ -535,16 +448,21 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             protocolWriter
         );
 
-        //var rentStartStrategy = new RentStartStrategy(
-        //    portfolio,
-        //    rentPhase,
-        //    protocolWriter);
-
-        //rentStartStrategy.Process();
-
-
-
-        //portfolio.Process();
+        StopWorkPhaseCalculator.Simulate(
+            myStopWorkPhaseResult.ageStopWork,
+            lifeAssumptions.ageRentStart,
+            myStopWorkPhaseResult.neededCash,
+            myStopWorkPhaseResult.neededStocks,
+            myRentPhaseResult.rate_Cash,
+            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+            myRentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+            lifeAssumptions.rentPhase_InterestRate_Cash,
+            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+            lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+            lifeAssumptions.taxFactor_Stocks,
+            protocolWriter
+        );
 
         resultRows = protocolWriter.Protocol;
 
@@ -554,7 +472,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
-        Field_SavingPÜhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
+        Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
 
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);

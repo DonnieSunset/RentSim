@@ -10,6 +10,8 @@ namespace Finance_uTests
     [TestFixture]
     public class RentPhaseCalculatorTests
     {
+        private int myDummyAgeStopWork = 60;
+
         /// <summary>
         /// This is not a real test because it uses product code in order to validate product code.
         /// </summary>
@@ -116,12 +118,12 @@ namespace Finance_uTests
                 lifeAssumptions.netStateRentFromCurrentAge_perMonth,
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.netStateRentFromRentStartAge_perMonth,
-                lifeAssumptions.ageStopWork
+                myDummyAgeStopWork
             );
 
             var laterNeedsResult = RentPhaseCalculator.CalculateLaterNeeds(
                 lifeAssumptions.ageCurrent,
-                lifeAssumptions.ageStopWork,
+                myDummyAgeStopWork,
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.inflationRate,
                 lifeAssumptions.needsCurrentAgeMinimal_perMonth,

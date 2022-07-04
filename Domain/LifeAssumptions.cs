@@ -1,6 +1,4 @@
-﻿using Finance;
-
-namespace Domain
+﻿namespace Domain
 {
     /// <summary>
     /// This class holds all input data in a flat hierarchy
@@ -8,7 +6,7 @@ namespace Domain
     public class LifeAssumptions
     {
         public int ageCurrent = 42;
-        public int ageStopWork = 60;
+        //public int ageStopWork = 60;
         public int ageRentStart = 67;
         public int ageEnd = 80;
 
