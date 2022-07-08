@@ -14,6 +14,7 @@ namespace Domain
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
             AllEndsUpInZero(resultRows);
             AllNumbersHaveTheCorrectSign(resultRows);
+            EndTotalsAreTheSUmOfAllSingleValues(resultRows);
         }
 
         public static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -103,8 +104,26 @@ namespace Domain
                 }
             }
         }
-            //todo: totals are the sum of all others
-            //todo: no metals after saving phase
 
+        public static void EndTotalsAreTheSUmOfAllSingleValues(IEnumerable<ResultRow> resultRows)
+        {
+            foreach (var resultRow in resultRows)
+            {
+                bool eqCash = Decimal.Round(resultRow.cashYearBegin + resultRow.cashDeposits.Sum() + resultRow.cashInterests - resultRow.cashWithdrawals.Sum() - resultRow.cashTaxes, 3) == Decimal.Round(resultRow.cashYearEnd, 3);
+                bool eqStocks = Decimal.Round(resultRow.stocksYearBegin + resultRow.stocksDeposits.Sum() + resultRow.stocksInterests - resultRow.stocksWithdrawals.Sum() - resultRow.stocksTaxes, 3) == Decimal.Round(resultRow.stocksYearEnd, 3);
+                bool eqMetals = Decimal.Round(resultRow.metalsYearBegin + resultRow.metalsDeposits.Sum() + resultRow.metalsInterests - resultRow.metalsWithdrawals.Sum() - resultRow.metalsTaxes, 3) == Decimal.Round(resultRow.metalsYearEnd, 3);
+                bool eqTotals = Decimal.Round(resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests - resultRow.TotalWithdrawals - resultRow.TotalTaxes, 3) == Decimal.Round(resultRow.TotalYearEnd, 3);
+
+                //var debug1 = resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests - resultRow.TotalWithdrawals - resultRow.TotalTaxes;
+                //var debug2 = resultRow.TotalYearEnd;
+
+
+                if (!eqCash || !eqStocks || !eqMetals || !eqTotals)
+                {
+                    throw new Exception($"ResultRowValidator: sum of single values at age {resultRow.age} does not sum up to total value.");
+                }
+            }
+        }
+            //todo: no metals after saving phase
     }
 }
