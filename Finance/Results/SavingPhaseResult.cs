@@ -8,16 +8,16 @@
 
         public decimal SavingsTotal => savingsCash + savingsStocks + savingsMetals;
 
-        public override string ToString()
+        public void Print()
         {
-            string result = $"===============--- SavingPhaseResult ---====================" + Environment.NewLine +
+            string result = $"===============--- {nameof(SavingPhaseResult)} ---====================" + Environment.NewLine +
                             $"{nameof(savingsCash)}:    {savingsCash:F2}" + Environment.NewLine +
                             $"{nameof(savingsStocks)}:  {savingsStocks:F2}" + Environment.NewLine +
                             $"{nameof(savingsMetals)}:  {savingsMetals:F2}" + Environment.NewLine +
                             $"{nameof(SavingsTotal)}:   {SavingsTotal:F2}" + Environment.NewLine +
                             $"==========================================================" + Environment.NewLine;
 
-            return result;
+            Console.WriteLine(result);
         }
     }
 }

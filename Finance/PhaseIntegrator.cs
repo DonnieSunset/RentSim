@@ -18,6 +18,16 @@ namespace Finance
         public LaterNeedsResult laterNeedsResult;
         public RentPhaseResult rentPhaseResult;
         public StopWorkPhaseResult stopWorkPhaseResult;
+
+        public void Print()
+        {
+            string result = $"===============--- {nameof(PhaseIntegratorResult)} ---====================" + Environment.NewLine +
+                            $"{nameof(ageStopWork)}:   {ageStopWork}" + Environment.NewLine +
+                            $"{nameof(overAmount)}:    {overAmount:F2}" + Environment.NewLine +
+                            $"==========================================================" + Environment.NewLine;
+
+            Console.WriteLine(result);
+        }
     }
 
     public class PhaseIntegrator
