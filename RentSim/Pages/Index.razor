@@ -30,40 +30,40 @@
 <Divider DividerType="DividerType.TextContent" Text="Rent Approximations"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageCurrent):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent pM (work until @lifeAssumptions.ageCurrent):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw"/> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @lifeAssumptions.ageRentStart):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent pM (work until @lifeAssumptions.ageRentStart):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" DelayTextOnKeyPress="false" Step=100m onchange="@HandleRedraw"/> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent (work until @Field_Result_AgeStopWork):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Net State Rent pM (work until @Field_Result_AgeStopWork):</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true" @bind-Text="@FieldNetRentAgeFromStopWork_perMonth" DelayTextOnKeyPress="false"/> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Need Approximations"></Divider>
 
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Minimum:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Minimum Needs now pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs now Comfort:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Comfort Needs now pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="decimal" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=100m /> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Inflation Rate:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit TValue="double" @bind-Value="@lifeAssumptions.inflationRate" onchange="@HandleRedraw" DelayTextOnKeyPress="false" Step=0.01m /> </FieldBody>
 </Field>
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Stop Work Minimum:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Minimum Needs Stop Work pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsStopWorkMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Stop Work Comfort:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Comfort Needs Stop Work pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsStopWorkComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 <Field Horizontal="true">
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Minimum:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Minimum Needs Rent Start pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsRentStartMinimum_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 
-    <FieldLabel ColumnSize="ColumnSize.Is1">Needs Rent Start Comfort:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Comfort Needs Rent Start pM:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <TextEdit ReadOnly="true"  @bind-Text="@Field_NeedsRentStartComfort_perMonth" DelayTextOnKeyPress="false" /> </FieldBody>
 </Field>
 
@@ -451,6 +451,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         var phaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
 
         myStateRentResult = phaseIntegratorResult.stateRentResult;
+        myLaterNeedsResult = phaseIntegratorResult.laterNeedsResult;
         mySavingPhaseResult = phaseIntegratorResult.savingPhaseResult;
         myRentPhaseResult = phaseIntegratorResult.rentPhaseResult;
         myStopWorkPhaseResult = phaseIntegratorResult.stopWorkPhaseResult;
