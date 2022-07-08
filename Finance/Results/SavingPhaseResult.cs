@@ -10,12 +10,12 @@
 
         public void Print()
         {
-            string result = $"===============--- {nameof(SavingPhaseResult)} ---====================" + Environment.NewLine +
-                            $"{nameof(savingsCash)}:    {savingsCash:F2}" + Environment.NewLine +
-                            $"{nameof(savingsStocks)}:  {savingsStocks:F2}" + Environment.NewLine +
-                            $"{nameof(savingsMetals)}:  {savingsMetals:F2}" + Environment.NewLine +
-                            $"{nameof(SavingsTotal)}:   {SavingsTotal:F2}" + Environment.NewLine +
-                            $"==========================================================" + Environment.NewLine;
+            string result = $"===============--- {nameof(SavingPhaseResult)} ---===================="   + Environment.NewLine +
+                            $"{nameof(savingsCash)}:    {savingsCash:F2}"                               + Environment.NewLine +
+                            $"{nameof(savingsStocks)}:  {savingsStocks:F2}"                             + Environment.NewLine +
+                            $"{nameof(savingsMetals)}:  {savingsMetals:F2}"                             + Environment.NewLine +
+                            $"{nameof(SavingsTotal)}:   {SavingsTotal:F2}"                              + Environment.NewLine +
+                            $"======================================================================";
 
             Console.WriteLine(result);
         }

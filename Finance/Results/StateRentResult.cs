@@ -6,9 +6,9 @@
 
         public override string ToString()
         {
-            string result = $"===============--- StateRentResult ---====================" + Environment.NewLine +
-                            $"Net Rent from stop work age:       {assumedStateRent_FromStopWorkAge_PerMonth:F2}" + Environment.NewLine +
-                            $"==========================================================" + Environment.NewLine;
+            string result = $"===============--- {nameof(StateRentResult)} ---===================="                                         + Environment.NewLine +
+                            $"{nameof(assumedStateRent_FromStopWorkAge_PerMonth)}:       {assumedStateRent_FromStopWorkAge_PerMonth:F2}"    + Environment.NewLine +
+                            $"==========================================================";
 
             return result;
         }

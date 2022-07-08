@@ -16,16 +16,16 @@
 
         public override string ToString()
         {
-            string result = $"===============--- StateRentResult ---====================" + Environment.NewLine +
-                            $"Needs minimum from Rent Start Age (per month):    {needsMinimum_AgeRentStart_WithInflation_PerMonth:F2}" + Environment.NewLine +
-                            $"Needs comfort from Rent Start Age (per month):    {needsComfort_AgeRentStart_WithInflation_PerMonth:F2}" + Environment.NewLine +
-                            $"Needs minimum from Rent Start Age (per year):     {NeedsMinimum_AgeRentStart_WithInflation_PerYear:F2}" + Environment.NewLine +
-                            $"Needs comfort from Rent Start Age (per year):     {NeedsComfort_AgeRentStart_WithInflation_PerYear:F2}" + Environment.NewLine +
-                            $"Needs minimum from Stop Work  Age (per month):    {needsMinimum_AgeStopWork_WithInflation_PerMonth:F2}" + Environment.NewLine +
-                            $"Needs comfort from Stop Work  Age (per month):    {needsComfort_AgeStopWork_WithInflation_PerMonth:F2}" + Environment.NewLine +
-                            $"Needs minimum from Stop Work  Age (per year):     {NeedsMinimum_AgeStopWork_WithInflation_PerYear:F2}" + Environment.NewLine +
-                            $"Needs comfort from Stop Work  Age (per year):     {NeedsComfort_AgeStopWork_WithInflation_PerYear:F2}" + Environment.NewLine +
-                            $"==========================================================" + Environment.NewLine;
+            string result = $"===============--- {nameof(LaterNeedsResult)} ---====================" + Environment.NewLine +
+                            $"{nameof(needsMinimum_AgeRentStart_WithInflation_PerMonth)}:   {needsMinimum_AgeRentStart_WithInflation_PerMonth:F2}"  + Environment.NewLine +
+                            $"{nameof(needsComfort_AgeRentStart_WithInflation_PerMonth)}:   {needsComfort_AgeRentStart_WithInflation_PerMonth:F2}"  + Environment.NewLine +
+                            $"{nameof(NeedsMinimum_AgeRentStart_WithInflation_PerYear)}:    {NeedsMinimum_AgeRentStart_WithInflation_PerYear:F2}"   + Environment.NewLine +
+                            $"{nameof(NeedsComfort_AgeRentStart_WithInflation_PerYear)}:    {NeedsComfort_AgeRentStart_WithInflation_PerYear:F2}"   + Environment.NewLine +
+                            $"{nameof(needsMinimum_AgeStopWork_WithInflation_PerMonth)}:    {needsMinimum_AgeStopWork_WithInflation_PerMonth:F2}"   + Environment.NewLine +
+                            $"{nameof(needsComfort_AgeStopWork_WithInflation_PerMonth)}:    {needsComfort_AgeStopWork_WithInflation_PerMonth:F2}"   + Environment.NewLine +
+                            $"{nameof(NeedsMinimum_AgeStopWork_WithInflation_PerYear)}:     {NeedsMinimum_AgeStopWork_WithInflation_PerYear:F2}"    + Environment.NewLine +
+                            $"{nameof(NeedsComfort_AgeStopWork_WithInflation_PerYear)}:     {NeedsComfort_AgeStopWork_WithInflation_PerYear:F2}"    + Environment.NewLine +
+                            $"=================================================================";
 
             return result;
         }
