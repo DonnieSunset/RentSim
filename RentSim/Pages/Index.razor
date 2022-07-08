@@ -216,8 +216,10 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 <DataGrid TItem="ResultRow"
           Narrow="true"
+          Responsive="true"
           Data="@resultRows"
           ReadData="@OnReadData"
+          Resizable="true"
           TotalItems="@totalRows">
     <DataGridCommandColumn TItem="ResultRow" />
     
@@ -226,7 +228,28 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Savings" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
     <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
     <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total Year End" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
-        
+    
+    <DataGridColumn TItem="ResultRow" Field="cashDeposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.cashDeposits)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="cashWithdrawals" Caption="Cash Withdrawals" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.cashWithdrawals)) </DisplayTemplate>
+    </DataGridColumn>
+
+    <DataGridColumn TItem="ResultRow" Field="stocksDeposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.stocksDeposits)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="stocksWithdrawals" Caption="Stocks Withdrawals" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.stocksWithdrawals)) </DisplayTemplate>
+    </DataGridColumn>
+
+        <DataGridColumn TItem="ResultRow" Field="metalsDeposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.metalsDeposits)) </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn TItem="ResultRow" Field="metalsWithdrawals" Caption="Metals Withdrawals" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End >
+        <DisplayTemplate> @(BeautifyListToCurrencyWith2Decimals((context as ResultRow)?.metalsWithdrawals)) </DisplayTemplate>
+    </DataGridColumn>
+    
     @*<DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
         <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
     </DataGridColumn>
@@ -299,6 +322,13 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     public string BeautifyToCurrenctWith2Decimals(decimal? num)
     {
         return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", num);
+    }
+
+    public string BeautifyListToCurrencyWith2Decimals(List<decimal>? decimals)
+    {
+        return decimals == null
+            ? string.Empty
+            : string.Join(Environment.NewLine, decimals.Select(x => string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", x)));
     }
 
     public string BeautifyToCurrenctWith0Decimals(decimal? num)
@@ -413,16 +443,18 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     {
         var phaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
 
-        Field_Result_AgeStopWork = phaseIntegratorResult.ageStopWork;
         mySavingPhaseResult = phaseIntegratorResult.savingPhaseResult;
         myRentPhaseResult = phaseIntegratorResult.rentPhaseResult;
         myStopWorkPhaseResult = phaseIntegratorResult.stopWorkPhaseResult;
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
+        myStopWorkPhaseResult.Print();
+        myRentPhaseResult.Print();
+
         SavingPhaseCalculator.Simulate(
             lifeAssumptions.ageCurrent,
-            Field_Result_AgeStopWork,
+            phaseIntegratorResult.ageStopWork,
             lifeAssumptions.cash,
             lifeAssumptions.cashGrowthRate,
             lifeAssumptions.cashSaveAmountPerMonth,
@@ -435,18 +467,13 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             protocolWriter
         );
 
-        RentPhaseCalculator.Simulate(
-            lifeAssumptions.ageRentStart,
-            lifeAssumptions.ageEnd,
-            myRentPhaseResult.total_Cash,
-            myRentPhaseResult.total_Stocks,
-            myRentPhaseResult.rate_Cash,
-            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Cash,
-            myRentPhaseResult.taxesPerYear_GoodCase,
+        SavingPhaseCalculator.AdjustmentsForStopWorkPhase(
+            phaseIntegratorResult.ageStopWork-1, // <-- todo: what happens here if currentAge==stopWorkAge?
+            phaseIntegratorResult.overAmount,
+            myStopWorkPhaseResult.neededCash,
+            myStopWorkPhaseResult.neededStocks,
             protocolWriter
-        );
+            );
 
         StopWorkPhaseCalculator.Simulate(
             myStopWorkPhaseResult.ageStopWork,
@@ -461,6 +488,20 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
             lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
             lifeAssumptions.taxFactor_Stocks,
+            phaseIntegratorResult.overAmount,
+            protocolWriter
+        );
+        
+        RentPhaseCalculator.Simulate(
+            lifeAssumptions.ageRentStart,
+            lifeAssumptions.ageEnd,
+            myRentPhaseResult.total_Cash,
+            myRentPhaseResult.total_Stocks,
+            myRentPhaseResult.rate_Cash,
+            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+            lifeAssumptions.rentPhase_InterestRate_Cash,
+            myRentPhaseResult.taxesPerYear_GoodCase,
             protocolWriter
         );
 
@@ -472,6 +513,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
+        Field_Result_AgeStopWork = phaseIntegratorResult.ageStopWork;
         Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
 
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);

@@ -63,7 +63,7 @@ namespace Domain
         {
             var totalYearEnd = resultRows.MaxBy(x => x.age).TotalYearEnd;
 
-            if (totalYearEnd != 0)
+            if (Decimal.Round(totalYearEnd, 3) != 0)
             {
                 throw new Exception($"ResultRowValidator: Last row does not end up in zero. Actual value: {totalYearEnd}.");
             }
@@ -74,30 +74,30 @@ namespace Domain
             foreach (var resultRow in resultRows)
             {
                 if (resultRow.age < 0 ||
-                    resultRow.cashDeposits < 0 ||
-                    resultRow.cashInterests < 0 ||
-                    resultRow.cashTaxes < 0 ||
-                    resultRow.cashWithdrawals < 0 ||
-                    resultRow.cashYearBegin < 0 ||
-                    resultRow.cashYearEnd < 0 ||
-                    resultRow.stocksDeposits < 0 ||
-                    resultRow.stocksInterests < 0 ||
-                    resultRow.stocksTaxes < 0 ||
-                    resultRow.stocksWithdrawals < 0 ||
-                    resultRow.stocksYearBegin < 0 ||
-                    resultRow.stocksYearEnd < 0 ||
-                    resultRow.metalsDeposits < 0 ||
-                    resultRow.metalsInterests < 0 ||
-                    resultRow.metalsTaxes < 0 ||
-                    resultRow.metalsWithdrawals < 0 ||
-                    resultRow.metalsYearBegin < 0 ||
-                    resultRow.metalsYearEnd < 0 ||
-                    resultRow.TotalDeposits < 0 ||
-                    resultRow.TotalInterests < 0 ||
-                    resultRow.TotalTaxes < 0 ||
-                    resultRow.TotalWithdrawals < 0 ||
-                    resultRow.TotalYearBegin < 0 ||
-                    resultRow.TotalYearEnd < 0)
+                    resultRow.cashDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.cashInterests, 3) < 0 ||
+                    Decimal.Round(resultRow.cashTaxes, 3) < 0 ||
+                    resultRow.cashWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.cashYearBegin, 3) < 0 ||
+                    Decimal.Round(resultRow.cashYearEnd, 3) < 0 ||
+                    resultRow.stocksDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.stocksInterests, 3) < 0 ||
+                    Decimal.Round(resultRow.stocksTaxes, 3) < 0 ||
+                    resultRow.stocksWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.stocksYearBegin, 3) < 0 ||
+                    Decimal.Round(resultRow.stocksYearEnd, 3) < 0 ||
+                    resultRow.metalsDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.metalsInterests, 3) < 0 ||
+                    Decimal.Round(resultRow.metalsTaxes, 3) < 0 ||
+                    resultRow.metalsWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.metalsYearBegin, 3) < 0 ||
+                    Decimal.Round(resultRow.metalsYearEnd, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalDeposits, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalInterests, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalTaxes, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalWithdrawals, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalYearBegin, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalYearEnd, 3) < 0)
                 {
                     throw new Exception($"ResultRowValidator: row of age {resultRow.age} contains an entry with wrong sign.");
                 }

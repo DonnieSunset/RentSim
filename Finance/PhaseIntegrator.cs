@@ -73,9 +73,12 @@ namespace Finance
                     lifeAssumptions.ageRentStart,
                     rentPhaseResult.total_Cash,
                     rentPhaseResult.total_Stocks,
-                    rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash,
-                    rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_GoodCase,
-                    rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase,
+                    rentPhaseResult.rate_Cash,
+                    rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                    rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash,
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_GoodCase,
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
@@ -98,6 +101,7 @@ namespace Finance
                         stateRentResult = stateRentResult,
                         laterNeedsResult = laterNeedsResult,
                         rentPhaseResult = rentPhaseResult,
+                        //rentPhaseResult = rentPhaseResult_WithNeedsFromStopWorkPhase,
                         stopWorkPhaseResult = stopWorkPhaseResult
                     };
                 };

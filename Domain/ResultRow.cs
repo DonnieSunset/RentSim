@@ -5,30 +5,30 @@
         public int age;
         
         public decimal cashYearBegin;
-        public decimal cashDeposits;
-        public decimal cashWithdrawals;
+        public List<decimal> cashDeposits = new();
+        public List<decimal> cashWithdrawals = new();
         public decimal cashInterests;
         public decimal cashTaxes;
         public decimal cashYearEnd;
 
         public decimal stocksYearBegin;
-        public decimal stocksDeposits;
-        public decimal stocksWithdrawals;
+        public List<decimal> stocksDeposits = new();
+        public List<decimal> stocksWithdrawals = new();
         public decimal stocksInterests;
         public decimal stocksTaxes;
         public decimal stocksYearEnd;
 
         public decimal metalsYearBegin;
-        public decimal metalsDeposits;
-        public decimal metalsWithdrawals;
+        public List<decimal> metalsDeposits = new();
+        public List<decimal> metalsWithdrawals = new();
         public decimal metalsInterests;
         public decimal metalsTaxes;
         public decimal metalsYearEnd;
 
         
         public decimal TotalYearBegin => stocksYearBegin + cashYearBegin + metalsYearBegin;
-        public decimal TotalDeposits => stocksDeposits + cashDeposits + metalsDeposits;
-        public decimal TotalWithdrawals => stocksWithdrawals + cashWithdrawals + metalsWithdrawals;
+        public decimal TotalDeposits => stocksDeposits.Sum() + cashDeposits.Sum() + metalsDeposits.Sum();
+        public decimal TotalWithdrawals => stocksWithdrawals.Sum() + cashWithdrawals.Sum() + metalsWithdrawals.Sum();
         public decimal TotalInterests => stocksInterests + cashInterests + metalsInterests;
         public decimal TotalTaxes => stocksTaxes + cashTaxes + metalsTaxes;
         public decimal TotalYearEnd => stocksYearEnd + cashYearEnd + metalsYearEnd;

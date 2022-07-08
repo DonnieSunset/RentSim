@@ -46,6 +46,7 @@ namespace Finance_uTests
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                 lifeAssumptions.taxFactor_Stocks,
+                0,
                 protoWriter
                 );
 

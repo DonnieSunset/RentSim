@@ -58,6 +58,16 @@ namespace Finance
             };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="overplusAmount">
+        /// The result of the integration of all phases. 
+        /// Since the granularity of the phases are years, 
+        /// there is typically an overplus from the savings
+        /// which is not needed, in order to sum up
+        /// all calculations at the end to zero.
+        /// </param>
         public static void Simulate(
             int ageStopWork,
             int ageRentStart,
@@ -71,16 +81,29 @@ namespace Finance
             decimal interestRate_Stocks_BadCase,
             decimal crashFactor_Stocks_BadCase,
             decimal stocks_taxFactor,
+            decimal overplusAmount,
             IProtocolWriter protocolWriter)
         {
             decimal totalCash = amountCashStopWorkAge;
             decimal totalStocks = amountStocksStopWorkAge;
-
             decimal taxesPerYear = rate_StockGoodCase_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
+
+            //prepare to substract overplus amount
+            //if (totalCash < overplusAmount)
+            //{
+            //    throw new Exception($"Insufficient cash ({totalCash}) in order to withdraw overplus amount ({overplusAmount})." +
+            //        $" A more intelligent implementation could help here which considers also the stocks savings.");
+            //}
 
             for (int age = ageStopWork; age < ageRentStart; age++)
             {
                 protocolWriter.LogBalanceYearBegin(age, totalCash, totalStocks, 0);
+
+                // substract overplus from savings phase
+                //if (age == ageStopWork)
+                //{
+                //    protocolWriter.Log(age, new TransactionDetails() { cashWithdrawal = overplusAmount });
+                //}
 
                 // get interests
                 var interests_Cash = totalCash * interestRate_Cash;
