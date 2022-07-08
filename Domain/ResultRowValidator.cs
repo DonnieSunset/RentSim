@@ -114,10 +114,6 @@ namespace Domain
                 bool eqMetals = Decimal.Round(resultRow.metalsYearBegin + resultRow.metalsDeposits.Sum() + resultRow.metalsInterests - resultRow.metalsWithdrawals.Sum() - resultRow.metalsTaxes, 3) == Decimal.Round(resultRow.metalsYearEnd, 3);
                 bool eqTotals = Decimal.Round(resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests - resultRow.TotalWithdrawals - resultRow.TotalTaxes, 3) == Decimal.Round(resultRow.TotalYearEnd, 3);
 
-                //var debug1 = resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests - resultRow.TotalWithdrawals - resultRow.TotalTaxes;
-                //var debug2 = resultRow.TotalYearEnd;
-
-
                 if (!eqCash || !eqStocks || !eqMetals || !eqTotals)
                 {
                     throw new Exception($"ResultRowValidator: sum of single values at age {resultRow.age} does not sum up to total value.");

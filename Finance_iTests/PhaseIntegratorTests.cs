@@ -49,17 +49,13 @@ namespace Finance_iTests
                 protocolWriter
             );
 
-            SavingPhaseCalculator.AdjustmentsForStopWorkPhase(
+            SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork-1,
                 phaseIntegratorResult.overAmount,
                 stopWorkPhaseResult.neededCash,
                 stopWorkPhaseResult.neededStocks,
                 protocolWriter
                 );
-
-            //todo: sell all gold
-            //tzodo: sell overlap money
-            //todo: re-balance cash and stocks
 
             StopWorkPhaseCalculator.Simulate(
                 stopWorkPhaseResult.ageStopWork,

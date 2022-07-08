@@ -467,7 +467,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             protocolWriter
         );
 
-        SavingPhaseCalculator.AdjustmentsForStopWorkPhase(
+        SavingPhaseCalculator.RebalanceForStopWorkPhase(
             phaseIntegratorResult.ageStopWork-1, // <-- todo: what happens here if currentAge==stopWorkAge?
             phaseIntegratorResult.overAmount,
             myStopWorkPhaseResult.neededCash,

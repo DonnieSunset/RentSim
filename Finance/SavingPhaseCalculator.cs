@@ -77,8 +77,7 @@ namespace Finance
             }
         }
 
-        // TODO: Rename to "Rebalancing". 
-        public static void AdjustmentsForStopWorkPhase(
+        public static void RebalanceForStopWorkPhase(
             int savingPhaseEndAge,
             decimal overPlusAmount,
             decimal cashTotalStopWorkPhase,
@@ -123,7 +122,7 @@ namespace Finance
             {
                 protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockWithdrawal = stocksDiff });
             }
-            else
+            else // i need more than i have 
             {
                 protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = -stocksDiff });
             }
