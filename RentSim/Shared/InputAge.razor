@@ -4,7 +4,7 @@
 
 <FieldBody ColumnSize="ColumnSize.Is1"> 
     <Validation Validator="ValidateAge">
-        <NumericEdit TValue="int" DelayTextOnKeyPress="false" @bind-Value="Value" > 
+        <NumericEdit TValue="int" DelayTextOnKeyPress="false" @bind-Value="Value" onchange="@Redraw"> 
             <Feedback>
                 <ValidationError>Age is invalid!</ValidationError>
             </Feedback>
@@ -27,7 +27,6 @@
 
             _value = value;
             ValueChanged.InvokeAsync(value).Wait();
-            Redraw.InvokeAsync().Wait();
         }
     }
 

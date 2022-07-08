@@ -17,7 +17,7 @@
     <InputAge @bind-Value="@lifeAssumptions.ageCurrent" Lower="0" @bind-Upper="@Field_Result_AgeStopWork" Redraw="@HandleRedraw"/>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Stop Work Age:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true"  @bind-Value="@Field_Result_AgeStopWork" DelayTextOnKeyPress="false" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true" @bind-Value="@Field_Result_AgeStopWork"/> </FieldBody>
 
     <FieldLabel ColumnSize="ColumnSize.Is1">Rent Start Age:</FieldLabel>
     <InputAge @bind-Value="@lifeAssumptions.ageRentStart" @bind-Lower="Field_Result_AgeStopWork" @bind-Upper="@lifeAssumptions.ageEnd" Redraw="@HandleRedraw"/>
@@ -345,6 +345,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     BarChart<decimal> barChart;
     BarChartOptions dataBarChartOptions;
     LineChartOptions dataLineChartOptions;
+    //InputAge ageInputFields;
     ChartScales myScales;
     //ResultSet resultSet;
     IEnumerable<ResultRow> resultRows;
@@ -429,10 +430,14 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
     protected override void OnAfterRender(bool firstRender)
     {
+        Console.WriteLine("Debug: SH OnAfterRender");
+
         // execute conditionally for loading data, otherwise this will load
         // every time the page refreshes
         if(firstRender)
         {
+            Console.WriteLine("Debug: SH firstRender");
+
             // Do work to load page data and set properties
             HandleRedraw();
         }
@@ -441,6 +446,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     //async Task HandleRedraw()
     public void HandleRedraw()
     {
+        Console.WriteLine("Debug: SH HandleRedraw");
+
         var phaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
 
         mySavingPhaseResult = phaseIntegratorResult.savingPhaseResult;
@@ -449,8 +456,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
 
-        myStopWorkPhaseResult.Print();
-        myRentPhaseResult.Print();
+        //myStopWorkPhaseResult.Print();
+        //myRentPhaseResult.Print();
 
         SavingPhaseCalculator.Simulate(
             lifeAssumptions.ageCurrent,
@@ -491,7 +498,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             phaseIntegratorResult.overAmount,
             protocolWriter
         );
-        
+
         RentPhaseCalculator.Simulate(
             lifeAssumptions.ageRentStart,
             lifeAssumptions.ageEnd,
@@ -514,6 +521,9 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
         Field_Result_AgeStopWork = phaseIntegratorResult.ageStopWork;
+        //ageInputFields.ValueChanged.InvokeAsync().Wait();
+
+
         Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
 
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);

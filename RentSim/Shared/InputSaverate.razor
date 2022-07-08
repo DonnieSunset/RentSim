@@ -4,7 +4,7 @@
 
 <FieldBody ColumnSize="ColumnSize.Is1"> 
     <Validation Validator="ValidateAmount">
-        <NumericEdit TValue="int" DelayTextOnKeyPress="false" @bind-Value="Value" Step="100"> 
+        <NumericEdit TValue="int" DelayTextOnKeyPress="false" @bind-Value="Value" Step="100" onchange="@Redraw"> 
             <Feedback>
                 <ValidationError>Saverate is invalid!</ValidationError>
             </Feedback>
@@ -25,7 +25,6 @@
 
             _value = value;
             ValueChanged.InvokeAsync(value).Wait();
-            Redraw.InvokeAsync().Wait();
         }
     }
 
