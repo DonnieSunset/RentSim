@@ -205,19 +205,19 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 <Row>
     <Column ColumnSize="ColumnSize.Is4">
-        <LineChart @ref="lineChart" TItem="double"/>
+        <LineChart @ref="lineChart" TItem="decimal"/>
     </Column>
    <Column ColumnSize="ColumnSize.Is4">
-        <BarChart @ref="barChart" TItem="decimal" OptionsObject="@dataBarChartOptions" />
+        <BarChart @ref="barChart" TItem="decimal" />
     </Column>
-
 </Row>
 
 
 
-
-
+<Row>
+    <Column ColumnSize="ColumnSize.Is4">
 <DataGrid TItem="ResultRow"
+          ColumnSize="ColumnSize.Is1"
           Narrow="true"
           Responsive="true"
           Data="@resultRows"
@@ -287,6 +287,9 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     </DataGridColumn>*@
 
 </DataGrid>
+</Column>
+</Row>
+
 
 
 @code
@@ -328,7 +331,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 @code{
-    LineChart<double> lineChart;
+    LineChart<decimal> lineChart;
     BarChart<decimal> barChart;
     BarChartOptions dataBarChartOptions;
     LineChartOptions dataLineChartOptions;
@@ -531,7 +534,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         Field_NeedsStopWorkComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth);
         Field_NeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
         Field_NeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
-        
+
         FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
 
 
@@ -609,38 +612,44 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             Data = resultRows.Select(x => x.metalsYearEnd).ToList(),
         };
 
+
         BarChartOptions dataBarChartOptions = new BarChartOptions()
         {
             Scales = new ChartScales
             {
-                X = new ChartAxis { Stacked = true },
-                Y = new ChartAxis { Stacked = true }
+                X = new ChartAxis { Stacked = false },
+                Y = new ChartAxis { Stacked = false, BeginAtZero = true, Min=0 }
             },
         };
-
-        //dataLineChartOptions = new LineChartOptions()
-        //{
-        //    Scales = new ChartScales
-        //    {
-        //        X = new ChartAxis { Stacked = true },
-        //        Y = new ChartAxis { Stacked = true }
-
-        //    },
-        //};
-
-        //myScales = new ChartScales
-        //{
-        //    X = new ChartAxis { Stacked = true },
-        //    Y = new ChartAxis { Stacked = true }
-        //};
-
-        //await lineChart.Clear();
-        //await lineChart.AddLabelsDatasetsAndUpdate(labels, data);
 
         if (barChart != null)
         {
             barChart.Clear();
+            barChart.SetOptions(dataBarChartOptions);
             barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
         }
+
+        LineChartOptions lineBarChartOptions = new LineChartOptions()
+        {
+            Scales = new ChartScales
+            {
+                X = new ChartAxis { Stacked = false },
+                Y = new ChartAxis { Stacked = false, BeginAtZero = true, Min=0 }
+            },
+        };
+
+        LineChartDataset<decimal> lineChartDataSet_goodCase = new LineChartDataset<decimal>
+        {
+            Label = "Total Good Case",
+            Data = resultRows.Select(x => x.TotalYearEnd).ToList()
+        };
+
+        if (lineChart != null)
+        {
+            lineChart.Clear();
+            lineChart.SetOptions(lineBarChartOptions);
+            lineChart.AddLabelsDatasetsAndUpdate(labels, lineChartDataSet_goodCase);
+        }
+
     }
 }
