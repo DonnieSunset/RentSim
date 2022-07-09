@@ -109,12 +109,12 @@ namespace Finance
                 totalStocks += interests_Stocks;
                 protocolWriter.Log(i, new TransactionDetails() { cashInterests = interests_Cash, stockInterests = interests_Stocks });
 
-                totalCash -= rateCash_perYear;
-                totalStocks -= rateStocks_ExcludedTaxes_perYear;
-                protocolWriter.Log(i, new TransactionDetails() { cashWithdrawal = rateCash_perYear, stockWithdrawal = rateStocks_ExcludedTaxes_perYear });
+                totalCash += -rateCash_perYear;
+                totalStocks += -rateStocks_ExcludedTaxes_perYear;
+                protocolWriter.Log(i, new TransactionDetails() { cashDeposit = -rateCash_perYear, stockDeposit = -rateStocks_ExcludedTaxes_perYear });
 
-                totalStocks -= taxesPerYear;
-                protocolWriter.Log(i, new TransactionDetails() { stockTaxes = taxesPerYear });
+                totalStocks += -taxesPerYear;
+                protocolWriter.Log(i, new TransactionDetails() { stockTaxes = -taxesPerYear });
             }
         }
     }

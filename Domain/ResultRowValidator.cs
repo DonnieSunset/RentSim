@@ -75,28 +75,20 @@ namespace Domain
             foreach (var resultRow in resultRows)
             {
                 if (resultRow.age < 0 ||
-                    resultRow.cashDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
                     Decimal.Round(resultRow.cashInterests, 3) < 0 ||
-                    Decimal.Round(resultRow.cashTaxes, 3) < 0 ||
-                    resultRow.cashWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.cashTaxes, 3) > 0 ||
                     Decimal.Round(resultRow.cashYearBegin, 3) < 0 ||
                     Decimal.Round(resultRow.cashYearEnd, 3) < 0 ||
-                    resultRow.stocksDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
                     Decimal.Round(resultRow.stocksInterests, 3) < 0 ||
-                    Decimal.Round(resultRow.stocksTaxes, 3) < 0 ||
-                    resultRow.stocksWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.stocksTaxes, 3) > 0 ||
                     Decimal.Round(resultRow.stocksYearBegin, 3) < 0 ||
                     Decimal.Round(resultRow.stocksYearEnd, 3) < 0 ||
-                    resultRow.metalsDeposits.Any(x => Decimal.Round(x, 3) < 0) ||
                     Decimal.Round(resultRow.metalsInterests, 3) < 0 ||
-                    Decimal.Round(resultRow.metalsTaxes, 3) < 0 ||
-                    resultRow.metalsWithdrawals.Any(x => Decimal.Round(x, 3) < 0) ||
+                    Decimal.Round(resultRow.metalsTaxes, 3) > 0 ||
                     Decimal.Round(resultRow.metalsYearBegin, 3) < 0 ||
                     Decimal.Round(resultRow.metalsYearEnd, 3) < 0 ||
-                    Decimal.Round(resultRow.TotalDeposits, 3) < 0 ||
                     Decimal.Round(resultRow.TotalInterests, 3) < 0 ||
-                    Decimal.Round(resultRow.TotalTaxes, 3) < 0 ||
-                    Decimal.Round(resultRow.TotalWithdrawals, 3) < 0 ||
+                    Decimal.Round(resultRow.TotalTaxes, 3) > 0 ||
                     Decimal.Round(resultRow.TotalYearBegin, 3) < 0 ||
                     Decimal.Round(resultRow.TotalYearEnd, 3) < 0)
                 {
@@ -109,10 +101,10 @@ namespace Domain
         {
             foreach (var resultRow in resultRows)
             {
-                bool eqCash = Decimal.Round(resultRow.cashYearBegin + resultRow.cashDeposits.Sum() + resultRow.cashInterests - resultRow.cashWithdrawals.Sum() - resultRow.cashTaxes, 3) == Decimal.Round(resultRow.cashYearEnd, 3);
-                bool eqStocks = Decimal.Round(resultRow.stocksYearBegin + resultRow.stocksDeposits.Sum() + resultRow.stocksInterests - resultRow.stocksWithdrawals.Sum() - resultRow.stocksTaxes, 3) == Decimal.Round(resultRow.stocksYearEnd, 3);
-                bool eqMetals = Decimal.Round(resultRow.metalsYearBegin + resultRow.metalsDeposits.Sum() + resultRow.metalsInterests - resultRow.metalsWithdrawals.Sum() - resultRow.metalsTaxes, 3) == Decimal.Round(resultRow.metalsYearEnd, 3);
-                bool eqTotals = Decimal.Round(resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests - resultRow.TotalWithdrawals - resultRow.TotalTaxes, 3) == Decimal.Round(resultRow.TotalYearEnd, 3);
+                bool eqCash = Decimal.Round(resultRow.cashYearBegin + resultRow.cashDeposits.Sum() + resultRow.cashInterests + resultRow.cashTaxes, 3) == Decimal.Round(resultRow.cashYearEnd, 3);
+                bool eqStocks = Decimal.Round(resultRow.stocksYearBegin + resultRow.stocksDeposits.Sum() + resultRow.stocksInterests + resultRow.stocksTaxes, 3) == Decimal.Round(resultRow.stocksYearEnd, 3);
+                bool eqMetals = Decimal.Round(resultRow.metalsYearBegin + resultRow.metalsDeposits.Sum() + resultRow.metalsInterests + resultRow.metalsTaxes, 3) == Decimal.Round(resultRow.metalsYearEnd, 3);
+                bool eqTotals = Decimal.Round(resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests + resultRow.TotalTaxes, 3) == Decimal.Round(resultRow.TotalYearEnd, 3);
 
                 if (!eqCash || !eqStocks || !eqMetals || !eqTotals)
                 {

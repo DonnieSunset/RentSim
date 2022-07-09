@@ -93,11 +93,11 @@ namespace Finance
                 throw new Exception($"Insufficient cash ({savingPhaseEndRow.cashYearEnd}) in order to withdraw overplus amount ({overPlusAmount})." +
                     $" A more intelligent implementation could help here which considers also the stocks savings.");
             }
-            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashWithdrawal = overPlusAmount });
+            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -overPlusAmount });
 
             // Step 2: sell all metals
             var totalMetals = savingPhaseEndRow.metalsYearEnd;
-            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { metalWithdrawal = totalMetals, cashDeposit = totalMetals });
+            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { metalDeposit = -totalMetals, cashDeposit = totalMetals });
 
             // step 3: re-balance stocks and cash to match stopWorkPhase
             var stopWorkPhaseTotal = cashTotalStopWorkPhase + stockTotalStopWorkPhase;
@@ -110,22 +110,22 @@ namespace Finance
             var cashDiff = savingPhaseEndRow.cashYearEnd - cashTotalStopWorkPhase;
             if (cashDiff >= 0) // i have more than i need
             {
-                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashWithdrawal = cashDiff });
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = cashDiff, stockDeposit = -cashDiff});
             }
             else // i need more than i have 
             {
-                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -cashDiff });
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -cashDiff, stockDeposit = cashDiff });
             }
 
-            var stocksDiff = savingPhaseEndRow.stocksYearEnd - stockTotalStopWorkPhase;
-            if (stocksDiff >= 0) // i have more than i need
-            {
-                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockWithdrawal = stocksDiff });
-            }
-            else // i need more than i have 
-            {
-                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = -stocksDiff });
-            }
+            //var stocksDiff = savingPhaseEndRow.stocksYearEnd - stockTotalStopWorkPhase;
+            //if (stocksDiff >= 0) // i have more than i need
+            //{
+            //    protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = -stocksDiff });
+            //}
+            //else // i need more than i have 
+            //{
+            //    protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = stocksDiff });
+            //}
         }
     }
 }

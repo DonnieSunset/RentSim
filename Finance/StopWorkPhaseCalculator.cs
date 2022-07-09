@@ -113,13 +113,13 @@ namespace Finance
                 protocolWriter.Log(age, new TransactionDetails() { cashInterests = interests_Cash, stockInterests = interests_Stocks });
 
                 // withdraw rate
-                totalCash -= rate_Cash_perYear;
-                totalStocks -= rate_StockGoodCase_ExcludedTaxes_perYear;
-                protocolWriter.Log(age, new TransactionDetails() { cashWithdrawal = rate_Cash_perYear, stockWithdrawal = rate_StockGoodCase_ExcludedTaxes_perYear });
+                totalCash += -rate_Cash_perYear;
+                totalStocks += -rate_StockGoodCase_ExcludedTaxes_perYear;
+                protocolWriter.Log(age, new TransactionDetails() { cashDeposit = -rate_Cash_perYear, stockDeposit = -rate_StockGoodCase_ExcludedTaxes_perYear });
 
                 // pay taxes
-                totalStocks -= taxesPerYear;
-                protocolWriter.Log(age, new TransactionDetails() { stockTaxes = taxesPerYear });
+                totalStocks += -taxesPerYear;
+                protocolWriter.Log(age, new TransactionDetails() { stockTaxes = -taxesPerYear });
             }
         }
     }
