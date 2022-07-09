@@ -53,8 +53,14 @@ namespace Finance
             return new StopWorkPhaseResult()
             {
                 ageStopWork = ageStopWork,
-                neededCash = totalCash,
-                neededStocks = totalStocks,
+
+                neededPhaseBegin_Cash = totalCash,
+                neededPhaseBegin_Stocks = totalStocks,
+
+                rate_Cash = rate_Cash_perYear,
+                rateStocks_ExcludedTaxes_GoodCase = rate_StockGoodCase_ExcludedTaxes_perYear,
+                taxesPerYear_GoodCase = taxesPerYear,
+                rateStocks_IncludedTaxes_GoodCase = rate_StockGoodCase_ExcludedTaxes_perYear + taxesPerYear
             };
         }
 
@@ -81,7 +87,6 @@ namespace Finance
             decimal interestRate_Stocks_BadCase,
             decimal crashFactor_Stocks_BadCase,
             decimal stocks_taxFactor,
-            decimal overplusAmount,
             IProtocolWriter protocolWriter)
         {
             decimal totalCash = amountCashStopWorkAge;

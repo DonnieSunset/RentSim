@@ -20,8 +20,8 @@ namespace Finance_uTests
             var stopWorkPhaseResult = StopWorkPhaseCalculator.Calculate(
                 myDummyAgeStopWork,
                 lifeAssumptions.ageRentStart,
-                rentPhaseResult.total_Cash,
-                rentPhaseResult.total_Stocks,
+                rentPhaseResult.neededPhaseBegin_Cash,
+                rentPhaseResult.neededPhaseBegin_Stocks,
                 rentPhaseResult.rate_Cash,
                 rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
                 rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
@@ -32,12 +32,21 @@ namespace Finance_uTests
                 lifeAssumptions.taxFactor_Stocks
                 );
 
+            //todo: make this below 2 assert, according to rent phase tests
+            //Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+            //       Is.EqualTo(laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear).Within(1),
+            //       "Both good-case rates should sum up to the comfort needs per year.");
+
+            //Assert.That(rentPhaseResult.rate_Cash + rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+            //    Is.EqualTo(laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear).Within(1),
+            //    "Both bad-case rates should sum up to the minimum needs per year.");
+
             MemoryProtocolWriter protoWriter = new();
             StopWorkPhaseCalculator.Simulate(
                 stopWorkPhaseResult.ageStopWork,
                 lifeAssumptions.ageRentStart,
-                stopWorkPhaseResult.neededCash,
-                stopWorkPhaseResult.neededStocks,
+                stopWorkPhaseResult.neededPhaseBegin_Cash,
+                stopWorkPhaseResult.neededPhaseBegin_Stocks,
                 rentPhaseResult.rate_Cash,
                 rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
                 rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
@@ -46,14 +55,13 @@ namespace Finance_uTests
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                 lifeAssumptions.taxFactor_Stocks,
-                0,
                 protoWriter
                 );
 
             var protocolEntryResult = protoWriter.Protocol.Single(x => x.age == lifeAssumptions.ageRentStart-1);
 
-            Assert.That(protocolEntryResult.cashYearEnd, Is.EqualTo(rentPhaseResult.total_Cash).Within(0.1));
-            Assert.That(protocolEntryResult.stocksYearEnd, Is.EqualTo(rentPhaseResult.total_Stocks).Within(0.1));
+            Assert.That(protocolEntryResult.cashYearEnd, Is.EqualTo(rentPhaseResult.neededPhaseBegin_Cash).Within(0.1));
+            Assert.That(protocolEntryResult.stocksYearEnd, Is.EqualTo(rentPhaseResult.neededPhaseBegin_Stocks).Within(0.1));
         }
 
         //private static object[] inputData =
@@ -117,8 +125,8 @@ namespace Finance_uTests
                 },
 
                 new RentPhaseResult() {
-                    total_Cash = 200000,
-                    total_Stocks = 200000,
+                    neededPhaseBegin_Cash = 200000,
+                    neededPhaseBegin_Stocks = 200000,
                     rate_Cash = 10000,
                     rateStocks_ExcludedTaxes_GoodCase = 10000,
                     rateStocks_ExcludedTaxes_BadCase = 5000,

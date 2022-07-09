@@ -37,8 +37,8 @@ namespace Finance_uTests
                 RentPhaseCalculator.Simulate(
                     lifeAssumptions.ageRentStart,
                     lifeAssumptions.ageEnd,
-                    rentPhaseResult.total_Cash,
-                    rentPhaseResult.total_Stocks,
+                    rentPhaseResult.neededPhaseBegin_Cash,
+                    rentPhaseResult.neededPhaseBegin_Stocks,
                     rentPhaseResult.rate_Cash,
                     rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
@@ -56,8 +56,8 @@ namespace Finance_uTests
                 RentPhaseCalculator.Simulate(
                     lifeAssumptions.ageRentStart,
                     lifeAssumptions.ageEnd,
-                    rentPhaseResult.total_Cash,
-                    rentPhaseResult.total_Stocks * lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+                    rentPhaseResult.neededPhaseBegin_Cash,
+                    rentPhaseResult.neededPhaseBegin_Stocks * lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                     rentPhaseResult.rate_Cash,
                     rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
@@ -132,12 +132,12 @@ namespace Finance_uTests
             );
 
             var rentPhaseResult = RentPhaseCalculator.CalculateResult(
-                lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-                lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
                 laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear,
                 laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear,
+                lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                 lifeAssumptions.taxFactor_Stocks
                 );

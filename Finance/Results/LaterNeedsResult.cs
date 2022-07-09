@@ -14,7 +14,7 @@
         public decimal NeedsMinimum_AgeStopWork_WithInflation_PerYear => needsMinimum_AgeStopWork_WithInflation_PerMonth * 12;
         public decimal NeedsComfort_AgeStopWork_WithInflation_PerYear => needsComfort_AgeStopWork_WithInflation_PerMonth * 12;
 
-        public override string ToString()
+        public void Print()
         {
             string result = $"===============--- {nameof(LaterNeedsResult)} ---====================" + Environment.NewLine +
                             $"{nameof(needsMinimum_AgeRentStart_WithInflation_PerMonth)}:   {needsMinimum_AgeRentStart_WithInflation_PerMonth:F2}"  + Environment.NewLine +
@@ -27,7 +27,7 @@
                             $"{nameof(NeedsComfort_AgeStopWork_WithInflation_PerYear)}:     {NeedsComfort_AgeStopWork_WithInflation_PerYear:F2}"    + Environment.NewLine +
                             $"=================================================================";
 
-            return result;
+            Console.WriteLine(result);
         }
     }
 }

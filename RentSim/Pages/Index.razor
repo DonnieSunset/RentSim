@@ -467,33 +467,32 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         SavingPhaseCalculator.RebalanceForStopWorkPhase(
             myPhaseIntegratorResult.ageStopWork-1, // <-- todo: what happens here if currentAge==stopWorkAge?
             myPhaseIntegratorResult.overAmount,
-            myStopWorkPhaseResult.neededCash,
-            myStopWorkPhaseResult.neededStocks,
+            myStopWorkPhaseResult.neededPhaseBegin_Cash,
+            myStopWorkPhaseResult.neededPhaseBegin_Stocks,
             protocolWriter
             );
 
         StopWorkPhaseCalculator.Simulate(
             myStopWorkPhaseResult.ageStopWork,
             lifeAssumptions.ageRentStart,
-            myStopWorkPhaseResult.neededCash,
-            myStopWorkPhaseResult.neededStocks,
-            myRentPhaseResult.rate_Cash,
-            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-            myRentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+            myStopWorkPhaseResult.neededPhaseBegin_Cash,
+            myStopWorkPhaseResult.neededPhaseBegin_Stocks,
+            myStopWorkPhaseResult.rate_Cash,
+            myStopWorkPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+            myStopWorkPhaseResult.rateStocks_ExcludedTaxes_BadCase,
             lifeAssumptions.rentPhase_InterestRate_Cash,
             lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
             lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
             lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
             lifeAssumptions.taxFactor_Stocks,
-            myPhaseIntegratorResult.overAmount,
             protocolWriter
         );
 
         RentPhaseCalculator.Simulate(
             lifeAssumptions.ageRentStart,
             lifeAssumptions.ageEnd,
-            myRentPhaseResult.total_Cash,
-            myRentPhaseResult.total_Stocks,
+            myRentPhaseResult.neededPhaseBegin_Cash,
+            myRentPhaseResult.neededPhaseBegin_Stocks,
             myRentPhaseResult.rate_Cash,
             myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
             lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
@@ -524,9 +523,9 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         Field_RentPhaseResult_BadCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_BadCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_BadCase);
         Field_RentPhaseResult_BadCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_BadCase);
-        Field_RentPhaseResult_SavingsNeededCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash);
-        Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Stocks);
-        Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.total_Cash + myRentPhaseResult.total_Stocks);
+        Field_RentPhaseResult_SavingsNeededCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Cash);
+        Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Stocks);
+        Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Cash + myRentPhaseResult.neededPhaseBegin_Stocks);
 
         Field_NeedsStopWorkMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth);
         Field_NeedsStopWorkComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth);

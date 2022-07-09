@@ -52,33 +52,32 @@ namespace Finance_iTests
             SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork-1,
                 phaseIntegratorResult.overAmount,
-                stopWorkPhaseResult.neededCash,
-                stopWorkPhaseResult.neededStocks,
+                stopWorkPhaseResult.neededPhaseBegin_Cash,
+                stopWorkPhaseResult.neededPhaseBegin_Stocks,
                 protocolWriter
                 );
 
             StopWorkPhaseCalculator.Simulate(
                 stopWorkPhaseResult.ageStopWork,
                 lifeAssumptions.ageRentStart,
-                stopWorkPhaseResult.neededCash,
-                stopWorkPhaseResult.neededStocks,
-                rentPhaseResult.rate_Cash,
-                rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                stopWorkPhaseResult.neededPhaseBegin_Cash,
+                stopWorkPhaseResult.neededPhaseBegin_Stocks,
+                stopWorkPhaseResult.rate_Cash,
+                stopWorkPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                stopWorkPhaseResult.rateStocks_ExcludedTaxes_BadCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                 lifeAssumptions.taxFactor_Stocks,
-                phaseIntegratorResult.overAmount,
                 protocolWriter
             );
 
             RentPhaseCalculator.Simulate(
                 lifeAssumptions.ageRentStart,
                 lifeAssumptions.ageEnd,
-                rentPhaseResult.total_Cash,
-                rentPhaseResult.total_Stocks,
+                rentPhaseResult.neededPhaseBegin_Cash,
+                rentPhaseResult.neededPhaseBegin_Stocks,
                 rentPhaseResult.rate_Cash,
                 rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
@@ -88,6 +87,9 @@ namespace Finance_iTests
             );
 
             var resultRows = protocolWriter.Protocol;
+
+            //Assert.That(phaseIntegratorResult.overAmount, Is.Not.GreaterThan(0), 
+            //    "Overamount must not be greater than yearly needs, otherwise stop work age could be even earlier.");
 
             Assert.That(() => ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd),
                 Throws.Nothing);

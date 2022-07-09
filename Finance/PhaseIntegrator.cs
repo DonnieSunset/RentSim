@@ -47,23 +47,23 @@ namespace Finance
                 );
 
                 var rentPhaseResult = RentPhaseCalculator.CalculateResult(
-                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                    lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-                    lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
                     laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerYear,
                     laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerYear,
+                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                    lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                    lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                     lifeAssumptions.taxFactor_Stocks
                     );
 
                 var rentPhaseResult_WithNeedsFromStopWorkPhase = RentPhaseCalculator.CalculateResult(
-                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                    lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-                    lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.ageEnd - lifeAssumptions.ageRentStart,
                     laterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerYear,
                     laterNeedsResult.NeedsMinimum_AgeStopWork_WithInflation_PerYear,
+                    lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                    lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                    lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
                     lifeAssumptions.taxFactor_Stocks
                     );
@@ -71,14 +71,16 @@ namespace Finance
                 var stopWorkPhaseResult = StopWorkPhaseCalculator.Calculate(
                     ageStopWorkAssumed,
                     lifeAssumptions.ageRentStart,
-                    rentPhaseResult.total_Cash,
-                    rentPhaseResult.total_Stocks,
-                    rentPhaseResult.rate_Cash,
-                    rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                    rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
-                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash,
-                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_GoodCase,
-                    //rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase,
+                    //rentPhaseResult.total_Cash,
+                    //rentPhaseResult.total_Stocks,
+                    //rentPhaseResult.rate_Cash,
+                    //rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                    //rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                    rentPhaseResult.neededPhaseBegin_Cash,
+                    rentPhaseResult.neededPhaseBegin_Stocks,
+                    rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash,
+                    rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_GoodCase,
+                    rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
@@ -86,22 +88,26 @@ namespace Finance
                     lifeAssumptions.taxFactor_Stocks
                     );
 
-                if (savingPhaseResult.SavingsTotal >= stopWorkPhaseResult.NeededTotal)
+                if (savingPhaseResult.SavingsTotal >= stopWorkPhaseResult.NeededPhaseBegin_Total)
                 {
-                    Console.WriteLine(savingPhaseResult);
-                    Console.WriteLine(stopWorkPhaseResult);
-                    Console.WriteLine($"{Environment.NewLine}");
+                    //Console.WriteLine(savingPhaseResult);
+                    //Console.WriteLine(stopWorkPhaseResult);
+                    //Console.WriteLine($"{Environment.NewLine}");
+
+                    laterNeedsResult.Print();
+                    rentPhaseResult.Print();
+                    rentPhaseResult_WithNeedsFromStopWorkPhase.Print();
+
 
                     return new PhaseIntegratorResult()
                     {
                         ageStopWork = ageStopWorkAssumed,
-                        overAmount = savingPhaseResult.SavingsTotal - stopWorkPhaseResult.NeededTotal,
+                        overAmount = savingPhaseResult.SavingsTotal - stopWorkPhaseResult.NeededPhaseBegin_Total,
 
                         savingPhaseResult = savingPhaseResult,
                         stateRentResult = stateRentResult,
                         laterNeedsResult = laterNeedsResult,
                         rentPhaseResult = rentPhaseResult,
-                        //rentPhaseResult = rentPhaseResult_WithNeedsFromStopWorkPhase,
                         stopWorkPhaseResult = stopWorkPhaseResult
                     };
                 };
