@@ -90,6 +90,8 @@ namespace Finance
             // Step 1: withdraw overplus amount
             if (savingPhaseEndRow.cashYearEnd < overPlusAmount)
             {
+                //todo: make this more integgigent. normally at the end of the saving phase, we have much more stocks than cash
+                //so withdrawal of only cash is not a good strategy. By withdrawal of stocks on the other hand, taxes have to be considered.
                 throw new Exception($"Insufficient cash ({savingPhaseEndRow.cashYearEnd}) in order to withdraw overplus amount ({overPlusAmount})." +
                     $" A more intelligent implementation could help here which considers also the stocks savings.");
             }
