@@ -91,7 +91,7 @@ namespace Finance_iTests
             //Assert.That(phaseIntegratorResult.overAmount, Is.Not.GreaterThan(0), 
             //    "Overamount must not be greater than yearly needs, otherwise stop work age could be even earlier.");
 
-            Assert.That(() => ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd),
+            Assert.That(() => ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, phaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd),
                 Throws.Nothing);
         }
     }

@@ -8,13 +8,14 @@ namespace Domain
 {
     public class ResultRowValidator
     {
-        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
+        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd)
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
-            AllEndsUpInZero(resultRows);
+            AllEndsUpInZero(resultRows, ageEnd);
             AllNumbersHaveTheCorrectSign(resultRows);
             EndTotalsAreTheSUmOfAllSingleValues(resultRows);
+            NoMetalsAfterSavingPhase(resultRows, ageStopWork);
         }
 
         public static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -60,9 +61,9 @@ namespace Domain
             }
         }
 
-        public static void AllEndsUpInZero(IEnumerable<ResultRow> resultRows)
+        public static void AllEndsUpInZero(IEnumerable<ResultRow> resultRows, int ageEnd)
         {
-            var totalYearEnd = resultRows.MaxBy(x => x.age).TotalYearEnd;
+            var totalYearEnd = resultRows.Single(x => x.age == ageEnd-1).TotalYearEnd;
 
             if (Decimal.Round(totalYearEnd, 3) != 0)
             {
@@ -112,6 +113,15 @@ namespace Domain
                 }
             }
         }
-            //todo: no metals after saving phase
+
+        public static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
+        {
+            var lastSavingPhaseRow = resultRows.Single(x => x.age == ageStopWork - 1);
+
+            if (Decimal.Round(lastSavingPhaseRow.metalsYearEnd, 3) != 0)
+            {
+                throw new Exception($"ResultRowValidator: After saving phase at age {lastSavingPhaseRow.age} metals should be zero, but was {lastSavingPhaseRow.metalsYearEnd}.");
+            }
+        }
     }
 }
