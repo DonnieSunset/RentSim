@@ -49,11 +49,13 @@ namespace Finance_iTests
                 protocolWriter
             );
 
+            Frac taxesStocks = Frac.FromFactor(lifeAssumptions.taxFactor_Stocks);
             SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork-1,
                 phaseIntegratorResult.overAmount,
                 stopWorkPhaseResult.neededPhaseBegin_Cash,
                 stopWorkPhaseResult.neededPhaseBegin_Stocks,
+                taxesStocks,
                 protocolWriter
                 );
 
@@ -91,7 +93,7 @@ namespace Finance_iTests
             //Assert.That(phaseIntegratorResult.overAmount, Is.Not.GreaterThan(0), 
             //    "Overamount must not be greater than yearly needs, otherwise stop work age could be even earlier.");
 
-            Assert.That(() => ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, phaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd),
+            Assert.That(() => ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, phaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks),
                 Throws.Nothing);
         }
     }

@@ -81,28 +81,53 @@ namespace Finance
             int savingPhaseEndAge,
             decimal overPlusAmount,
             decimal cashTotalStopWorkPhase,
-            decimal stockTotalStopWorkPhase,
+            decimal stocksTotalStopWorkPhase,
+            Frac stocksTaxes,
             IProtocolWriter protocolWriter)
         {
             var savingPhaseEndRow = protocolWriter.Protocol.Single(x => x.age == savingPhaseEndAge);
 
 
-            // Step 1: withdraw overplus amount
-            if (savingPhaseEndRow.cashYearEnd < overPlusAmount)
-            {
-                //todo: make this more integgigent. normally at the end of the saving phase, we have much more stocks than cash
-                //so withdrawal of only cash is not a good strategy. By withdrawal of stocks on the other hand, taxes have to be considered.
-                throw new Exception($"Insufficient cash ({savingPhaseEndRow.cashYearEnd}) in order to withdraw overplus amount ({overPlusAmount})." +
-                    $" A more intelligent implementation could help here which considers also the stocks savings.");
-            }
-            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -overPlusAmount });
-
-            // Step 2: sell all metals
+            // Step 1: sell all metals
             var totalMetals = savingPhaseEndRow.metalsYearEnd;
             protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { metalDeposit = -totalMetals, cashDeposit = totalMetals });
 
+
+
+            // Step 2: withdraw overplus amount.
+            // Strategy: from end of saving phase, search which asset is bigger than the asset at stop work phase.
+            // from those we have to sell anyway in the subsequent rebalancing.
+            var restAmountToBeSold = overPlusAmount;
+            var diffStocks = savingPhaseEndRow.stocksYearEnd - stocksTotalStopWorkPhase;
+            var diffCash = savingPhaseEndRow.cashYearEnd - cashTotalStopWorkPhase;
+
+            if (restAmountToBeSold > 0 && diffCash > 0)
+            {
+                var cashAmountToSell = Math.Min(diffCash, restAmountToBeSold);
+                restAmountToBeSold -= cashAmountToSell;
+
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -cashAmountToSell });
+            }
+
+            if (restAmountToBeSold > 0 && diffStocks > 0)
+            {
+                var stocksAmountToSell = Math.Min(diffStocks, restAmountToBeSold);
+                restAmountToBeSold -= stocksAmountToSell;
+
+                //consider taxes
+                (var withdrawal, var taxes) = stocksTaxes.FromTotal(stocksAmountToSell);
+
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = -withdrawal, stockTaxes = -taxes });
+            }
+
+            if (Decimal.Round(restAmountToBeSold, 3) != 0)
+            {
+                throw new Exception($"Could not sell complete nameof {overPlusAmount}. Rest is {restAmountToBeSold}.");
+            }
+
+
             // step 3: re-balance stocks and cash to match stopWorkPhase
-            var stopWorkPhaseTotal = cashTotalStopWorkPhase + stockTotalStopWorkPhase;
+            var stopWorkPhaseTotal = cashTotalStopWorkPhase + stocksTotalStopWorkPhase;
             var savingPhaseEnd_Total = savingPhaseEndRow.cashYearEnd + savingPhaseEndRow.stocksYearEnd;
             if (Decimal.Round(stopWorkPhaseTotal, 3) != Decimal.Round(savingPhaseEnd_Total, 3))
             {
@@ -110,24 +135,19 @@ namespace Finance
             }
 
             var cashDiff = savingPhaseEndRow.cashYearEnd - cashTotalStopWorkPhase;
-            if (cashDiff >= 0) // i have more than i need
-            {
-                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = cashDiff, stockDeposit = -cashDiff});
-            }
-            else // i need more than i have 
+            if (cashDiff >= 0) // i have more cash than i need -> buy stocks
             {
                 protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -cashDiff, stockDeposit = cashDiff });
             }
+            else // i need more cash than i have -> sell stocks
+            {
+                //consider taxes
+                (var stocksWithdrawal, var taxes) = stocksTaxes.FromTotal(-cashDiff);
 
-            //var stocksDiff = savingPhaseEndRow.stocksYearEnd - stockTotalStopWorkPhase;
-            //if (stocksDiff >= 0) // i have more than i need
-            //{
-            //    protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = -stocksDiff });
-            //}
-            //else // i need more than i have 
-            //{
-            //    protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockDeposit = stocksDiff });
-            //}
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { cashDeposit = -cashDiff, stockDeposit = -stocksWithdrawal, stockTaxes = -taxes });
+            }
+
+
         }
     }
 }

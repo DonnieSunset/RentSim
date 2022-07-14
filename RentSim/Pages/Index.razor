@@ -467,11 +467,13 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             protocolWriter
         );
 
+        Frac taxesStocks = Frac.FromFactor(lifeAssumptions.taxFactor_Stocks);
         SavingPhaseCalculator.RebalanceForStopWorkPhase(
             myPhaseIntegratorResult.ageStopWork-1, // <-- todo: what happens here if currentAge==stopWorkAge?
             myPhaseIntegratorResult.overAmount,
             myStopWorkPhaseResult.neededPhaseBegin_Cash,
             myStopWorkPhaseResult.neededPhaseBegin_Stocks,
+            taxesStocks,
             protocolWriter
             );
 
@@ -505,7 +507,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         );
 
         resultRows = protocolWriter.Protocol;
-        ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd);
+        ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks);
 
 
 
@@ -657,6 +659,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //todo: massentests mit ä-daten
         //todo: resultrow verification: are taxes paid corrently
         //todo: im moment is noch ein fehler drin: das rebalancing nach der save phase berücksichtigt nicht die taxes beim verkauf von stocks!!
-
+        //todo: replace all tax and interests calculation by Frac class
     }
 }

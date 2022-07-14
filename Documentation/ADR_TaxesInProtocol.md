@@ -17,6 +17,9 @@ Possibility A) -> Deposits **do include** taxes
 | --- |--- | --- | --- |
 | 1.000 | -100 | -5 | 900 |
 
+Pros:
+- nothing
+
 Possibility B) -> Deposits **do not include** taxes
 
 | Total Year begin | Deposits stocks | Taxes stocks | Total Year End |

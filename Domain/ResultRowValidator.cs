@@ -8,7 +8,7 @@ namespace Domain
 {
     public class ResultRowValidator
     {
-        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd)
+        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd, decimal stocksTaxFactor)
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
@@ -16,6 +16,7 @@ namespace Domain
             AllNumbersHaveTheCorrectSign(resultRows);
             EndTotalsAreTheSUmOfAllSingleValues(resultRows);
             NoMetalsAfterSavingPhase(resultRows, ageStopWork);
+            TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
         }
 
         public static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -121,6 +122,25 @@ namespace Domain
             if (Decimal.Round(lastSavingPhaseRow.metalsYearEnd, 3) != 0)
             {
                 throw new Exception($"ResultRowValidator: After saving phase at age {lastSavingPhaseRow.age} metals should be zero, but was {lastSavingPhaseRow.metalsYearEnd}.");
+            }
+        }
+
+        public static void TaxesArePaidAccordingToDeposits(IEnumerable<ResultRow> resultRows, decimal stocksTaxFactor)
+        {
+            foreach (var resultRow in resultRows)
+            {
+                //tax relevant stocks deposits are only sells, not buys!
+                var stocksDeposits = resultRow.stocksDeposits.Sum(x => { return x < 0 ? x : 0; });
+                
+                if (stocksDeposits < 0)
+                {
+                    var actualTaxes = decimal.Round(resultRow.stocksTaxes, 3);
+                    var assumedTaxes = decimal.Round(stocksDeposits * (stocksTaxFactor - 1), 3);
+                    if (actualTaxes != assumedTaxes)
+                    {
+                        throw new Exception($"ResultRowValidator: Taxes for stocks deposits of {stocksDeposits} at age {resultRow.age} are {actualTaxes} but should be {assumedTaxes}.");
+                    }
+                }
             }
         }
     }
