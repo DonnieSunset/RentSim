@@ -1,16 +1,12 @@
 ﻿using Domain;
 using Finance.Results;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Protocol;
 
 namespace Finance
 {
     public class PhaseIntegrator
     {
-        public static PhaseIntegratorResult Doit(LifeAssumptions lifeAssumptions)
+        public static PhaseIntegratorResult Calculate(LifeAssumptions lifeAssumptions)
         {
             for (int ageStopWorkAssumed = lifeAssumptions.ageCurrent; ageStopWorkAssumed < lifeAssumptions.ageRentStart; ageStopWorkAssumed++)
             {
@@ -114,6 +110,69 @@ namespace Finance
             }
 
             throw new Exception("Could not determine stop work age");
+        }
+
+        public static void Simulate(
+            LifeAssumptions lifeAssumptions,
+            PhaseIntegratorResult phaseIntegratorResult,
+            IProtocolWriter protocolWriter)
+        {
+            StopWorkPhaseResult stopWorkPhaseResult = phaseIntegratorResult.stopWorkPhaseResult;
+            RentPhaseResult rentPhaseResult = phaseIntegratorResult.rentPhaseResult;
+
+            SavingPhaseCalculator.Simulate(
+                lifeAssumptions.ageCurrent,
+                phaseIntegratorResult.ageStopWork,
+                lifeAssumptions.cash,
+                lifeAssumptions.cashGrowthRate,
+                lifeAssumptions.cashSaveAmountPerMonth,
+                lifeAssumptions.stocks,
+                lifeAssumptions.stocksGrowthRate,
+                lifeAssumptions.stocksSaveAmountPerMonth,
+                lifeAssumptions.metals,
+                lifeAssumptions.metalsGrowthRate,
+                lifeAssumptions.metalsSaveAmountPerMonth,
+                protocolWriter
+            );
+
+            Frac taxesStocks = Frac.FromFactor(lifeAssumptions.taxFactor_Stocks);
+            SavingPhaseCalculator.RebalanceForStopWorkPhase(
+                phaseIntegratorResult.ageStopWork - 1, // <-- todo: what happens here if currentAge==stopWorkAge?
+                phaseIntegratorResult.overAmount,
+                stopWorkPhaseResult.neededPhaseBegin_Cash,
+                stopWorkPhaseResult.neededPhaseBegin_Stocks,
+                taxesStocks,
+                protocolWriter
+                );
+
+            StopWorkPhaseCalculator.Simulate(
+                stopWorkPhaseResult.ageStopWork,
+                lifeAssumptions.ageRentStart,
+                stopWorkPhaseResult.neededPhaseBegin_Cash,
+                stopWorkPhaseResult.neededPhaseBegin_Stocks,
+                stopWorkPhaseResult.rate_Cash,
+                stopWorkPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                stopWorkPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                lifeAssumptions.rentPhase_InterestRate_Cash,
+                lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+                lifeAssumptions.taxFactor_Stocks,
+                protocolWriter
+            );
+
+            RentPhaseCalculator.Simulate(
+                lifeAssumptions.ageRentStart,
+                lifeAssumptions.ageEnd,
+                rentPhaseResult.neededPhaseBegin_Cash,
+                rentPhaseResult.neededPhaseBegin_Stocks,
+                rentPhaseResult.rate_Cash,
+                rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
+                lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                lifeAssumptions.rentPhase_InterestRate_Cash,
+                rentPhaseResult.taxesPerYear_GoodCase,
+                protocolWriter
+            );
         }
     }
 }

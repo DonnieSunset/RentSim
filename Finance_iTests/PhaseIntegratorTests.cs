@@ -25,7 +25,7 @@ namespace Finance_iTests
                 taxFactor_Stocks = 1.26m
             };
 
-            var phaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
+            var phaseIntegratorResult = PhaseIntegrator.Calculate(lifeAssumptions);
             phaseIntegratorResult.Print();
 
             var savingPhaseResult = phaseIntegratorResult.savingPhaseResult;

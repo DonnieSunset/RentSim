@@ -435,93 +435,32 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         }
     }
 
-    //async Task HandleRedraw()
     public void HandleRedraw()
     {
-        Console.WriteLine("Debug: SH HandleRedraw");
-
-        myPhaseIntegratorResult = PhaseIntegrator.Doit(lifeAssumptions);
-        myStateRentResult = myPhaseIntegratorResult.stateRentResult;
-        myLaterNeedsResult = myPhaseIntegratorResult.laterNeedsResult;
-        mySavingPhaseResult = myPhaseIntegratorResult.savingPhaseResult;
-        myRentPhaseResult = myPhaseIntegratorResult.rentPhaseResult;
-        myStopWorkPhaseResult = myPhaseIntegratorResult.stopWorkPhaseResult;
+        myPhaseIntegratorResult = PhaseIntegrator.Calculate(lifeAssumptions);
 
         IProtocolWriter protocolWriter = new MemoryProtocolWriter();
-
-        //myStopWorkPhaseResult.Print();
-        //myRentPhaseResult.Print();
-
-        SavingPhaseCalculator.Simulate(
-            lifeAssumptions.ageCurrent,
-            myPhaseIntegratorResult.ageStopWork,
-            lifeAssumptions.cash,
-            lifeAssumptions.cashGrowthRate,
-            lifeAssumptions.cashSaveAmountPerMonth,
-            lifeAssumptions.stocks,
-            lifeAssumptions.stocksGrowthRate,
-            lifeAssumptions.stocksSaveAmountPerMonth,
-            lifeAssumptions.metals,
-            lifeAssumptions.metalsGrowthRate,
-            lifeAssumptions.metalsSaveAmountPerMonth,
-            protocolWriter
-        );
-
-        Frac taxesStocks = Frac.FromFactor(lifeAssumptions.taxFactor_Stocks);
-        SavingPhaseCalculator.RebalanceForStopWorkPhase(
-            myPhaseIntegratorResult.ageStopWork-1, // <-- todo: what happens here if currentAge==stopWorkAge?
-            myPhaseIntegratorResult.overAmount,
-            myStopWorkPhaseResult.neededPhaseBegin_Cash,
-            myStopWorkPhaseResult.neededPhaseBegin_Stocks,
-            taxesStocks,
-            protocolWriter
-            );
-
-        StopWorkPhaseCalculator.Simulate(
-            myStopWorkPhaseResult.ageStopWork,
-            lifeAssumptions.ageRentStart,
-            myStopWorkPhaseResult.neededPhaseBegin_Cash,
-            myStopWorkPhaseResult.neededPhaseBegin_Stocks,
-            myStopWorkPhaseResult.rate_Cash,
-            myStopWorkPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-            myStopWorkPhaseResult.rateStocks_ExcludedTaxes_BadCase,
-            lifeAssumptions.rentPhase_InterestRate_Cash,
-            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-            lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
-            lifeAssumptions.taxFactor_Stocks,
-            protocolWriter
-        );
-
-        RentPhaseCalculator.Simulate(
-            lifeAssumptions.ageRentStart,
-            lifeAssumptions.ageEnd,
-            myRentPhaseResult.neededPhaseBegin_Cash,
-            myRentPhaseResult.neededPhaseBegin_Stocks,
-            myRentPhaseResult.rate_Cash,
-            myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-            lifeAssumptions.rentPhase_InterestRate_Cash,
-            myRentPhaseResult.taxesPerYear_GoodCase,
+        PhaseIntegrator.Simulate(
+            lifeAssumptions,
+            myPhaseIntegratorResult,
             protocolWriter
         );
 
         resultRows = protocolWriter.Protocol;
         ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks);
 
-
-
-
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
+
+        myStateRentResult = myPhaseIntegratorResult.stateRentResult;
+        myLaterNeedsResult = myPhaseIntegratorResult.laterNeedsResult;
+        mySavingPhaseResult = myPhaseIntegratorResult.savingPhaseResult;
+        myRentPhaseResult = myPhaseIntegratorResult.rentPhaseResult;
+        myStopWorkPhaseResult = myPhaseIntegratorResult.stopWorkPhaseResult;
+
         Field_Result_AgeStopWork = myPhaseIntegratorResult.ageStopWork;
-        //Field_Result_SavingPhase_PverAmount = myPhaseIntegratorResult.overAmount;
-        //ageInputFields.ValueChanged.InvokeAsync().Wait();
-
-
         Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
         Field_SavingPhaseResults_OverAmount = BeautifyToCurrenctWith0Decimals(myPhaseIntegratorResult.overAmount);
-
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
         Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);
@@ -531,14 +470,11 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         Field_RentPhaseResult_SavingsNeededCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Cash);
         Field_RentPhaseResult_SavingsNeededStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Stocks);
         Field_RentPhaseResult_SavingsNeededTotal = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.neededPhaseBegin_Cash + myRentPhaseResult.neededPhaseBegin_Stocks);
-
         Field_NeedsStopWorkMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth);
         Field_NeedsStopWorkComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth);
         Field_NeedsRentStartMinimum_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth);
         Field_NeedsRentStartComfort_perMonth = BeautifyToCurrenctWith0Decimals(myLaterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth);
-
         FieldNetRentAgeFromStopWork_perMonth = BeautifyToCurrenctWith0Decimals(myStateRentResult.assumedStateRent_FromStopWorkAge_PerMonth);
-
 
         //results
         //int index = FieldAgeStopWork - FieldAgeCurrent;
