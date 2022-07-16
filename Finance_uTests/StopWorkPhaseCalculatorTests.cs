@@ -24,11 +24,11 @@ namespace Finance_uTests
                 rentPhaseResult.neededPhaseBegin_Stocks,
                 rentPhaseResult.rate_Cash,
                 rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                //rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-                lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+                //lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                1,
                 lifeAssumptions.taxFactor_Stocks
                 );
 
@@ -49,11 +49,11 @@ namespace Finance_uTests
                 stopWorkPhaseResult.neededPhaseBegin_Stocks,
                 rentPhaseResult.rate_Cash,
                 rentPhaseResult.rateStocks_ExcludedTaxes_GoodCase,
-                rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
+                //rentPhaseResult.rateStocks_ExcludedTaxes_BadCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
-                lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
-                lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+                //lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
+                1,
                 lifeAssumptions.taxFactor_Stocks,
                 protoWriter
                 );

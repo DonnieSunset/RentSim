@@ -11,11 +11,9 @@ namespace Finance
             decimal amountCashRentStartAge,
             decimal amountStocksRentStartAge,
             decimal rate_Cash_perYear,
-            decimal rate_StockGoodCase_ExcludedTaxes_perYear,
-            decimal rate_StockBadCase_ExcludedTaxes_perYear,
+            decimal rate_Stocks_ExcludedTaxes_perYear,
             decimal interestRate_Cash,
-            decimal interestRate_Stocks_GoodCase,
-            decimal interestRate_Stocks_BadCase,
+            decimal interestRate_Stocks,
             decimal crashFactor_Stocks_BadCase,
             decimal stocks_taxFactor
             )
@@ -23,8 +21,14 @@ namespace Finance
             //calculation by reverse-simulation
             decimal totalCash = amountCashRentStartAge;
             decimal totalStocks = amountStocksRentStartAge;
+            decimal taxesPerYear = rate_Stocks_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
 
-            decimal taxesPerYear = rate_StockGoodCase_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
+            ////stock market crash
+            //if (crashFactor_Stocks_BadCase != 1)
+            //{
+            //    var stocksCrashAmount = totalStocks * crashFactor_Stocks_BadCase;
+            //    totalStocks -= stocksCrashAmount;
+            //}
 
             // For reverse calculation we also need the reverse interest factor, otherwise the 
             // interest calculation is based on the wrong amount. Example with 7% interests:
@@ -34,7 +38,7 @@ namespace Finance
             // this is the same as 1 / 1.07
             // I couldnt figure out to calculate this only with interest FACTOR, not with interest RATE.
             decimal interestFactor_Cash_Reverse = 1 / (1 + interestRate_Cash);
-            decimal interestFactor_Stocks_GoodCase_Reverse = 1 / (1 + interestRate_Stocks_GoodCase);
+            decimal interestFactor_Stocks_GoodCase_Reverse = 1 / (1 + interestRate_Stocks);
 
             for (int age = ageRentStart - 1; age >= ageStopWork; age--)
             {
@@ -43,12 +47,15 @@ namespace Finance
 
                 // withdraw rate - reverse
                 totalCash += rate_Cash_perYear;
-                totalStocks += rate_StockGoodCase_ExcludedTaxes_perYear;
+                totalStocks += rate_Stocks_ExcludedTaxes_perYear;
 
                 // get interests - reverse
                 totalCash = totalCash * interestFactor_Cash_Reverse;
                 totalStocks = totalStocks * interestFactor_Stocks_GoodCase_Reverse;
             }
+
+            //stock market crash
+            totalStocks *= crashFactor_Stocks_BadCase;
 
             return new StopWorkPhaseResult()
             {
@@ -58,15 +65,12 @@ namespace Finance
                 neededPhaseBegin_Stocks = totalStocks,
 
                 rate_Cash = rate_Cash_perYear,
-                rateStocks_ExcludedTaxes_GoodCase = rate_StockGoodCase_ExcludedTaxes_perYear,
-                taxesPerYear_GoodCase = taxesPerYear,
-                rateStocks_IncludedTaxes_GoodCase = rate_StockGoodCase_ExcludedTaxes_perYear + taxesPerYear
+                rateStocks_ExcludedTaxes = rate_Stocks_ExcludedTaxes_perYear,
+                taxesPerYear = taxesPerYear,
+                rateStocks_IncludedTaxes = rate_Stocks_ExcludedTaxes_perYear + taxesPerYear
             };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="overplusAmount">
         /// The result of the integration of all phases. 
         /// Since the granularity of the phases are years, 
@@ -80,47 +84,40 @@ namespace Finance
             decimal amountCashStopWorkAge,
             decimal amountStocksStopWorkAge,
             decimal rate_Cash_perYear,
-            decimal rate_StockGoodCase_ExcludedTaxes_perYear,
-            decimal rate_StockBadCase_ExcludedTaxes_perYear,
+            decimal rate_Stocks_ExcludedTaxes_perYear,
             decimal interestRate_Cash,
-            decimal interestRate_Stocks_GoodCase,
-            decimal interestRate_Stocks_BadCase,
+            decimal interestRate_Stocks,
             decimal crashFactor_Stocks_BadCase,
             decimal stocks_taxFactor,
             IProtocolWriter protocolWriter)
         {
             decimal totalCash = amountCashStopWorkAge;
             decimal totalStocks = amountStocksStopWorkAge;
-            decimal taxesPerYear = rate_StockGoodCase_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
+            decimal taxesPerYear = rate_Stocks_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
 
-            //prepare to substract overplus amount
-            //if (totalCash < overplusAmount)
+            ////stock market crash
+            //if (crashFactor_Stocks_BadCase != 1)
             //{
-            //    throw new Exception($"Insufficient cash ({totalCash}) in order to withdraw overplus amount ({overplusAmount})." +
-            //        $" A more intelligent implementation could help here which considers also the stocks savings.");
+            //    var stocksCrashAmount = totalStocks * crashFactor_Stocks_BadCase;
+            //    totalStocks -= stocksCrashAmount;
+            //    protocolWriter.Log(ageStopWork, new TransactionDetails() { stockInterests = -stocksCrashAmount });
             //}
 
             for (int age = ageStopWork; age < ageRentStart; age++)
             {
                 protocolWriter.LogBalanceYearBegin(age, totalCash, totalStocks, 0);
 
-                // substract overplus from savings phase
-                //if (age == ageStopWork)
-                //{
-                //    protocolWriter.Log(age, new TransactionDetails() { cashWithdrawal = overplusAmount });
-                //}
-
                 // get interests
                 var interests_Cash = totalCash * interestRate_Cash;
-                var interests_Stocks = totalStocks * interestRate_Stocks_GoodCase;
+                var interests_Stocks = totalStocks * interestRate_Stocks;
                 totalCash += interests_Cash;
                 totalStocks += interests_Stocks;
                 protocolWriter.Log(age, new TransactionDetails() { cashInterests = interests_Cash, stockInterests = interests_Stocks });
 
                 // withdraw rate
                 totalCash += -rate_Cash_perYear;
-                totalStocks += -rate_StockGoodCase_ExcludedTaxes_perYear;
-                protocolWriter.Log(age, new TransactionDetails() { cashDeposit = -rate_Cash_perYear, stockDeposit = -rate_StockGoodCase_ExcludedTaxes_perYear });
+                totalStocks += -rate_Stocks_ExcludedTaxes_perYear;
+                protocolWriter.Log(age, new TransactionDetails() { cashDeposit = -rate_Cash_perYear, stockDeposit = -rate_Stocks_ExcludedTaxes_perYear });
 
                 // pay taxes
                 totalStocks += -taxesPerYear;

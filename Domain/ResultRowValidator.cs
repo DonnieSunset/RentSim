@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain
+﻿namespace Domain
 {
     public class ResultRowValidator
     {
@@ -143,5 +137,7 @@ namespace Domain
                 }
             }
         }
+
+        //todo: interests are not zero is asset is not zero and iterest factor is positive
     }
 }

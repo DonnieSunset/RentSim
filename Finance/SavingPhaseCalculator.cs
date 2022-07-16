@@ -83,6 +83,7 @@ namespace Finance
             decimal cashTotalStopWorkPhase,
             decimal stocksTotalStopWorkPhase,
             Frac stocksTaxes,
+            decimal crashFactor_Stocks_BadCase,
             IProtocolWriter protocolWriter)
         {
             var savingPhaseEndRow = protocolWriter.Protocol.Single(x => x.age == savingPhaseEndAge);
@@ -148,6 +149,14 @@ namespace Finance
             }
 
 
+            //step 4: stock market crash
+            var totalStocks = savingPhaseEndRow.stocksYearEnd;
+            if (crashFactor_Stocks_BadCase != 1)
+            {
+                var stocksCrashAmount = totalStocks * crashFactor_Stocks_BadCase;
+                totalStocks -= stocksCrashAmount;
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
+            }
         }
     }
 }

@@ -36,6 +36,7 @@
         public decimal rentPhase_InterestRate_Stocks_GoodCase = 0.06m;
         public decimal rentPhase_InterestRate_Stocks_BadCase = 0m;
         public decimal rentPhase_CrashFactor_Stocks_BadCase = 0.5m;
+        public readonly decimal rentPhase_CrashFactor_Stocks_GoodCase = 1;  //never change that. Rent phase cannot and is not intended handle a crash in good case! This is just for convenience.
 
         public decimal taxFactor_Stocks = 1.26m;
 

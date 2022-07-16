@@ -2,8 +2,6 @@
 @using Domain;
 @using Finance.Results
 @using Protocol;
-@*@using Strategy;*@
-@*@using Portfolio;*@
 @using Finance;
 @using System.Collections.ObjectModel
 
@@ -215,81 +213,53 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is4">
-<DataGrid TItem="ResultRow"
-          ColumnSize="ColumnSize.Is1"
-          Narrow="true"
-          Responsive="true"
-          Data="@resultRows"
-          ReadData="@OnReadData"
-          Resizable="true"
-          TotalItems="@totalRows">
-    <DataGridCommandColumn TItem="ResultRow" />
+    <Column ColumnSize="ColumnSize.Is5">
+        <DataGrid TItem="ResultRow"
+              ColumnSize="ColumnSize.Is1"
+              Narrow="true"
+              Responsive="true"
+              Data="@resultRowsGoodCase"
+              ReadData="@OnReadData"
+              Resizable="true"
+              TotalItems="@totalRows">
+            <DataGridCommandColumn TItem="ResultRow" />
     
-    <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End/>
-    <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
-    <DataGridColumn TItem="ResultRow" Field="cashDeposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.cashDeposits))</DisplayTemplate></DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocksDeposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.stocksDeposits)) </DisplayTemplate></DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metalsDeposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.metalsDeposits)) </DisplayTemplate></DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
-    <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
-    <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
-    <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End/>
+            <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="cashDeposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.cashDeposits))</DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="stocksDeposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.stocksDeposits)) </DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="metalsDeposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.metalsDeposits)) </DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+        </DataGrid>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2">
+    </Column>
+    <Column ColumnSize="ColumnSize.Is5">
+        <DataGrid TItem="ResultRow"
+              ColumnSize="ColumnSize.Is1"
+              Narrow="true"
+              Responsive="true"
+              Data="@resultRowsBadCase"
+              ReadData="@OnReadData"
+              Resizable="true"
+              TotalItems="@totalRows">
+            <DataGridCommandColumn TItem="ResultRow" />
     
-    
-    @*<DataGridColumn TItem="ResultRow" Field="deposits" Caption="Deposits" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.deposits)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="interests" Caption="Interests" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.interests)) </DisplayTemplate>
-    </DataGridColumn>*@
-    @*<DataGridColumn TItem="ResultRow" Field="cash.yearBegin" Caption="cash.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearBegin)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearBegin" Caption="metals.yearBegin" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearBegin)) </DisplayTemplate>
-    </DataGridColumn>
-
-    <DataGridColumn TItem="ResultRow" Field="total.invests" Caption="total.invests" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.invests" Caption="stocks.invests" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.invests" Caption="cash.invests" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.invests)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.invests" Caption="metals.invests" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.invests)) </DisplayTemplate>
-    </DataGridColumn>
-
-    <DataGridColumn TItem="ResultRow" Field="stocks.growth" Caption="stocks.growth" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.growth)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.growth" Caption="cash.growth" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.growth)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.growth" Caption="metals.growth" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.growth)) </DisplayTemplate>
-    </DataGridColumn>
-
-    <DataGridColumn TItem="ResultRow" Field="total.yearEnd" Caption="total.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.total.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="stocks.yearEnd" Caption="stocks.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.stocks.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="cash.yearEnd" Caption="cash.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.cash.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>
-    <DataGridColumn TItem="ResultRow" Field="metals.yearEnd" Caption="metals.yearEnd" Sortable="false" TextAlignment=TextAlignment.End>
-        <DisplayTemplate> @(BeautifyToCurrenctWith0Decimals((context as ResultRow)?.metals.yearEnd)) </DisplayTemplate>
-    </DataGridColumn>*@
-
-</DataGrid>
-</Column>
+            <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End/>
+            <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="cashDeposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.cashDeposits))</DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="stocksDeposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.stocksDeposits)) </DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="metalsDeposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End ><DisplayTemplate> @(BeautifyListToCurrencyWith0Decimals((context as ResultRow)?.metalsDeposits)) </DisplayTemplate></DataGridColumn>
+            <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+            <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End  HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")"/>
+        </DataGrid>
+    </Column>
 </Row>
-
 
 
 @code
@@ -299,8 +269,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     async Task OnReadData(DataGridReadDataEventArgs<ResultRow> e)
     {
         // this is used to tell datagrid how many items are available so that pagination will work
-        totalRows = resultRows != null
-            ? resultRows.Count()
+        totalRows = resultRowsGoodCase != null
+            ? resultRowsGoodCase.Count()
             : 0;
 
         // always call StateHasChanged!
@@ -338,7 +308,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     //InputAge ageInputFields;
     ChartScales myScales;
     //ResultSet resultSet;
-    IEnumerable<ResultRow> resultRows;
+    IEnumerable<ResultRow> resultRowsGoodCase;
+    IEnumerable<ResultRow> resultRowsBadCase;
     //Portfolio portfolio = null;
 
     //MarketAssumptions marketAssumptions = new();
@@ -348,7 +319,8 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     RentPhaseResult myRentPhaseResult = new();
     StateRentResult myStateRentResult = new();
     LaterNeedsResult myLaterNeedsResult = new();
-    StopWorkPhaseResult myStopWorkPhaseResult = new();
+    StopWorkPhaseResult myStopWorkPhaseResult_goodCase = new();
+    StopWorkPhaseResult myStopWorkPhaseResult_badCase = new();
     PhaseIntegratorResult myPhaseIntegratorResult = new();
 
     //Inflation myRentStartInflation;
@@ -439,15 +411,21 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
     {
         myPhaseIntegratorResult = PhaseIntegrator.Calculate(lifeAssumptions);
 
-        IProtocolWriter protocolWriter = new MemoryProtocolWriter();
+        IProtocolWriter protocolWriterGoodCase = new MemoryProtocolWriter();
+        IProtocolWriter protocolWriterBadCase = new MemoryProtocolWriter();
         PhaseIntegrator.Simulate(
             lifeAssumptions,
             myPhaseIntegratorResult,
-            protocolWriter
+            protocolWriterGoodCase,
+            protocolWriterBadCase
         );
 
-        resultRows = protocolWriter.Protocol;
-        ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks);
+        resultRowsGoodCase = protocolWriterGoodCase.Protocol;
+        ResultRowValidator.ValidateAll(resultRowsGoodCase, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks);
+
+        resultRowsBadCase = protocolWriterBadCase.Protocol;
+        //ResultRowValidator.ValidateAll(resultRowsBadCase, lifeAssumptions.ageCurrent, myPhaseIntegratorResult.ageStopWork, lifeAssumptions.ageEnd, lifeAssumptions.taxFactor_Stocks);
+
 
         // RESULTS
         // !! this part must come AFTER all calculations are done, otherwise the UI-bindings wont work !!
@@ -456,7 +434,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         myLaterNeedsResult = myPhaseIntegratorResult.laterNeedsResult;
         mySavingPhaseResult = myPhaseIntegratorResult.savingPhaseResult;
         myRentPhaseResult = myPhaseIntegratorResult.rentPhaseResult;
-        myStopWorkPhaseResult = myPhaseIntegratorResult.stopWorkPhaseResult;
+        myStopWorkPhaseResult_goodCase = myPhaseIntegratorResult.stopWorkPhaseResult_goodCase;
 
         Field_Result_AgeStopWork = myPhaseIntegratorResult.ageStopWork;
         Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
@@ -510,7 +488,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         //todo: add end amount of last result row to show it in chart
 
-        string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent)
+        string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent + 1)
             .Select(x => x.ToString())
             .ToArray();
 
@@ -528,26 +506,33 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         BarChartDataset<decimal> dataBarChartCash = new BarChartDataset<decimal>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Cash",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.cashYearEnd).ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), resultRowsGoodCase.Count()).ToList<string>(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), resultRowsGoodCase.Count()).ToList<string>(),
+            Data = resultRowsGoodCase
+                    .Select(x => x.cashYearBegin)
+                    .Append(resultRowsGoodCase.Last().cashYearEnd)
+                    .ToList(),
         };
 
         BarChartDataset<decimal> dataBarChartStocks = new BarChartDataset<decimal>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Stocks",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.stocksYearEnd).ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), resultRowsGoodCase.Count()).ToList<string>(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRowsGoodCase.Count()).ToList<string>(),
+            Data = resultRowsGoodCase.Select(x => x.stocksYearBegin)
+                    .Append(resultRowsGoodCase.Last().stocksYearEnd)
+                    .ToList(),
         };
 
         BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
         {
-            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRows.Count()).ToList<string>(),
             Label = "Metals",
-            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRows.Count()).ToList<string>(),
-            Data = resultRows.Select(x => x.metalsYearEnd).ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), resultRowsGoodCase.Count()).ToList<string>(),
+            BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), resultRowsGoodCase.Count()).ToList<string>(),
+            Data = resultRowsGoodCase.Select(x => x.metalsYearBegin)
+                    .Append(resultRowsGoodCase.Last().metalsYearEnd)
+                    .ToList(),
         };
 
 
@@ -567,6 +552,15 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
         }
 
+
+
+
+
+
+
+
+
+
         LineChartOptions lineBarChartOptions = new LineChartOptions()
         {
             Scales = new ChartScales
@@ -576,17 +570,37 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
             },
         };
 
+        var goodCaseChartColorBG = ChartColor.FromRgba(100, 200, 50, 0.1f);
+        var goodCaseChartColorFG = ChartColor.FromRgba(100, 200, 50, 1f);
         LineChartDataset<decimal> lineChartDataSet_goodCase = new LineChartDataset<decimal>
         {
             Label = "Total Good Case",
-            Data = resultRows.Select(x => x.TotalYearEnd).ToList()
+            Data = resultRowsGoodCase
+                    .Select(x => x.TotalYearBegin)
+                    .Append(resultRowsGoodCase.Last().TotalYearEnd)
+                    .ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(goodCaseChartColorBG, resultRowsGoodCase.Count()).ToList<string>(),
+            BorderColor = Enumerable.Repeat<string>(goodCaseChartColorFG, resultRowsGoodCase.Count()).ToList<string>(),
+        };
+
+        var badCaseChartColorBG = ChartColor.FromRgba(200, 0, 50, 0.1f);
+        var badCaseChartColorFG = ChartColor.FromRgba(200, 0, 50, 1f);
+        LineChartDataset<decimal> lineChartDataSet_badCase = new LineChartDataset<decimal>
+        {
+            Label = "Total Bad Case",
+            Data = resultRowsBadCase
+                    .Select(x => x.TotalYearBegin)
+                    .Append(resultRowsBadCase.Last().TotalYearEnd)
+                    .ToList(),
+            BackgroundColor = Enumerable.Repeat<string>(badCaseChartColorBG, resultRowsGoodCase.Count()).ToList<string>(),
+            BorderColor = Enumerable.Repeat<string>(badCaseChartColorFG, resultRowsGoodCase.Count()).ToList<string>(),
         };
 
         if (lineChart != null)
         {
             lineChart.Clear();
             lineChart.SetOptions(lineBarChartOptions);
-            lineChart.AddLabelsDatasetsAndUpdate(labels, lineChartDataSet_goodCase);
+            lineChart.AddLabelsDatasetsAndUpdate(labels, lineChartDataSet_goodCase, lineChartDataSet_badCase);
         }
 
         //todo: tests mit alters verification

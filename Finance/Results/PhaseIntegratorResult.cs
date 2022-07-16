@@ -9,7 +9,8 @@
         public StateRentResult stateRentResult;
         public LaterNeedsResult laterNeedsResult;
         public RentPhaseResult rentPhaseResult;
-        public StopWorkPhaseResult stopWorkPhaseResult;
+        public StopWorkPhaseResult stopWorkPhaseResult_goodCase;
+        public StopWorkPhaseResult stopWorkPhaseResult_badCase;
 
         public void Print()
         {
