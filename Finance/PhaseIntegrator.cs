@@ -82,29 +82,38 @@ namespace Finance
                     lifeAssumptions.ageRentStart,
                     rentPhaseResult.neededPhaseBegin_Cash,
                     rentPhaseResult.neededPhaseBegin_Stocks,
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.neededPhaseBegin_Cash,
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.neededPhaseBegin_Stocks,
                     rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash,
                     rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase,
                     lifeAssumptions.rentPhase_InterestRate_Cash,
                     lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                     lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,
+                    //1, wäre eine idee. wir haben ja shcon die raten angepasst, damit kommen wir ja schon auf die niedrigeeren werte, daher brauchen wir nicht auf noch den stock market crash simulieren, das wäre dann doppelt gemoppelt.
                     lifeAssumptions.taxFactor_Stocks
                     );
 
-                if (savingPhaseResult.SavingsTotal >= stopWorkPhaseResult_goodCase.NeededPhaseBegin_Total)
+                var overAmount_goodCase = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_goodCase.NeededPhaseBegin_Total;
+                var overAmount_badCase = savingPhaseResult.savingsCash + savingPhaseResult.savingsMetals + (savingPhaseResult.savingsStocks * lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase) - stopWorkPhaseResult_badCase.NeededPhaseBegin_Total;
+                if (overAmount_goodCase >= 0 && overAmount_badCase >= 0)
                 {
                     //Console.WriteLine(savingPhaseResult);
                     //Console.WriteLine(stopWorkPhaseResult);
                     //Console.WriteLine($"{Environment.NewLine}");
 
-                    laterNeedsResult.Print();
-                    rentPhaseResult.Print();
-                    rentPhaseResult_WithNeedsFromStopWorkPhase.Print();
+                    //laterNeedsResult.Print();
+                    //rentPhaseResult.Print();
+                    //rentPhaseResult_WithNeedsFromStopWorkPhase.Print();
 
 
                     return new PhaseIntegratorResult()
                     {
                         ageStopWork = ageStopWorkAssumed,
-                        overAmount = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_goodCase.NeededPhaseBegin_Total,
+                        //overAmount_goodCase = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_goodCase.NeededPhaseBegin_Total,
+                        //overAmount_badCase = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_badCase.NeededPhaseBegin_Total, //is this really needed? the overamount in bad case is anyway complicated becasue the stocks market crash has to be considered.
+
+                        overAmount_goodCase = overAmount_goodCase,
+                        overAmount_badCase = overAmount_badCase,                       
 
                         savingPhaseResult = savingPhaseResult,
                         stateRentResult = stateRentResult,
@@ -151,7 +160,7 @@ namespace Finance
 
             SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork - 1, // <-- todo: what happens here if currentAge==stopWorkAge?
-                phaseIntegratorResult.overAmount,
+                phaseIntegratorResult.overAmount_goodCase,
                 stopWorkPhaseResult_goodCase.neededPhaseBegin_Cash,
                 stopWorkPhaseResult_goodCase.neededPhaseBegin_Stocks,
                 taxesStocks,
@@ -161,7 +170,7 @@ namespace Finance
 
             SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork - 1, // <-- todo: what happens here if currentAge==stopWorkAge?
-                phaseIntegratorResult.overAmount,
+                phaseIntegratorResult.overAmount_goodCase,
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Cash,
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Stocks,
                 taxesStocks,
@@ -179,7 +188,7 @@ namespace Finance
                 stopWorkPhaseResult_goodCase.neededPhaseBegin_Cash,
                 stopWorkPhaseResult_goodCase.neededPhaseBegin_Stocks,
                 stopWorkPhaseResult_goodCase.rate_Cash,
-                stopWorkPhaseResult_goodCase.rateStocks_ExcludedTaxes,
+                stopWorkPhaseResult_goodCase.rateStocks_ExcludedTaxes_GoodCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
                 1,
@@ -193,7 +202,7 @@ namespace Finance
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Cash,
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Stocks,
                 stopWorkPhaseResult_badCase.rate_Cash,
-                stopWorkPhaseResult_badCase.rateStocks_ExcludedTaxes,
+                stopWorkPhaseResult_badCase.rateStocks_ExcludedTaxes_GoodCase,
                 lifeAssumptions.rentPhase_InterestRate_Cash,
                 lifeAssumptions.rentPhase_InterestRate_Stocks_BadCase,
                 lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase,

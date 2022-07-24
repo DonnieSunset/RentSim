@@ -438,7 +438,7 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
 
         Field_Result_AgeStopWork = myPhaseIntegratorResult.ageStopWork;
         Field_SavingPhaseResults_TotalSavingStopWorkAge = BeautifyToCurrenctWith0Decimals(mySavingPhaseResult.SavingsTotal);
-        Field_SavingPhaseResults_OverAmount = BeautifyToCurrenctWith0Decimals(myPhaseIntegratorResult.overAmount);
+        Field_SavingPhaseResults_OverAmount = BeautifyToCurrenctWith0Decimals(myPhaseIntegratorResult.overAmount_goodCase);
         Field_RentPhaseResult_GoodCase_RateCash = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rate_Cash);
         Field_RentPhaseResult_GoodCase_RateStocks = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.rateStocks_ExcludedTaxes_GoodCase);
         Field_RentPhaseResult_GoodCase_Taxes = BeautifyToCurrenctWith0Decimals(myRentPhaseResult.taxesPerYear_GoodCase);
@@ -610,5 +610,6 @@ https://stackoverflow.com/questions/60660371/why-would-the-onchange-event-of-inp
         //todo: resultrow verification: are taxes paid corrently
         //todo: im moment is noch ein fehler drin: das rebalancing nach der save phase berücksichtigt nicht die taxes beim verkauf von stocks!!
         //todo: replace all tax and interests calculation by Frac class
+        //todo: check again all calculations of stocks market crash. normally factor is 0.5 so it doesnot matter is its used as factor or rate. but with 0.9 it can lead to wriong results.
     }
 }

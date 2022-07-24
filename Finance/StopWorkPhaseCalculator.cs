@@ -65,9 +65,9 @@ namespace Finance
                 neededPhaseBegin_Stocks = totalStocks,
 
                 rate_Cash = rate_Cash_perYear,
-                rateStocks_ExcludedTaxes = rate_Stocks_ExcludedTaxes_perYear,
-                taxesPerYear = taxesPerYear,
-                rateStocks_IncludedTaxes = rate_Stocks_ExcludedTaxes_perYear + taxesPerYear
+                rateStocks_ExcludedTaxes_GoodCase = rate_Stocks_ExcludedTaxes_perYear,
+                taxesPerYear_GoodCase = taxesPerYear,
+                rateStocks_IncludedTaxes_GoodCase = rate_Stocks_ExcludedTaxes_perYear + taxesPerYear
             };
         }
 
