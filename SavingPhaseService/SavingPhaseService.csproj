@@ -17,5 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Finance\Finance.csproj" />
   </ItemGroup>
-
+    <ItemGroup>
+	    <InternalsVisibleTo Include="SavingPhaseService_Tests" />
+    </ItemGroup>
 </Project>

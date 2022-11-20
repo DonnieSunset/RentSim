@@ -32,7 +32,8 @@ namespace SavingPhaseService.Controllers
             return result;
         }
 
-        public readonly record struct YearlyRecord(int age, decimal amount);
+        public readonly record struct YearlyRecord(int Age, decimal Amount);
+        readonly List<YearlyRecord> result = new();
 
         [HttpGet("Simulate")]
         [Produces("application/json")]
@@ -44,9 +45,9 @@ namespace SavingPhaseService.Controllers
             decimal saveAmountPerMonth)
         {
             decimal currentCapital = startCapital;
-            List<YearlyRecord> result = new();
 
-            for (int i = savingPhaseStartAge; i < savingPhaseEndAge; i++)
+            result.Clear();
+            for (int age = savingPhaseStartAge; age < savingPhaseEndAge; age++)
             {
                 decimal interests = currentCapital * growthRate / 100m;
 
@@ -54,7 +55,7 @@ namespace SavingPhaseService.Controllers
                 decimal savings = saveAmountPerMonth * 12;
                 currentCapital += savings;
 
-                result.Add(new YearlyRecord(i, currentCapital));
+                result.Add(new YearlyRecord(age, currentCapital));
             }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
