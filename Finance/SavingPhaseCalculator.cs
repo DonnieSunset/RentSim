@@ -148,21 +148,26 @@ namespace Finance
             }
 
 
-            ////step 4: stock market crash
-            //if (crashFactor_Stocks != 1)
-            //{
-            //    var stocksCrashAmount = savingPhaseEndRow.stocksYearEnd * crashFactor_Stocks;
-            //    protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
-            //}
+            //step 4: stock market crash
+            if (crashFactor_Stocks != 1)
+            {
+                var stocksCrashAmount = savingPhaseEndRow.stocksYearEnd * crashFactor_Stocks;
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
+            }
 
-            
+
 
             //step 5: final check
             var stopWorkPhase_Begin_Total = cashTotalStopWorkPhase + stocksTotalStopWorkPhase;
             var savingPhase_End_Total = savingPhaseEndRow.TotalYearEnd;
-            if (Decimal.Round(stopWorkPhase_Begin_Total, 3) != Decimal.Round(savingPhase_End_Total, 3))
+            var roundDigits = 3;
+            Console.WriteLine("SHSH1: " + stopWorkPhase_Begin_Total);
+            Console.WriteLine("SHSH2: " + RoundBeforeComma(stopWorkPhase_Begin_Total, roundDigits));
+            //if (Decimal.Round(stopWorkPhase_Begin_Total, roundDigits) != Decimal.Round(savingPhase_End_Total, roundDigits))
+            if (RoundBeforeComma(stopWorkPhase_Begin_Total, roundDigits) != RoundBeforeComma(savingPhase_End_Total, roundDigits))
             {
-                throw new Exception($"Rebalancing was not successful: Calculated {nameof(savingPhase_End_Total)} ({savingPhase_End_Total:F2}) should be equal to given {nameof(stopWorkPhase_Begin_Total)} ({stopWorkPhase_Begin_Total:F2}).");
+                //throw new Exception($"Rebalancing was not successful: Calculated {nameof(savingPhase_End_Total)} ({savingPhase_End_Total:F2}) should be equal to given {nameof(stopWorkPhase_Begin_Total)} ({stopWorkPhase_Begin_Total:F2}).");
+                throw new Exception($"Rebalancing was not successful: Calculated {nameof(savingPhase_End_Total)} ({savingPhase_End_Total:F2}) should be equal to given {nameof(stopWorkPhase_Begin_Total)} ({stopWorkPhase_Begin_Total:F2}). crash {crashFactor_Stocks}");
             }
         }
 
@@ -177,6 +182,12 @@ namespace Finance
             //step 4: stock market crash
             var stocksCrashAmount = savingPhaseEndRow.stocksYearEnd * crashFactor_Stocks;
             protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
+        }
+
+        private static decimal RoundBeforeComma(decimal number, int place)
+        {
+            decimal factor = (decimal) Math.Pow(10, place);
+            return Math.Round(number / factor, 0) * factor;
         }
     }
 }

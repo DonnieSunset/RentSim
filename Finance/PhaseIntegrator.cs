@@ -95,6 +95,10 @@ namespace Finance
 
                 var overAmount_goodCase = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_goodCase.NeededPhaseBegin_Total;
                 var overAmount_badCase = savingPhaseResult.savingsCash + savingPhaseResult.savingsMetals + (savingPhaseResult.savingsStocks * lifeAssumptions.rentPhase_CrashFactor_Stocks_BadCase) - stopWorkPhaseResult_badCase.NeededPhaseBegin_Total;
+
+                Console.WriteLine("NEWWW: overAmount_goodCase: " + overAmount_goodCase);
+                Console.WriteLine("NEWWW: overAmount_badCase: " + overAmount_badCase);
+
                 if (overAmount_goodCase >= 0 && overAmount_badCase >= 0)
                 {
                     //Console.WriteLine(savingPhaseResult);
@@ -104,6 +108,36 @@ namespace Finance
                     //laterNeedsResult.Print();
                     //rentPhaseResult.Print();
                     //rentPhaseResult_WithNeedsFromStopWorkPhase.Print();
+
+
+                    //increase the monthly rate until overamount is back to 0 
+                    var newRate_Cash = rentPhaseResult_WithNeedsFromStopWorkPhase.rate_Cash;
+                    var newRate_Stocks = rentPhaseResult_WithNeedsFromStopWorkPhase.rateStocks_ExcludedTaxes_BadCase;
+                    while (overAmount_goodCase > 0)
+                    {
+                        newRate_Cash *= 1.01m;
+                        newRate_Stocks *= 1.01m;
+                        Console.WriteLine("NEW: newRate_Cash: " + newRate_Cash);
+                        Console.WriteLine("NEW: newRate_Stocks: " + newRate_Stocks);
+
+                        var stopWorkPhaseResult_goodCase_new = StopWorkPhaseCalculator.Calculate(
+                        ageStopWorkAssumed,
+                        lifeAssumptions.ageRentStart,
+                        rentPhaseResult.neededPhaseBegin_Cash,
+                        rentPhaseResult.neededPhaseBegin_Stocks,
+                        newRate_Cash,
+                        newRate_Stocks,
+                        lifeAssumptions.rentPhase_InterestRate_Cash,
+                        lifeAssumptions.rentPhase_InterestRate_Stocks_GoodCase,
+                        1,
+                        lifeAssumptions.taxFactor_Stocks
+                        );
+
+                        overAmount_goodCase = savingPhaseResult.SavingsTotal - stopWorkPhaseResult_goodCase_new.NeededPhaseBegin_Total;
+                        Console.WriteLine("NEW: overAmount_goodCase: " + overAmount_goodCase);
+                    }
+
+
 
 
                     return new PhaseIntegratorResult()
@@ -170,7 +204,7 @@ namespace Finance
 
             SavingPhaseCalculator.RebalanceForStopWorkPhase(
                 phaseIntegratorResult.ageStopWork - 1, // <-- todo: what happens here if currentAge==stopWorkAge?
-                phaseIntegratorResult.overAmount_goodCase,
+                phaseIntegratorResult.overAmount_badCase,
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Cash,
                 stopWorkPhaseResult_badCase.neededPhaseBegin_Stocks,
                 taxesStocks,

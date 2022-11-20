@@ -5,6 +5,59 @@ namespace Finance
 {
     public class StopWorkPhaseCalculator
     {
+        public static StopWorkPhaseResult Calculate2(
+            int ageStopWork,
+            int ageRentStart,
+            decimal amountCashSavingPhaseEnd,
+            decimal amountStocksSavingPhaseEnd,
+            decimal amountCashRentPhaseStart,
+            decimal amountStocksRentPhaseStart,
+            decimal rate_Cash_perYear,
+            decimal rate_Stocks_ExcludedTaxes_perYear,
+            decimal interestRate_Cash,
+            decimal interestRate_Stocks,
+            decimal crashFactor_Stocks_BadCase,
+            decimal stocks_taxFactor)
+        {
+            //calculation by reverse-simulation
+            decimal totalCash = amountCashRentPhaseStart;
+            decimal totalStocks = amountStocksRentPhaseStart;
+            decimal taxesPerYear = rate_Stocks_ExcludedTaxes_perYear * (stocks_taxFactor - 1);
+
+            
+            decimal interestFactor_Cash_Reverse = 1 / (1 + interestRate_Cash);
+            decimal interestFactor_Stocks_GoodCase_Reverse = 1 / (1 + interestRate_Stocks);
+
+
+            //here start with normal sparkassenformel
+            var rateYear_Cash = FinanceCalculator.SparkassenFormel_nachRate
+                (anfangskapital: amountCashSavingPhaseEnd,
+                 endkapital: amountCashRentPhaseStart,
+                 zinsFaktor: (double) interestRate_Cash,
+                 anzahlJahre: ageRentStart - ageStopWork);
+
+            var rateYear_Stocks = FinanceCalculator.SparkassenFormel_nachRate
+                (anfangskapital: amountStocksSavingPhaseEnd,
+                 endkapital: amountStocksRentPhaseStart,
+                 zinsFaktor: (double)interestRate_Stocks,
+                 anzahlJahre: ageRentStart - ageStopWork);
+
+
+            return new StopWorkPhaseResult()
+            {
+                ageStopWork = ageStopWork,
+
+                neededPhaseBegin_Cash = totalCash,
+                neededPhaseBegin_Stocks = totalStocks,
+
+                rate_Cash = rate_Cash_perYear,
+                rateStocks_ExcludedTaxes_GoodCase = rate_Stocks_ExcludedTaxes_perYear,
+                taxesPerYear_GoodCase = taxesPerYear,
+                rateStocks_IncludedTaxes_GoodCase = rate_Stocks_ExcludedTaxes_perYear + taxesPerYear
+            };
+        }
+
+
         public static StopWorkPhaseResult Calculate(
             int ageStopWork,
             int ageRentStart,
