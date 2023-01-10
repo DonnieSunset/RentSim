@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using NUnit.Framework;
 
-namespace SavingPhaseService_Tests
+namespace FinanceMathService_Tests
 {
     /// <summary>
     /// https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/test-aspnet-core-services-web-apps
     /// https://learn.microsoft.com/de-de/aspnet/core/test/integration-tests?view=aspnetcore-6.0
     /// </summary>
-    public class SavingPhaseService_iTests
+    public class FinanceMathService_iTests
     {
-        [Theory]
-        [InlineData("/SavingPhase/Calculate")]
-        [InlineData("/SavingPhase/Simulate")]
+        [TestCase("/FinanceMath/NonRiskAssets")]
+        [TestCase("/FinanceMath/RateByNumericalSparkassenformel")]
         public async Task ReturnHelloWorld(string url)
         {
             var application = new WebApplicationFactory<Program>()
@@ -24,8 +24,7 @@ namespace SavingPhaseService_Tests
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+            Assert.That("application/json; charset=utf-8", Is.EqualTo(response.Content.Headers.ContentType.ToString()));
         }
     }
 }

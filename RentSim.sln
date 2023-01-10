@@ -42,9 +42,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Finance_iTests", "Finance_iTests\Finance_iTests.csproj", "{E2CD211C-ADA9-48E4-A5FA-B661C895D5AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavingPhaseService", "SavingPhaseService\SavingPhaseService.csproj", "{73255C15-BBB3-4035-93A3-1E700A703846}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingPhaseService", "SavingPhaseService\SavingPhaseService.csproj", "{73255C15-BBB3-4035-93A3-1E700A703846}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavingPhaseService_Tests", "SavingPhaseService_Tests\SavingPhaseService_Tests.csproj", "{02B57C8E-F37D-4800-A0EE-3867562E4BA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingPhaseService_Tests", "SavingPhaseService_Tests\SavingPhaseService_Tests.csproj", "{02B57C8E-F37D-4800-A0EE-3867562E4BA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMathService", "FinanceMathService\FinanceMathService.csproj", "{4C261405-7E2A-40C1-896C-80A0AFD09F44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMathService_Tests", "FinanceMathService_Tests\FinanceMathService_Tests.csproj", "{B9F8142B-E662-4098-93DD-8959E3578378}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +108,14 @@ Global
 		{02B57C8E-F37D-4800-A0EE-3867562E4BA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B57C8E-F37D-4800-A0EE-3867562E4BA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B57C8E-F37D-4800-A0EE-3867562E4BA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C261405-7E2A-40C1-896C-80A0AFD09F44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C261405-7E2A-40C1-896C-80A0AFD09F44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C261405-7E2A-40C1-896C-80A0AFD09F44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C261405-7E2A-40C1-896C-80A0AFD09F44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9F8142B-E662-4098-93DD-8959E3578378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F8142B-E662-4098-93DD-8959E3578378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F8142B-E662-4098-93DD-8959E3578378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F8142B-E662-4098-93DD-8959E3578378}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
