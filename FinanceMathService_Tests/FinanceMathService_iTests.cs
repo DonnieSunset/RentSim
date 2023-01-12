@@ -9,7 +9,7 @@ namespace FinanceMathService_Tests
     /// </summary>
     public class FinanceMathService_iTests
     {
-        [TestCase("/FinanceMath/NonRiskAssets")]
+        [TestCase("/FinanceMath/NonRiskAssets?totalAmount=500&stocksCrashFactor=0.5&totalAmount_minNeededAfterCrash=400")]
         [TestCase("/FinanceMath/RateByNumericalSparkassenformel")]
         public async Task ReturnHelloWorld(string url)
         {
