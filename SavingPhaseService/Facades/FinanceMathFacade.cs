@@ -10,7 +10,7 @@ namespace Finance.Facades
             ub.Path = "FinanceMath/Sparkassenformel";
             ub.Query = $"?anfangskapital={anfangskapital}" +
                 $"&rateProJahr={rateProJahr}" +
-                $"&zinsFaktor={zinsFaktor}" +
+                $"&zinsFaktor={zinsFaktor.ToString(CultureInfo.InvariantCulture)}" +
                 $"&anzahlJahre={anzahlJahre}";
 
             using (var httpClient = new HttpClient())
