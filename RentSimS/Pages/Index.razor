@@ -82,6 +82,8 @@
 
         totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
 
-        //var blubb = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var blubb1 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var blubb2 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+        var blubb3 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Finance.Results;
 using Microsoft.AspNetCore.Mvc;
+using SavingPhaseService.Contracts;
 using System.Globalization;
 using System.Net.Http.Json;
 
@@ -42,7 +43,7 @@ namespace Finance.Facades
             return result;
         }
 
-        public async Task<SavingPhaseResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth)
+        public async Task<SimulationResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth)
         {
             var ub = new UriBuilder("https://localhost:44324");
             ub.Path = "SavingPhase/Simulate";
@@ -59,7 +60,7 @@ namespace Finance.Facades
                 throw new Exception($"Http response error: {response.Content}.");
             }
 
-            var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseResult>();
+            var jsonResponse = await response.Content.ReadFromJsonAsync<SimulationResult>();
             if (jsonResponse == null)
             {
                 throw new Exception($"{nameof(jsonResponse)} is null.");
