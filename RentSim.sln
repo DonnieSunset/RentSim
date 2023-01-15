@@ -46,9 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingPhaseService", "Savin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavingPhaseService_Tests", "SavingPhaseService_Tests\SavingPhaseService_Tests.csproj", "{02B57C8E-F37D-4800-A0EE-3867562E4BA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMathService", "FinanceMathService\FinanceMathService.csproj", "{4C261405-7E2A-40C1-896C-80A0AFD09F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceMathService", "FinanceMathService\FinanceMathService.csproj", "{4C261405-7E2A-40C1-896C-80A0AFD09F44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceMathService_Tests", "FinanceMathService_Tests\FinanceMathService_Tests.csproj", "{B9F8142B-E662-4098-93DD-8959E3578378}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceMathService_Tests", "FinanceMathService_Tests\FinanceMathService_Tests.csproj", "{B9F8142B-E662-4098-93DD-8959E3578378}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentSimS", "RentSimS\RentSimS.csproj", "{37FD8139-2D2D-4268-900E-69B2F052BEAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +118,10 @@ Global
 		{B9F8142B-E662-4098-93DD-8959E3578378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9F8142B-E662-4098-93DD-8959E3578378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9F8142B-E662-4098-93DD-8959E3578378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FD8139-2D2D-4268-900E-69B2F052BEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37FD8139-2D2D-4268-900E-69B2F052BEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37FD8139-2D2D-4268-900E-69B2F052BEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37FD8139-2D2D-4268-900E-69B2F052BEAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

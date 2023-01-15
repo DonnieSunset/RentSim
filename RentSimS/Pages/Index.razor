@@ -1,0 +1,99 @@
+﻿@page "/"
+@using Domain;
+@inject IHttpClientFactory ClientFactory
+
+<Divider DividerType="DividerType.TextContent" Text="Ages" />
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Current Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Stop Work Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Rent Start Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">End Age:</FieldLabel>
+
+ </Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" /> </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.TextContent" Text="Savings Phase"></Divider>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Asset Class:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Initial Savings:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Interest Rate (%):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Save Amount:</FieldLabel>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Cash:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" /> </FieldBody>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Metals:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" /> </FieldBody>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Stocks:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks" Step="1000" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" /> </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings" /> </FieldBody>
+</Field>
+
+@code{
+    LifeAssumptions lifeAssumptions = new();
+    int ageStopWork = 63;
+
+    decimal totalSavings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Recalc();
+    }
+
+    private async Task Recalc()
+    {
+        totalSavings = await GetSavingPhaseResultAsync();
+    }
+
+    private async Task<decimal> GetSavingPhaseResultAsync()
+    {
+        var ub = new UriBuilder("https://localhost:44324");
+        ub.Path = "SavingPhase/Calculate";
+        ub.Query = $"?ageCurrent={lifeAssumptions.ageCurrent}" +
+            $"&ageStopWork={ageStopWork}" +
+            $"&startCapital={lifeAssumptions.cash}" +
+            $"&growthRate={lifeAssumptions.cashGrowthRate}" +
+            $"&saveAmountPerMonth={lifeAssumptions.cashSaveAmountPerMonth}";
+
+        using (var httpClient = ClientFactory.CreateClient("SavingPhaseService"))
+        {
+            HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Http response error: {response.Content}.");
+            }
+
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            if (stringResponse == null)
+            {
+                throw new Exception($"{nameof(stringResponse)} is null.");
+            }
+            var result = Decimal.Parse(stringResponse);
+
+            return result;
+        }
+    }
+}

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RentSim.Shared;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -25,6 +26,8 @@ namespace RentSim
             //await builder.Build().RunAsync();
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            
 
             builder.Services
               .AddBlazorise(options =>

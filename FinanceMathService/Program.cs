@@ -22,5 +22,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
+app.UseCors();
+
 app.Run();
 public partial class Program { }
