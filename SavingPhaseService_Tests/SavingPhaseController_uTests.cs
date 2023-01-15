@@ -19,7 +19,7 @@ namespace SavingPhaseService_Tests
             var loggerMock = new Mock<ILogger<SavingPhaseController>>();
             var controller = new SavingPhaseController(loggerMock.Object);
 
-            var actualResult = controller.Calculate(
+            var actualResult = controller.CalculateAsync(
                 ageCurrent,
                 ageStopWork,
                 startCapital,

@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Finance\Finance.csproj" />
+    <ProjectReference Include="..\SavingPhaseService\SavingPhaseService.csproj" />
   </ItemGroup>
 
 </Project>

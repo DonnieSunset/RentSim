@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace FinanceMathService.Controllers
@@ -19,6 +18,8 @@ namespace FinanceMathService.Controllers
         [Produces("application/json")]
         public JsonResult NonRiskAssets(double totalAmount, double stocksCrashFactor, double totalAmount_minNeededAfterCrash)
         {
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
             double result = FinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmount_minNeededAfterCrash);
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -27,7 +28,8 @@ namespace FinanceMathService.Controllers
         [Produces("application/json")]
         public JsonResult RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double endbetrag, int jahre)
         {
-            //double result = 32;
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
             double result = FinanceMath.RateByNumericalSparkassenformel(
                 new List<double> { betrag1, betrag2 },
                 new List<double> { zins1, zins2 },
@@ -38,16 +40,29 @@ namespace FinanceMathService.Controllers
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        [HttpGet("RateByNumericalSparkassenformel")]
+        //[HttpGet("RateByNumericalSparkassenformel")]
+        //[Produces("application/json")]
+        //public JsonResult RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double betrag3, double zins3, double endbetrag, int jahre)
+        //{
+        //    HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+        //    double result = FinanceMath.RateByNumericalSparkassenformel(
+        //        new List<double> { betrag1, betrag2, betrag3 },
+        //        new List<double> { zins1, zins2, zins3 },
+        //        endbetrag,
+        //        jahre
+        //    );
+
+        //    return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
+        //}
+
+        [HttpGet("Sparkassenformel")]
         [Produces("application/json")]
-        public JsonResult RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double betrag3, double zins3, double endbetrag, int jahre)
+        public JsonResult SparkassenFormel(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
         {
-            double result = FinanceMath.RateByNumericalSparkassenformel(
-                new List<double> { betrag1, betrag2, betrag3 },
-                new List<double> { zins1, zins2, zins3 },
-                endbetrag,
-                jahre
-            );
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            decimal result = FinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }

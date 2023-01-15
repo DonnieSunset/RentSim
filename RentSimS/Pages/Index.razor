@@ -1,5 +1,9 @@
 ﻿@page "/"
+@using System.Globalization;
 @using Domain;
+@using Finance;
+@using Finance.Facades;
+@using SavingPhaseService.Contracts;
 @inject IHttpClientFactory ClientFactory
 
 <Divider DividerType="DividerType.TextContent" Text="Ages" />
@@ -12,10 +16,10 @@
 
  </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Savings Phase"></Divider>
@@ -29,20 +33,20 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Cash:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash" Step="1000" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals" Step="1000" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks" Step="1000" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
@@ -53,47 +57,31 @@
 </Field>
 
 @code{
+    SavingPhaseFacade savingPhaseFacade;
+
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
-
     decimal totalSavings;
 
     protected override async Task OnInitializedAsync()
     {
+        savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
         await Recalc();
+    }
+
+    public string BeautifyToCurrenctWith0Decimals(decimal? num)
+    {
+        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
     }
 
     private async Task Recalc()
     {
-        totalSavings = await GetSavingPhaseResultAsync();
-    }
+        var totalSavingsCash = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var totalSavingsMetals = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+        var totalSavingsStocks = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
 
-    private async Task<decimal> GetSavingPhaseResultAsync()
-    {
-        var ub = new UriBuilder("https://localhost:44324");
-        ub.Path = "SavingPhase/Calculate";
-        ub.Query = $"?ageCurrent={lifeAssumptions.ageCurrent}" +
-            $"&ageStopWork={ageStopWork}" +
-            $"&startCapital={lifeAssumptions.cash}" +
-            $"&growthRate={lifeAssumptions.cashGrowthRate}" +
-            $"&saveAmountPerMonth={lifeAssumptions.cashSaveAmountPerMonth}";
+        totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
 
-        using (var httpClient = ClientFactory.CreateClient("SavingPhaseService"))
-        {
-            HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Http response error: {response.Content}.");
-            }
-
-            var stringResponse = await response.Content.ReadAsStringAsync();
-            if (stringResponse == null)
-            {
-                throw new Exception($"{nameof(stringResponse)} is null.");
-            }
-            var result = Decimal.Parse(stringResponse);
-
-            return result;
-        }
+        //var blubb = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
     }
 }

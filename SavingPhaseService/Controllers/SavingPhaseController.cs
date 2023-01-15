@@ -1,5 +1,6 @@
 ﻿using Finance;
 using Microsoft.AspNetCore.Mvc;
+using SavingPhaseService.Contracts;
 using System.Text.Json;
 
 namespace SavingPhaseService.Controllers
@@ -17,49 +18,43 @@ namespace SavingPhaseService.Controllers
 
 
         [HttpGet("Calculate")]
-        public JsonResult Calculate(
-            int ageCurrent,
-            int ageStopWork,
+        [Produces("application/json")]
+        public async Task<JsonResult> CalculateAsync(
+            int ageFrom,
+            int ageTo,
             decimal startCapital,
             int growthRate,
             decimal saveAmountPerMonth)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            int duration = ageStopWork - ageCurrent;
-
-            double interestFactor = 1 + (growthRate / 100d);
-            decimal result = FinanceCalculator.SparkassenFormel(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
+            decimal result = await SavingPhaseService.Calculate(
+                ageFrom,
+                ageTo,
+                startCapital,
+                growthRate,
+                saveAmountPerMonth);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true }); ;
         }
 
-        public readonly record struct YearlyRecord(int Age, decimal Amount);
-
         [HttpGet("Simulate")]
         [Produces("application/json")]
         public JsonResult Simulate(
-            int savingPhaseStartAge,
-            int savingPhaseEndAge,
+            int ageFrom,
+            int ageTo,
             decimal startCapital,
             int growthRate,
             decimal saveAmountPerMonth)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            List<YearlyRecord> result = new();
-            decimal currentCapital = startCapital;
-
-            for (int age = savingPhaseStartAge; age < savingPhaseEndAge; age++)
-            {
-                decimal interests = currentCapital * growthRate / 100m;
-
-                currentCapital += interests;
-                decimal savings = saveAmountPerMonth * 12;
-                currentCapital += savings;
-
-                result.Add(new YearlyRecord(age, currentCapital));
-            }
+            SimulationResult result = SavingPhaseService.Simulate(
+                ageFrom,
+                ageTo,
+                startCapital,
+                growthRate,
+                saveAmountPerMonth);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
