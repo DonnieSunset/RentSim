@@ -1,6 +1,5 @@
-﻿using Finance;
-using Finance.Facades;
-using SavingPhaseService.Contracts;
+﻿using SavingPhaseService.Contracts;
+using SavingPhaseService.Controllers;
 
 namespace SavingPhaseService
 {
@@ -17,7 +16,7 @@ namespace SavingPhaseService
 
             double interestFactor = 1 + (growthRate / 100d);
             //decimal result = FinanceCalculator.SparkassenFormel(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
-            decimal result = await FinanceMathFacade.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
+            decimal result = await FinanceMathController.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
 
             return result;
         }

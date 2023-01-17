@@ -1,5 +1,4 @@
-﻿using Finance;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SavingPhaseService.Contracts;
 using System.Text.Json;
 
@@ -9,11 +8,17 @@ namespace SavingPhaseService.Controllers
     [Route("[controller]")]
     public class SavingPhaseController : ControllerBase
     {
-        private readonly ILogger<SavingPhaseController> _logger;
+        //private readonly ILogger<SavingPhaseController> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public SavingPhaseController(ILogger<SavingPhaseController> logger)
+        //public SavingPhaseController(ILogger<SavingPhaseController> logger)
+        //{
+        //    _logger = logger;
+        //}
+
+        public SavingPhaseController(IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
 
 

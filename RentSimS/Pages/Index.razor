@@ -4,6 +4,7 @@
 @using Finance;
 @using Finance.Facades;
 @using SavingPhaseService.Contracts;
+@using Protocol;
 @inject IHttpClientFactory ClientFactory
 
 <Divider DividerType="DividerType.TextContent" Text="Ages" />
@@ -56,12 +57,24 @@
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings" /> </FieldBody>
 </Field>
 
+<Row>
+    @*<Column ColumnSize="ColumnSize.Is4">
+        <LineChart @ref="lineChart" TItem="decimal" />
+    </Column>*@
+    <Column ColumnSize="ColumnSize.Is4">
+        <BarChart @ref="barChart" TItem="decimal"/>
+    </Column>
+</Row>
+
 @code{
     SavingPhaseFacade savingPhaseFacade;
 
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
     decimal totalSavings;
+
+    BarChart<decimal>? barChart;
+    BarChartOptions? dataBarChartOptions;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,13 +90,81 @@
     private async Task Recalc()
     {
         var totalSavingsCash = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
-        var totalSavingsMetals = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
         var totalSavingsStocks = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+        var totalSavingsMetals = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
 
         totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
 
         var blubb1 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
         var blubb2 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
         var blubb3 = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+
+        var protocolWriter = new MemoryProtocolWriter();
+        protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageCurrent, lifeAssumptions.cash, lifeAssumptions.stocks, lifeAssumptions.metals);
+        for (int age = lifeAssumptions.ageCurrent; age < ageStopWork; age++)
+        {
+
+            var cashEntry = blubb1.Entities.Single(x => x.Age == age);
+            var metalsEntry = blubb2.Entities.Single(x => x.Age == age);
+            var stocksEntry = blubb3.Entities.Single(x => x.Age == age);
+
+            protocolWriter.Log(age, new TransactionDetails { cashDeposit = cashEntry.Deposit, cashInterests = cashEntry.Interests });
+            protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
+            protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
+        }
+
+        Console.WriteLine();
+
+        string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent + 1)
+            .Select(x => x.ToString())
+            .ToArray();
+
+
+        BarChartDataset<decimal> dataBarChartCash = new BarChartDataset<decimal>
+        {
+            Label = "Cash",
+                BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 0.5f), protocolWriter.Protocol.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 0, 0, 1f), protocolWriter.Protocol.Count()).ToList<string>(),
+                Data = protocolWriter.Protocol
+                    .Select(x => x.cashYearBegin)
+                        .Append(protocolWriter.Protocol.Last().cashYearEnd)
+                    .ToList(),
+        };
+
+        BarChartDataset<decimal> dataBarChartStocks = new BarChartDataset<decimal>
+        {
+            Label = "Stocks",
+                BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 0.5f), protocolWriter.Protocol.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), protocolWriter.Protocol.Count()).ToList<string>(),
+                Data = protocolWriter.Protocol.Select(x => x.stocksYearBegin)
+                        .Append(protocolWriter.Protocol.Last().stocksYearEnd)
+                    .ToList(),
+        };
+
+        BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
+        {
+            Label = "Metals",
+                BackgroundColor = Enumerable.Repeat<string>(ChartColor.FromRgba(255, 215, 0, 0.5f), protocolWriter.Protocol.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(ChartColor.FromRgba(0, 0, 255, 1f), protocolWriter.Protocol.Count()).ToList<string>(),
+                Data = protocolWriter.Protocol.Select(x => x.metalsYearBegin)
+                        .Append(protocolWriter.Protocol.Last().metalsYearEnd)
+                    .ToList(),
+        };
+
+        BarChartOptions dataBarChartOptions = new BarChartOptions()
+        {
+            Scales = new ChartScales
+            {
+                X = new ChartAxis { Stacked = false },
+                Y = new ChartAxis { Stacked = false, BeginAtZero = true, Min=0 }
+            },
+        };
+
+        if (barChart != null)
+        {
+            await barChart.Clear();
+            await barChart.SetOptions(dataBarChartOptions);
+            await barChart.AddLabelsDatasetsAndUpdate(labels, dataBarChartCash, dataBarChartStocks, dataBarChartMetals);
+        }
     }
 }

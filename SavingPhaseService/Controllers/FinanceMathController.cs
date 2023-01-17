@@ -1,8 +1,10 @@
-﻿using System.Globalization;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
-namespace Finance.Facades
+namespace SavingPhaseService.Controllers
 {
-    public class FinanceMathFacade
+    [ApiController]
+    public class FinanceMathController : ControllerBase
     {
         public static async Task<decimal> GetSparkassenFormelAsync(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
         {
