@@ -18,13 +18,13 @@ builder.Services.AddHttpClient("SavingPhaseService", x =>
 });
 
 builder.Services
-              .AddBlazorise(options =>
-              {
-                  //options.ChangeTextOnKeyPress = true;
-                  options.Immediate = true;
-              })
-              .AddBootstrapProviders()
-              .AddFontAwesomeIcons();
+    .AddBlazorise(options =>
+    {
+        //options.ChangeTextOnKeyPress = true;
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
 
 
 var app = builder.Build();
