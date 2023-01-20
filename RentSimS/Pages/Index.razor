@@ -54,7 +54,7 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings"/> </FieldBody>
 </Field>
 
 <Row>
@@ -63,6 +63,30 @@
     </Column>
     <Column ColumnSize="ColumnSize.Is4">
         <LineChart @ref="lineChart" TItem="decimal" />
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is5">
+        <DataGrid TItem="ResultRow"
+                  ColumnSize="ColumnSize.Is1"
+                  Narrow="true"
+                  Responsive="true"
+                  Data="@resultRows"
+                  Resizable="true"
+                  PageSize=100
+        >
+            <DataGridCommandColumn TItem="ResultRow" />
+            <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End />
+            <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="CashDepositsTotal" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="StocksDepositsTotal" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="MetalsDepositsTotal" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+        </DataGrid>
     </Column>
 </Row>
 
@@ -75,6 +99,8 @@
 
     BarChart<decimal>? barChart;
     LineChart<decimal>? lineChart;
+
+    IEnumerable<ResultRow> resultRows;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -121,7 +147,9 @@
             protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
         }
-        
+
+        resultRows = protocolWriter.Protocol;
+
         await DrawBarChart(barChart, protocolWriter, lifeAssumptions);
         await DrawLineChart(lineChart, protocolWriter, lifeAssumptions);
 

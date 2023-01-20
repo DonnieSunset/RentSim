@@ -29,6 +29,10 @@
         public decimal TotalTaxes => stocksTaxes + cashTaxes + metalsTaxes;
         public decimal TotalYearEnd => stocksYearEnd + cashYearEnd + metalsYearEnd;
 
+        public decimal CashDepositsTotal => cashDeposits.Sum();
+        public decimal StocksDepositsTotal => stocksDeposits.Sum();
+        public decimal MetalsDepositsTotal => metalsDeposits.Sum();
+
         public int CompareTo(ResultRow? other)
         {
             if (other == null) return 1;
