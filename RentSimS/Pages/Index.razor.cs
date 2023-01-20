@@ -15,9 +15,10 @@ namespace RentSimS.Pages
         private ChartColor chartColorMetals = ChartColor.FromRgba(255, 215, 0, 0.5f);
         private ChartColor chartBorderColorMetals = ChartColor.FromRgba(255, 215, 0, 1f);
 
+        private ChartColor chartColorTotal = ChartColor.FromRgba(0, 0, 0, 0.5f);
+        private ChartColor chartBorderColorTotal = ChartColor.FromRgba(0, 0, 0, 1f);
+
         private ChartColor chartColorNone = ChartColor.FromRgba(255, 255, 255, 0.0f);
-
-
 
         public async Task DrawBarChart(BarChart<decimal>? barChart, IProtocolWriter protocolWriter, LifeAssumptions lifeAssumptions)
         {
@@ -122,6 +123,20 @@ namespace RentSimS.Pages
                     .ToList(),
             };
 
+            LineChartDataset<decimal> datalineChartTotal = new LineChartDataset<decimal>
+            {
+                BackgroundColor = new List<string> { chartColorNone },
+                Label = "Total",
+                BorderColor = new List<string> { chartColorTotal },
+                Fill = true,
+                PointRadius = 2,
+                BorderDash = new List<int> { },
+                Data = protocolWriter.Protocol
+                    .Select(x => x.TotalYearBegin)
+                        .Append(protocolWriter.Protocol.Last().TotalYearEnd)
+                    .ToList(),
+            };
+
             LineChartOptions lineBarChartOptions = new LineChartOptions()
             {
                 Scales = new ChartScales
@@ -135,7 +150,7 @@ namespace RentSimS.Pages
             {
                 await lineChart.Clear();
                 await lineChart.SetOptions(lineBarChartOptions);
-                await lineChart.AddLabelsDatasetsAndUpdate(labels, datalineChartCash, datalineChartStocks, datalineChartMetals);
+                await lineChart.AddLabelsDatasetsAndUpdate(labels, datalineChartCash, datalineChartStocks, datalineChartMetals, datalineChartTotal);
             }
         }
     }

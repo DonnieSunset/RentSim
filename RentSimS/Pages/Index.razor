@@ -18,7 +18,7 @@
  </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" onchange="@Recalc" /> </FieldBody>
 </Field>
@@ -75,13 +75,21 @@
 
     BarChart<decimal>? barChart;
     LineChart<decimal>? lineChart;
-    //BarChartOptions? dataBarChartOptions;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnAfterRender(bool firstRender)
     {
-        savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
-        await Recalc();
+        if (firstRender)
+        {
+            savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
+            Recalc();         
+        }
     }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
+    //    await Recalc();
+    //}
 
     public string BeautifyToCurrenctWith0Decimals(decimal? num)
     {
@@ -116,5 +124,10 @@
         
         await DrawBarChart(barChart, protocolWriter, lifeAssumptions);
         await DrawLineChart(lineChart, protocolWriter, lifeAssumptions);
+
+        await InvokeAsync(async () =>
+        {
+            StateHasChanged();
+        });
     }
 }
