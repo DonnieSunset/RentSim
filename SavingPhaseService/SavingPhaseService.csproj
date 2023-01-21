@@ -20,7 +20,4 @@
     <ItemGroup>
       <Folder Include="Models\" />
     </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\FinanceMathService\FinanceMathService.csproj" />
-    </ItemGroup>
 </Project>

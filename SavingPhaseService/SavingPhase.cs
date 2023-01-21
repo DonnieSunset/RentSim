@@ -16,9 +16,13 @@ namespace SavingPhaseService
            )
         {
             int duration = ageTo - ageFrom;
+            if (duration == 0)
+            {
+                return startCapital;
+            }
 
             double interestFactor = 1 + (growthRate / 100d);
-            //decimal result = FinanceCalculator.SparkassenFormel(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
+
             decimal result = await financeMathClient.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
 
             return result;

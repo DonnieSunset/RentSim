@@ -1,8 +1,5 @@
-using FinanceMathService;
-using Microsoft.Extensions.Configuration;
 using SavingPhaseService;
 using SavingPhaseService.Clients;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

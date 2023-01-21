@@ -9,9 +9,12 @@ namespace SavingPhaseService_Tests
     /// </summary>
     public class SavingPhaseService_iTests
     {
+        /// <summary>
+        /// Both work without parameters becasue calculation is even possible with default (0) values.
+        /// </summary>
         [TestCase("/SavingPhase/Calculate")]
         [TestCase("/SavingPhase/Simulate")]
-        public async Task ReturnHelloWorld(string url)
+        public async Task ReturnSuccessStatusCode(string url)
         {
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>

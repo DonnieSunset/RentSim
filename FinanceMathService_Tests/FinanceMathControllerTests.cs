@@ -5,6 +5,8 @@ namespace FinanceMathService_Tests
 {
     public class FinanceMath_uTests
     {
+        private FinanceMath myFinanceMath = new FinanceMath();
+
         [TestCase(2500, 1, 2000, 0)]
         [TestCase(2500, 0.9, 2000, 0)]
         [TestCase(2500, 0.8, 2000, 0)]
@@ -18,7 +20,7 @@ namespace FinanceMathService_Tests
         [TestCase(2500, 0, 2000, 2000)]
         public void NonRiskAssetsNeededInCaseOfRiskAssetCrash_ValidInput(double totalAmount, double stocksCrashFactor, double totalAmountMinNeededAfterCrash, double expectedLowRiskAmount)
         {
-            double lowRiskAMount = FinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmountMinNeededAfterCrash);
+            double lowRiskAMount = myFinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmountMinNeededAfterCrash);
             double highRiskAmount = totalAmount - lowRiskAMount;
 
             //Console.WriteLine($"{nameof(lowRiskAMount)}: {lowRiskAMount}");
@@ -40,7 +42,7 @@ namespace FinanceMathService_Tests
         [TestCase(2000, -0.6, 1000, 0)]
         public void NonRiskAssetsNeededInCaseOfRiskAssetCrash_InvalidInput(double totalAmount, double stocksCrashFactor, double totalAmountMinNeededAfterCrash, double expectedLowRiskAmount)
         {
-            Assert.That(() => FinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmountMinNeededAfterCrash), Throws.ArgumentException);
+            Assert.That(() => myFinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmountMinNeededAfterCrash), Throws.ArgumentException);
         }
 
         [TestCase(2000, 1.03, 1000, 1.15, 1000, 1.02, 500, 10)]
@@ -48,7 +50,7 @@ namespace FinanceMathService_Tests
         {
             double gesamtBetrag = betrag1 + betrag2 + betrag3;
 
-            double rate = FinanceMath.RateByNumericalSparkassenformel(
+            double rate = myFinanceMath.RateByNumericalSparkassenformel(
                 new List<double> { betrag1, betrag2, betrag3 },
                 new List<double> { zins1, zins2, zins3 },
                 endBetrag, anzahlJahre);

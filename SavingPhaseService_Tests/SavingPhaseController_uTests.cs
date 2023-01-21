@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SavingPhaseService.Controllers;
 using SavingPhaseService;
+using SavingPhaseService.Clients;
 
 namespace SavingPhaseService_Tests
 {
@@ -17,17 +18,21 @@ namespace SavingPhaseService_Tests
             decimal saveAmountPerMonth,
             decimal expectedResult)
         {
-            //var loggerMock = new Mock<IHttpClientFactory>();
-            //var controller = new SavingPhaseController(loggerMock.Object);
+            var savingPhase = new SavingPhase();
 
-            //var svaingPhaseService = new SavingPhaseService();
+            var mockedFinanceMathClient = new Mock<IFinanceMathClient>();
+            mockedFinanceMathClient
+                .Setup(x => x.GetSparkassenFormelAsync(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<double>(), It.IsAny<int>()))
+                .ReturnsAsync(553362.514294344m);
 
-            var actualResult = SavingPhase.Calculate(
+            var actualResult = savingPhase.Calculate(
                 ageCurrent,
                 ageStopWork,
                 startCapital,
                 growthRate,
-                saveAmountPerMonth).Result;
+                saveAmountPerMonth,
+                mockedFinanceMathClient.Object
+                ).Result;
 
             Assert.That(actualResult, Is.EqualTo(expectedResult).Within(0.01));
         }
