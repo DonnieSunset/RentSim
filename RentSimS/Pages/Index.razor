@@ -3,6 +3,7 @@
 @using Domain;
 @using Finance;
 @using Finance.Facades;
+@using Finance.Results;
 @using SavingPhaseService.Contracts;
 @using Protocol;
 @inject IHttpClientFactory ClientFactory
@@ -57,6 +58,32 @@
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings"/> </FieldBody>
 </Field>
 
+<Divider DividerType="DividerType.TextContent" Text="Monthly Needs"></Divider>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2"></FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @lifeAssumptions.ageCurrent:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @ageStopWork:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @lifeAssumptions.ageRentStart:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2"></FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Inflation Rate (%):</FieldLabel>
+</Field>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Minimum:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsMinimum_AgeStopWork_WithInflation_PerMonth" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsMinimum_AgeRentStart_WithInflation_PerMonth" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.inflationRate" onchange="@Recalc" /> </FieldBody>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Comfort:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsComfort_AgeStopWork_WithInflation_PerMonth" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsComfort_AgeRentStart_WithInflation_PerMonth" onchange="@Recalc" /> </FieldBody>
+</Field>
+
 <Row>
     <Column ColumnSize="ColumnSize.Is4">
         <BarChart @ref="barChart" TItem="decimal"/>
@@ -101,6 +128,7 @@
     LineChart<decimal>? lineChart;
 
     IEnumerable<ResultRow> resultRows;
+    LaterNeedsResult needs = new ();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -147,6 +175,14 @@
             protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
         }
+
+        needs = new LaterNeedsResult
+        {
+            needsMinimum_AgeStopWork_WithInflation_PerMonth = 100,
+            needsMinimum_AgeRentStart_WithInflation_PerMonth = 100,
+            needsComfort_AgeStopWork_WithInflation_PerMonth = 100,
+            needsComfort_AgeRentStart_WithInflation_PerMonth = 100,
+        };
 
         resultRows = protocolWriter.Protocol;
 

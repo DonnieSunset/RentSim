@@ -4,6 +4,7 @@ using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using RentSimS.Data;
+using SavingPhaseService.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddHttpClient("SavingPhaseService", x =>
 {
     x.BaseAddress = new UriBuilder("https://localhost:44324").Uri;
 });
+
 
 builder.Services
     .AddBlazorise(options =>
