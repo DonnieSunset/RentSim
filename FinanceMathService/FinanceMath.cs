@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace FinanceMathService
 {
@@ -143,6 +145,22 @@ namespace FinanceMathService
             }
 
             return endKapital;
+        }
+
+        public decimal AmountWithInflation(int ageStart, int ageEnd, decimal amount, double inflationRate)
+        {
+            double inflationFactor = inflationRate + 1;
+            int numYears = ageEnd - ageStart;
+
+            if (inflationFactor < 1 || inflationFactor > 2)
+            {
+                throw new ArgumentException($"{nameof(inflationFactor)}: {inflationFactor}");
+            }
+
+            double finalInflationFactor = Math.Pow(inflationFactor, numYears);
+            decimal result = amount * (decimal)finalInflationFactor;
+
+            return result;
         }
 
         private static decimal Pow(decimal a, int b)

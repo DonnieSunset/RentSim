@@ -71,16 +71,7 @@ namespace FinanceMathService.Controllers
         [Produces("application/json")]
         public JsonResult AmountWithInflation(int ageStart, int ageEnd, decimal amount, double inflationRate)
         {
-            double inflationFactor = inflationRate + 1;
-            int numYears = ageEnd - ageStart;
-
-            if (inflationFactor < 1 || inflationFactor > 2)
-            {
-                throw new ArgumentException($"{nameof(inflationFactor)}: {inflationFactor}");
-            }
-
-            double finalInflationFactor = Math.Pow(inflationFactor, numYears);
-            decimal result = amount * (decimal)finalInflationFactor;
+            decimal result = myFinanceMath.AmountWithInflation(ageStart, ageEnd, amount, inflationRate);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }

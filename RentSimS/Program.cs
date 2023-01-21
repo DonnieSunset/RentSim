@@ -3,20 +3,31 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
+using RentSimS.Clients;
 using RentSimS.Data;
-using SavingPhaseService.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<WeatherForecastService>();
 
-builder.Services.AddHttpClient("SavingPhaseService", x => 
-{
-    x.BaseAddress = new UriBuilder("https://localhost:44324").Uri;
-});
+var configBuiler = new ConfigurationBuilder()
+            //.SetBasePath(app.Environment.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+var config = configBuiler.Build();
+var financeMathServiceURL = config.GetValue<string>("FinanceMathService:url");
+var savingPhaseServiceURL = config.GetValue<string>("SavingPhaseService:url");
+
+//builder.Services.AddHttpClient("SavingPhaseService", x => 
+//{
+//    x.BaseAddress = new UriBuilder(savingPhaseServiceURL).Uri;
+//});
+builder.Services.AddSingleton<ISavingPhaseClient>(new SavingPhaseClient(savingPhaseServiceURL));
+builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
 
 
 builder.Services

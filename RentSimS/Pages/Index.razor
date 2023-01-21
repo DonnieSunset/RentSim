@@ -1,12 +1,13 @@
 ﻿@page "/"
 @using System.Globalization;
 @using Domain;
-@using Finance;
-@using Finance.Facades;
 @using Finance.Results;
 @using SavingPhaseService.Contracts;
 @using Protocol;
-@inject IHttpClientFactory ClientFactory
+@using RentSimS.Clients;
+@inject IHttpClientFactory ClientFactory;
+@inject IServiceProvider serviceProvider;
+
 
 <Divider DividerType="DividerType.TextContent" Text="Ages" />
 
@@ -118,7 +119,9 @@
 </Row>
 
 @code{
-    SavingPhaseFacade savingPhaseFacade;
+    //SavingPhaseClient savingPhaseFacade;
+    IFinanceMathClient myFinanceMathClient;
+    ISavingPhaseClient mySavingPhaseClient;
 
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
@@ -134,7 +137,9 @@
     {
         if (firstRender)
         {
-            savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
+            myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
+            mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
+            
             Recalc();         
         }
     }
@@ -152,15 +157,15 @@
 
     private async Task Recalc()
     {
-        var totalSavingsCash = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
-        var totalSavingsStocks = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
-        var totalSavingsMetals = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+        var totalSavingsCash = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var totalSavingsStocks = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+        var totalSavingsMetals = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
 
         totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
 
-        var savingPhaseSimCash = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
-        var savingPhaseSimMetals = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
-        var savingPhaseSimStocks = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+        var savingPhaseSimCash = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var savingPhaseSimMetals = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+        var savingPhaseSimStocks = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
 
         var protocolWriter = new MemoryProtocolWriter();
         protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageCurrent, lifeAssumptions.cash, lifeAssumptions.stocks, lifeAssumptions.metals);
@@ -176,12 +181,17 @@
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
         }
 
+        
+        decimal blubb1 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
+        decimal blubb2 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
+        decimal blubb3 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
+        decimal blubb4 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
         needs = new LaterNeedsResult
         {
-            needsMinimum_AgeStopWork_WithInflation_PerMonth = 100,
-            needsMinimum_AgeRentStart_WithInflation_PerMonth = 100,
-            needsComfort_AgeStopWork_WithInflation_PerMonth = 100,
-            needsComfort_AgeRentStart_WithInflation_PerMonth = 100,
+                needsMinimum_AgeStopWork_WithInflation_PerMonth = blubb1,
+                needsComfort_AgeStopWork_WithInflation_PerMonth = blubb2,
+                needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
+                needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
         };
 
         resultRows = protocolWriter.Protocol;

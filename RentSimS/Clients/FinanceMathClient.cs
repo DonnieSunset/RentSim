@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
-namespace SavingPhaseService.Clients
+namespace RentSimS.Clients
 {
     public class FinanceMathClient : IFinanceMathClient
     {
@@ -12,14 +12,14 @@ namespace SavingPhaseService.Clients
             myUrl = url;
         }
 
-        public async Task<decimal> GetSparkassenFormelAsync(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
+        public async Task<decimal> GetAmountWithInflationAsync(int ageStart, int ageEnd, decimal amount, double inflationRate)
         {
             var ub = new UriBuilder(myUrl);
-            ub.Path = "FinanceMath/Sparkassenformel";
-            ub.Query = $"?anfangskapital={anfangskapital}" +
-                $"&rateProJahr={rateProJahr}" +
-                $"&zinsFaktor={zinsFaktor.ToString(CultureInfo.InvariantCulture)}" +
-                $"&anzahlJahre={anzahlJahre}";
+            ub.Path = "FinanceMath/AmountWithInflation";
+            ub.Query = $"?ageStart={ageStart}" +
+                $"&ageEnd={ageEnd}" +
+                $"&amount={amount.ToString(CultureInfo.InvariantCulture)}" +
+                $"&inflationRate={inflationRate.ToString(CultureInfo.InvariantCulture)}";
 
             using (var httpClient = new HttpClient())
             {
