@@ -1,0 +1,161 @@
+﻿@page "/"
+@using System.Globalization;
+@using Domain;
+@using Finance;
+@using Finance.Facades;
+@using SavingPhaseService.Contracts;
+@using Protocol;
+@inject IHttpClientFactory ClientFactory
+
+<Divider DividerType="DividerType.TextContent" Text="Ages" />
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Current Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Stop Work Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Rent Start Age:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">End Age:</FieldLabel>
+
+ </Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" onchange="@Recalc" /> </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.TextContent" Text="Savings Phase"></Divider>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Asset Class:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Initial Savings:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Interest Rate (%):</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Save Amount:</FieldLabel>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Cash:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" Step="1" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Metals:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+</Field>
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Stocks:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+</Field>
+
+<Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
+
+<Field Horizontal="true" ColumnSize="ColumnSize.Is10">
+    <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings"/> </FieldBody>
+</Field>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is4">
+        <BarChart @ref="barChart" TItem="decimal"/>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is4">
+        <LineChart @ref="lineChart" TItem="decimal" />
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is5">
+        <DataGrid TItem="ResultRow"
+                  ColumnSize="ColumnSize.Is1"
+                  Narrow="true"
+                  Responsive="true"
+                  Data="@resultRows"
+                  Resizable="true"
+                  PageSize=100
+        >
+            <DataGridCommandColumn TItem="ResultRow" />
+            <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End />
+            <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="CashDepositsTotal" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="StocksDepositsTotal" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="MetalsDepositsTotal" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+        </DataGrid>
+    </Column>
+</Row>
+
+@code{
+    SavingPhaseFacade savingPhaseFacade;
+
+    LifeAssumptions lifeAssumptions = new();
+    int ageStopWork = 63;
+    decimal totalSavings;
+
+    BarChart<decimal>? barChart;
+    LineChart<decimal>? lineChart;
+
+    IEnumerable<ResultRow> resultRows;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
+            Recalc();         
+        }
+    }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    savingPhaseFacade = new SavingPhaseFacade(ClientFactory);
+    //    await Recalc();
+    //}
+
+    public string BeautifyToCurrenctWith0Decimals(decimal? num)
+    {
+        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C0}", num);
+    }
+
+    private async Task Recalc()
+    {
+        var totalSavingsCash = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var totalSavingsStocks = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+        var totalSavingsMetals = await savingPhaseFacade.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+
+        totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
+
+        var savingPhaseSimCash = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
+        var savingPhaseSimMetals = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
+        var savingPhaseSimStocks = await savingPhaseFacade.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
+
+        var protocolWriter = new MemoryProtocolWriter();
+        protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageCurrent, lifeAssumptions.cash, lifeAssumptions.stocks, lifeAssumptions.metals);
+        for (int age = lifeAssumptions.ageCurrent; age < ageStopWork; age++)
+        {
+
+            var cashEntry = savingPhaseSimCash.Entities.Single(x => x.Age == age);
+            var metalsEntry = savingPhaseSimMetals.Entities.Single(x => x.Age == age);
+            var stocksEntry = savingPhaseSimStocks.Entities.Single(x => x.Age == age);
+
+            protocolWriter.Log(age, new TransactionDetails { cashDeposit = cashEntry.Deposit, cashInterests = cashEntry.Interests });
+            protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
+            protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
+        }
+
+        resultRows = protocolWriter.Protocol;
+
+        await DrawBarChart(barChart, protocolWriter, lifeAssumptions);
+        await DrawLineChart(lineChart, protocolWriter, lifeAssumptions);
+
+        await InvokeAsync(async () =>
+        {
+            StateHasChanged();
+        });
+    }
+}

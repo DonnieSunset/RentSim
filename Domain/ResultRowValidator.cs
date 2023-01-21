@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain
+﻿namespace Domain
 {
     public class ResultRowValidator
     {
@@ -19,7 +13,7 @@ namespace Domain
             TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
         }
 
-        public static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
+        private static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
         { 
             int duration = ageEnd - ageCurrent;
             if (resultRows.Count() != duration)
@@ -33,7 +27,7 @@ namespace Domain
             }
         }
 
-        public static void TransitionBetweenRows(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
+        private static void TransitionBetweenRows(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
         {
             for (int i = ageCurrent; i < ageEnd - 1; i++)
             {
@@ -62,7 +56,7 @@ namespace Domain
             }
         }
 
-        public static void AllEndsUpInZero(IEnumerable<ResultRow> resultRows, int ageEnd)
+        private static void AllEndsUpInZero(IEnumerable<ResultRow> resultRows, int ageEnd)
         {
             var totalYearEnd = resultRows.Single(x => x.age == ageEnd-1).TotalYearEnd;
 
@@ -72,7 +66,7 @@ namespace Domain
             }
         }
 
-        public static void AllNumbersHaveTheCorrectSign(IEnumerable<ResultRow> resultRows)
+        private static void AllNumbersHaveTheCorrectSign(IEnumerable<ResultRow> resultRows)
         {
             foreach (var resultRow in resultRows)
             {
@@ -99,7 +93,7 @@ namespace Domain
             }
         }
 
-        public static void EndTotalsAreTheSUmOfAllSingleValues(IEnumerable<ResultRow> resultRows)
+        private static void EndTotalsAreTheSUmOfAllSingleValues(IEnumerable<ResultRow> resultRows)
         {
             foreach (var resultRow in resultRows)
             {
@@ -115,7 +109,7 @@ namespace Domain
             }
         }
 
-        public static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
+        private static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
         {
             var lastSavingPhaseRow = resultRows.Single(x => x.age == ageStopWork - 1);
 
@@ -125,7 +119,7 @@ namespace Domain
             }
         }
 
-        public static void TaxesArePaidAccordingToDeposits(IEnumerable<ResultRow> resultRows, decimal stocksTaxFactor)
+        private static void TaxesArePaidAccordingToDeposits(IEnumerable<ResultRow> resultRows, decimal stocksTaxFactor)
         {
             foreach (var resultRow in resultRows)
             {
@@ -143,5 +137,7 @@ namespace Domain
                 }
             }
         }
+
+        //todo: interests are not zero is asset is not zero and iterest factor is positive
     }
 }

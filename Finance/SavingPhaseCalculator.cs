@@ -83,6 +83,7 @@ namespace Finance
             decimal cashTotalStopWorkPhase,
             decimal stocksTotalStopWorkPhase,
             Frac stocksTaxes,
+            decimal crashFactor_Stocks,
             IProtocolWriter protocolWriter)
         {
             var savingPhaseEndRow = protocolWriter.Protocol.Single(x => x.age == savingPhaseEndAge);
@@ -93,10 +94,13 @@ namespace Finance
             protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { metalDeposit = -totalMetals, cashDeposit = totalMetals });
 
 
-
             // Step 2: withdraw overplus amount.
             // Strategy: from end of saving phase, search which asset is bigger than the asset at stop work phase.
             // from those we have to sell anyway in the subsequent rebalancing.
+            //var overplusamount_NEW = savingPhaseEndRow.TotalYearEnd - cashTotalStopWorkPhase - stocksTotalStopWorkPhase;
+
+            Console.WriteLine($"{nameof(overPlusAmount)}: {overPlusAmount:F2}");
+
             var restAmountToBeSold = overPlusAmount;
             var diffStocks = savingPhaseEndRow.stocksYearEnd - stocksTotalStopWorkPhase;
             var diffCash = savingPhaseEndRow.cashYearEnd - cashTotalStopWorkPhase;
@@ -122,18 +126,14 @@ namespace Finance
 
             if (Decimal.Round(restAmountToBeSold, 3) != 0)
             {
-                throw new Exception($"Could not sell complete nameof {overPlusAmount}. Rest is {restAmountToBeSold}.");
+                throw new Exception($"Could not sell complete {nameof(overPlusAmount)}. Rest is {restAmountToBeSold:F2}.");
             }
+
+
+
 
 
             // step 3: re-balance stocks and cash to match stopWorkPhase
-            var stopWorkPhaseTotal = cashTotalStopWorkPhase + stocksTotalStopWorkPhase;
-            var savingPhaseEnd_Total = savingPhaseEndRow.cashYearEnd + savingPhaseEndRow.stocksYearEnd;
-            if (Decimal.Round(stopWorkPhaseTotal, 3) != Decimal.Round(savingPhaseEnd_Total, 3))
-            {
-                throw new Exception($"{nameof(stopWorkPhaseTotal)} ({stopWorkPhaseTotal}) is not equal to {nameof(savingPhaseEnd_Total)} ({savingPhaseEnd_Total}).");
-            }
-
             var cashDiff = savingPhaseEndRow.cashYearEnd - cashTotalStopWorkPhase;
             if (cashDiff >= 0) // i have more cash than i need -> buy stocks
             {
@@ -148,6 +148,46 @@ namespace Finance
             }
 
 
+            //step 4: stock market crash
+            if (crashFactor_Stocks != 1)
+            {
+                var stocksCrashAmount = savingPhaseEndRow.stocksYearEnd * crashFactor_Stocks;
+                protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
+            }
+
+
+
+            //step 5: final check
+            var stopWorkPhase_Begin_Total = cashTotalStopWorkPhase + stocksTotalStopWorkPhase;
+            var savingPhase_End_Total = savingPhaseEndRow.TotalYearEnd;
+            var roundDigits = 3;
+            Console.WriteLine("SHSH1: " + stopWorkPhase_Begin_Total);
+            Console.WriteLine("SHSH2: " + RoundBeforeComma(stopWorkPhase_Begin_Total, roundDigits));
+            //if (Decimal.Round(stopWorkPhase_Begin_Total, roundDigits) != Decimal.Round(savingPhase_End_Total, roundDigits))
+            if (RoundBeforeComma(stopWorkPhase_Begin_Total, roundDigits) != RoundBeforeComma(savingPhase_End_Total, roundDigits))
+            {
+                //throw new Exception($"Rebalancing was not successful: Calculated {nameof(savingPhase_End_Total)} ({savingPhase_End_Total:F2}) should be equal to given {nameof(stopWorkPhase_Begin_Total)} ({stopWorkPhase_Begin_Total:F2}).");
+                throw new Exception($"Rebalancing was not successful: Calculated {nameof(savingPhase_End_Total)} ({savingPhase_End_Total:F2}) should be equal to given {nameof(stopWorkPhase_Begin_Total)} ({stopWorkPhase_Begin_Total:F2}). crash {crashFactor_Stocks}");
+            }
+        }
+
+        public static void StockMarketCrash(
+            int savingPhaseEndAge,
+            decimal crashFactor_Stocks,
+            IProtocolWriter protocolWriter)
+        {
+
+            var savingPhaseEndRow = protocolWriter.Protocol.Single(x => x.age == savingPhaseEndAge);
+
+            //step 4: stock market crash
+            var stocksCrashAmount = savingPhaseEndRow.stocksYearEnd * crashFactor_Stocks;
+            protocolWriter.Log(savingPhaseEndAge, new TransactionDetails() { stockInterests = -stocksCrashAmount });
+        }
+
+        private static decimal RoundBeforeComma(decimal number, int place)
+        {
+            decimal factor = (decimal) Math.Pow(10, place);
+            return Math.Round(number / factor, 0) * factor;
         }
     }
 }

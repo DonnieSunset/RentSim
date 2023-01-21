@@ -66,8 +66,16 @@ namespace Protocol
                 row = new ResultRow()
                 {
                     age = age,
-                    //ageAbsolute = Age.NewByIndexAge(index).Absolut,
                 };
+
+                var prevRow = myProtocol.SingleOrDefault(x => x.age == age - 1);
+                if (prevRow != null)
+                { 
+                    row.cashYearBegin= prevRow.cashYearEnd;
+                    row.stocksYearBegin = prevRow.stocksYearEnd;
+                    row.metalsYearBegin = prevRow.metalsYearEnd;
+                }
+
                 myProtocol.Add(row);
                 myProtocol.Sort();
             }

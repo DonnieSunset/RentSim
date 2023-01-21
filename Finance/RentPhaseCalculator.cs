@@ -95,10 +95,14 @@ namespace Finance
             decimal rateCash_perYear, 
             decimal rateStocks_ExcludedTaxes_perYear, 
             decimal interestRate_Stocks, 
-            decimal interestRate_Cash, 
+            decimal interestRate_Cash,
+            decimal crashFactor_Stocks_BadCase,
             decimal taxesPerYear, 
             IProtocolWriter protocolWriter)
         {
+            //stock market crash
+            totalStocks *= crashFactor_Stocks_BadCase;
+
             for (int i = rentPhaseStartAge; i < rentPhaseEndAge; i++)
             {
                 protocolWriter.LogBalanceYearBegin(i, totalCash, totalStocks, 0);

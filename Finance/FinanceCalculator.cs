@@ -49,6 +49,16 @@
             return endKapital;
         }
 
+        public static decimal SparkassenFormel_nachRate(decimal anfangskapital, decimal endkapital, double zinsFaktor, int anzahlJahre)
+        {
+            decimal zinsFaktor_d = (decimal)zinsFaktor;
+
+            var rateProJahr = (anfangskapital * Pow(zinsFaktor_d, anzahlJahre) - endkapital) * (zinsFaktor_d - 1) / (zinsFaktor_d * (Pow(zinsFaktor_d, anzahlJahre) - 1));
+
+            return rateProJahr;
+        }
+
+
         public static decimal GetZFactorForSparkassenformel(int durationInYears, decimal interestFactor)
         {
             if (interestFactor < 1 || interestFactor > 2)
