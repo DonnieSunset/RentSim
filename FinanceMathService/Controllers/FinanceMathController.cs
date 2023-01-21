@@ -7,11 +7,11 @@ namespace FinanceMathService.Controllers
     [Route("[controller]")]
     public class FinanceMathController : ControllerBase
     {
-        private readonly ILogger<FinanceMathController> _logger;
+        private IFinanceMath myFinanceMath;
 
-        public FinanceMathController(ILogger<FinanceMathController> logger)
+        public FinanceMathController(IFinanceMath financeMath)
         {
-            _logger = logger;
+            myFinanceMath = financeMath;
         }
 
         [HttpGet("NonRiskAssets")]
@@ -20,7 +20,7 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            double result = FinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmount_minNeededAfterCrash);
+            double result = myFinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmount_minNeededAfterCrash);
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
@@ -30,7 +30,7 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            double result = FinanceMath.RateByNumericalSparkassenformel(
+            double result = myFinanceMath.RateByNumericalSparkassenformel(
                 new List<double> { betrag1, betrag2 },
                 new List<double> { zins1, zins2 },
                 endbetrag,
@@ -62,7 +62,7 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            decimal result = FinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
+            decimal result = myFinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }

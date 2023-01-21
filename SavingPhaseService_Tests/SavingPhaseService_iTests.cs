@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using NUnit.Framework;
 
 namespace SavingPhaseService_Tests
 {
@@ -8,9 +9,8 @@ namespace SavingPhaseService_Tests
     /// </summary>
     public class SavingPhaseService_iTests
     {
-        [Theory]
-        [InlineData("/SavingPhase/Calculate")]
-        [InlineData("/SavingPhase/Simulate")]
+        [TestCase("/SavingPhase/Calculate")]
+        [TestCase("/SavingPhase/Simulate")]
         public async Task ReturnHelloWorld(string url)
         {
             var application = new WebApplicationFactory<Program>()
@@ -24,8 +24,8 @@ namespace SavingPhaseService_Tests
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+            Assert.That("application/json; charset=utf-8", Is.EqualTo(
+                response.Content.Headers.ContentType.ToString()));
         }
     }
 }

@@ -1,27 +1,30 @@
-﻿using SavingPhaseService.Contracts;
+﻿using SavingPhaseService.Clients;
+using SavingPhaseService.Contracts;
 using SavingPhaseService.Controllers;
 
 namespace SavingPhaseService
 {
-    internal class SavingPhaseService
+    internal class SavingPhase : ISavingPhase
     {
-        public static async Task<decimal> Calculate(
+        public async Task<decimal> Calculate(
            int ageFrom,
            int ageTo,
            decimal startCapital,
            int growthRate,
-           decimal saveAmountPerMonth)
+           decimal saveAmountPerMonth,
+           IFinanceMathClient financeMathClient
+           )
         {
             int duration = ageTo - ageFrom;
 
             double interestFactor = 1 + (growthRate / 100d);
             //decimal result = FinanceCalculator.SparkassenFormel(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
-            decimal result = await FinanceMathController.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
+            decimal result = await financeMathClient.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
 
             return result;
         }
 
-        public static SimulationResult Simulate(
+        public SimulationResult Simulate(
             int ageFrom,
             int ageTo,
             decimal startCapital,

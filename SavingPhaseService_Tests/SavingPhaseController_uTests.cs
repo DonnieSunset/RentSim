@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
 using SavingPhaseService.Controllers;
+using SavingPhaseService;
 
 namespace SavingPhaseService_Tests
 {
     public class SavingPhaseController_uTests
     {
-        [Theory]
-        [InlineData(42, 60, 160000, 3, 1000, 553362.51)]
+        [TestCase(42, 60, 160000, 3, 1000, 553362.51)]
         public void Calculate_BasicInputValues_CorrectCalculation(
             int ageCurrent,
             int ageStopWork,
@@ -16,17 +17,19 @@ namespace SavingPhaseService_Tests
             decimal saveAmountPerMonth,
             decimal expectedResult)
         {
-            var loggerMock = new Mock<ILogger<SavingPhaseController>>();
-            var controller = new SavingPhaseController(loggerMock.Object);
+            //var loggerMock = new Mock<IHttpClientFactory>();
+            //var controller = new SavingPhaseController(loggerMock.Object);
 
-            var actualResult = controller.CalculateAsync(
+            //var svaingPhaseService = new SavingPhaseService();
+
+            var actualResult = SavingPhase.Calculate(
                 ageCurrent,
                 ageStopWork,
                 startCapital,
                 growthRate,
-                saveAmountPerMonth);
+                saveAmountPerMonth).Result;
 
-            Assert.Equal(actualResult, expectedResult, 2);
+            Assert.That(actualResult, Is.EqualTo(expectedResult).Within(0.01));
         }
     }
 }

@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
-namespace SavingPhaseService.Controllers
+namespace SavingPhaseService.Clients
 {
-    [ApiController]
-    public class FinanceMathController : ControllerBase
+    public class FinanceMathClient : IFinanceMathClient
     {
-        public static async Task<decimal> GetSparkassenFormelAsync(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
+        public string myUrl { get; set; }
+
+        public FinanceMathClient(string url)
         {
-            var ub = new UriBuilder("https://localhost:44315");
+            myUrl = url;
+        }
+
+
+        public async Task<decimal> GetSparkassenFormelAsync(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
+        {
+            var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/Sparkassenformel";
             ub.Query = $"?anfangskapital={anfangskapital}" +
                 $"&rateProJahr={rateProJahr}" +

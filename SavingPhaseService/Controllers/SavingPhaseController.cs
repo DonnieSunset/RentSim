@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SavingPhaseService.Clients;
 using SavingPhaseService.Contracts;
 using System.Text.Json;
 
@@ -10,17 +11,25 @@ namespace SavingPhaseService.Controllers
     {
         //private readonly ILogger<SavingPhaseController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IServiceProvider _serviceProvider;
+
+        private ISavingPhase mySavingPhase;
 
         //public SavingPhaseController(ILogger<SavingPhaseController> logger)
         //{
         //    _logger = logger;
         //}
 
-        public SavingPhaseController(IHttpClientFactory httpClientFactory)
+        //public SavingPhaseController(IHttpClientFactory httpClientFactory)
+        //{
+        //    _httpClientFactory = httpClientFactory;
+        //}
+        public SavingPhaseController(IServiceProvider serviceProvider)
         {
-            _httpClientFactory = httpClientFactory;
-        }
+            _serviceProvider = serviceProvider;
 
+            mySavingPhase = new SavingPhase();
+        }
 
         [HttpGet("Calculate")]
         [Produces("application/json")]
@@ -33,12 +42,15 @@ namespace SavingPhaseService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            decimal result = await SavingPhaseService.Calculate(
+            var myMathClient = _serviceProvider.GetService<IFinanceMathClient>();
+
+            decimal result = await mySavingPhase.Calculate(
                 ageFrom,
                 ageTo,
                 startCapital,
                 growthRate,
-                saveAmountPerMonth);
+                saveAmountPerMonth,
+                myMathClient);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true }); ;
         }
@@ -54,7 +66,7 @@ namespace SavingPhaseService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            SimulationResult result = SavingPhaseService.Simulate(
+            SimulationResult result = mySavingPhase.Simulate(
                 ageFrom,
                 ageTo,
                 startCapital,

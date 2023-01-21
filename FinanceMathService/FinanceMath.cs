@@ -2,7 +2,7 @@
 
 namespace FinanceMathService
 {
-    internal class FinanceMath
+    internal class FinanceMath : IFinanceMath
     {
         /// <summary>
         /// 
@@ -12,7 +12,7 @@ namespace FinanceMathService
         /// <param name="totalAmount_minNeededAfterCrash"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        internal static double NonRiskAssetsNeededInCaseOfRiskAssetCrash(double totalAmount, double stocksCrashFactor, double totalAmount_minNeededAfterCrash)
+        public double NonRiskAssetsNeededInCaseOfRiskAssetCrash(double totalAmount, double stocksCrashFactor, double totalAmount_minNeededAfterCrash)
         {
             if (stocksCrashFactor > 1 || stocksCrashFactor < 0 || totalAmount_minNeededAfterCrash < 0 || totalAmount < 0)
             {
@@ -67,7 +67,7 @@ namespace FinanceMathService
             return lowRiskAmount;
         }
 
-        internal static double RateByNumericalSparkassenformel(List<double> betrag, List<double> zins, double endbetrag, int jahre)
+        public double RateByNumericalSparkassenformel(List<double> betrag, List<double> zins, double endbetrag, int jahre)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -128,7 +128,7 @@ namespace FinanceMathService
             return angenommeneRate;
         }
 
-        public static decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)
+        public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)
         {
             decimal zinsFaktor_d = (decimal)zinsFaktor;
 
