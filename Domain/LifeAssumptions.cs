@@ -30,6 +30,9 @@
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
         public decimal netStateRentFromCurrentAge_perMonth = 827;
         public decimal netStateRentFromRentStartAge_perMonth = 2025;
+        public decimal grossStateRentFromCurrentAge_perMonth = 924;
+        public decimal grossStateRentFromRentStartAge_perMonth = 2703;
+
 
         //TODO: This is also valid for stop work age: rename it accordingly
         public decimal rentPhase_InterestRate_Cash = 0m;
