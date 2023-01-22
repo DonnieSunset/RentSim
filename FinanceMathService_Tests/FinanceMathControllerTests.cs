@@ -45,15 +45,16 @@ namespace FinanceMathService_Tests
             Assert.That(() => myFinanceMath.NonRiskAssetsNeededInCaseOfRiskAssetCrash(totalAmount, stocksCrashFactor, totalAmountMinNeededAfterCrash), Throws.ArgumentException);
         }
 
-        [TestCase(2000, 1.03, 1000, 1.15, 1000, 1.02, 500, 10)]
-        public void Test_RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double betrag3, double zins3, double endBetrag, int anzahlJahre)
+        [TestCase(2000, 1.03, 1000, 1.15, 1000, 1.02, 500, 50, 60)]
+        public void Test_RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double betrag3, double zins3, double endBetrag, int yearStart, int yearEnd)
         {
+            int anzahlJahre = yearEnd - yearStart;
             double gesamtBetrag = betrag1 + betrag2 + betrag3;
 
             double rate = myFinanceMath.RateByNumericalSparkassenformel(
                 new List<double> { betrag1, betrag2, betrag3 },
                 new List<double> { zins1, zins2, zins3 },
-                endBetrag, anzahlJahre);
+                endBetrag, yearStart, yearEnd);
 
             Console.WriteLine($"{nameof(gesamtBetrag)}: {gesamtBetrag}");
             Console.WriteLine($"{nameof(rate)}: {rate}");
@@ -61,6 +62,10 @@ namespace FinanceMathService_Tests
             double faktor1 = betrag1 / gesamtBetrag;
             double faktor2 = betrag2 / gesamtBetrag;
             double faktor3 = betrag3 / gesamtBetrag;
+
+            Console.WriteLine($"{nameof(faktor1)}: {faktor1}");
+            Console.WriteLine($"{nameof(faktor1)}: {faktor1}");
+            Console.WriteLine($"{nameof(faktor1)}: {faktor1}");
 
             double restbetrag = gesamtBetrag;
             for (int i = 0; i < anzahlJahre; i++)
@@ -82,6 +87,45 @@ namespace FinanceMathService_Tests
             }
 
             Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001));
+        }
+
+
+        [TestCase(200, 1/7d, 3, 2/7d, 1.5, 4/7d, 2, 5000, 50, 60)]
+        public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, double faktor1, double zins1, double faktor2, double zins2, double faktor3, double zins3, decimal endBetrag, int yearStart, int yearEnd)
+        {
+            int anzahlJahre = yearEnd - yearStart;
+            //decimal gesamtBetrag = betrag1 + betrag2 + betrag3;
+            Console.WriteLine($"{nameof(faktor1)}:{faktor1}");
+
+            decimal startCapital = myFinanceMath.StartCapitalByNumericalSparkassenformel(
+                totalRatePerYear,
+                new List<double> { faktor1, faktor2, faktor3 },
+                new List<double> { zins1, zins2, zins3 },
+                endBetrag, yearStart, yearEnd);
+
+            Console.WriteLine($"{nameof(startCapital)}: {startCapital}");
+            //Console.WriteLine($"{nameof(rate)}: {rate}");
+
+            decimal restbetrag = startCapital;
+            for (int i = 0; i < anzahlJahre; i++)
+            {
+                // rate runter
+                restbetrag -= totalRatePerYear;
+
+                // zinsen drauf
+                decimal anteilBetrag1 = (decimal)faktor1 * restbetrag;
+                decimal anteilBetrag2 = (decimal)faktor2 * restbetrag;
+                decimal anteilBetrag3 = (decimal)faktor3 * restbetrag;
+                Assert.That(anteilBetrag1 + anteilBetrag2 + anteilBetrag3, Is.EqualTo(restbetrag).Within(0.001), "all part amounts should sum up to total amount.");
+
+                anteilBetrag1 *= (decimal)(1 + (zins1 / 100d));
+                anteilBetrag2 *= (decimal)(1 + (zins2 / 100d)); ;
+                anteilBetrag3 *= (decimal)(1 + (zins3 / 100d)); ;
+
+                restbetrag = anteilBetrag1 + anteilBetrag2 + anteilBetrag3;
+            }
+
+            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount is reached.");
         }
     }
 }

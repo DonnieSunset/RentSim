@@ -226,6 +226,23 @@
         rentAtStopWork_net = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork);
         rentAtStopWork_gross = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork);
 
+        double factorCash = (double)(totalSavingsCash / totalSavings);
+        double factorStocks = (double)(totalSavingsStocks / totalSavings);
+        double factorMetals = (double)(totalSavingsMetals / totalSavings);
+        decimal rateNeeded = (needs.needsComfort_AgeRentStart_WithInflation_PerMonth - rentAtStopWork_net) * 12;
+        var startCapital = await myFinanceMathClient.StartCapitalByNumericalSparkassenformel(
+            rateNeeded,
+            factorCash,
+            lifeAssumptions.cashGrowthRate,
+            factorStocks,
+            lifeAssumptions.stocksGrowthRate,
+            factorMetals,
+            lifeAssumptions.metalsGrowthRate,
+            0,
+            lifeAssumptions.ageRentStart,
+            lifeAssumptions.ageEnd);
+
+        
         resultRows = protocolWriter.Protocol;
 
         await DrawBarChart(barChart, protocolWriter, lifeAssumptions);
