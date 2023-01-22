@@ -122,6 +122,7 @@
     //SavingPhaseClient savingPhaseFacade;
     IFinanceMathClient myFinanceMathClient;
     ISavingPhaseClient mySavingPhaseClient;
+    IRentPhaseClient myRentPhaseClient;
 
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
@@ -139,7 +140,8 @@
         {
             myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
             mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
-            
+            myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
+
             Recalc();         
         }
     }
@@ -181,7 +183,7 @@
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
         }
 
-        
+
         decimal blubb1 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
         decimal blubb2 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
         decimal blubb3 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
@@ -193,6 +195,8 @@
                 needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
                 needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
         };
+
+        decimal testRentPhase = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork);
 
         resultRows = protocolWriter.Protocol;
 

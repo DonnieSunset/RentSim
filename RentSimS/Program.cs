@@ -21,13 +21,15 @@ var configBuiler = new ConfigurationBuilder()
 var config = configBuiler.Build();
 var financeMathServiceURL = config.GetValue<string>("FinanceMathService:url");
 var savingPhaseServiceURL = config.GetValue<string>("SavingPhaseService:url");
+var rentPhaseServiceURL = config.GetValue<string>("RentPhaseService:url");
 
 //builder.Services.AddHttpClient("SavingPhaseService", x => 
 //{
 //    x.BaseAddress = new UriBuilder(savingPhaseServiceURL).Uri;
 //});
-builder.Services.AddSingleton<ISavingPhaseClient>(new SavingPhaseClient(savingPhaseServiceURL));
 builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
+builder.Services.AddSingleton<ISavingPhaseClient>(new SavingPhaseClient(savingPhaseServiceURL));
+builder.Services.AddSingleton<IRentPhaseClient>(new RentPhaseClient(rentPhaseServiceURL));
 
 
 builder.Services

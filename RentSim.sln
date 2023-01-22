@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceMathService_Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentSimS", "RentSimS\RentSimS.csproj", "{37FD8139-2D2D-4268-900E-69B2F052BEAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentPhaseService", "RentPhaseService\RentPhaseService.csproj", "{F0B595C2-D66E-470C-A193-0EE2F6C5E486}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentPhaseService", "RentPhaseService\RentPhaseService.csproj", "{F0B595C2-D66E-470C-A193-0EE2F6C5E486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
