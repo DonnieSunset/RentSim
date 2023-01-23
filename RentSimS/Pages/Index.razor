@@ -226,12 +226,12 @@
         decimal blubb3 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
         decimal blubb4 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
         needs = new LaterNeedsResult
-        {
+            {
                 needsMinimum_AgeStopWork_WithInflation_PerMonth = blubb1,
                 needsComfort_AgeStopWork_WithInflation_PerMonth = blubb2,
                 needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
                 needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
-        };
+            };
 
         rentAtStopWork_net = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork);
         rentAtStopWork_gross = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork);
@@ -318,13 +318,29 @@
             protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
         }
-        
-        
-        Console.WriteLine();
 
-        // UI updates
+        // Re-balancing after Stop-Work phase
+
+        var lastStopWorkPhase = protocolWriter.Protocol.Single(x => x.age == lifeAssumptions.ageRentStart - 1);
+        var firstRentPhase = protocolWriter.Protocol.Single(x => x.age == lifeAssumptions.ageRentStart);
+
+        var cashDiff = lastStopWorkPhase.cashYearEnd - firstRentPhase.cashYearBegin;
+        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { cashDeposit = -cashDiff });
+
+        var stocksDiff = lastStopWorkPhase.stocksYearEnd - firstRentPhase.stocksYearBegin;
+        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { stockDeposit = -stocksDiff });
+
+        var metalsDiff = lastStopWorkPhase.metalsYearEnd - firstRentPhase.metalsYearBegin;
+        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { metalDeposit = -metalsDiff });
+
+
+        // validation
 
         resultRows = protocolWriter.Protocol;
+
+        ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.ageEnd);
+
+        // UI updates
 
         await DrawBarChart(barChart, protocolWriter.Protocol, lifeAssumptions);
         await DrawLineChart(lineChart, protocolWriter.Protocol, lifeAssumptions);

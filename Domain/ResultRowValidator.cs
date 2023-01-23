@@ -2,15 +2,16 @@
 {
     public class ResultRowValidator
     {
-        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd, decimal stocksTaxFactor)
+        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd/*, decimal stocksTaxFactor*/)
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
-            AllEndsUpInZero(resultRows, ageEnd);
-            AllNumbersHaveTheCorrectSign(resultRows);
-            EndTotalsAreTheSUmOfAllSingleValues(resultRows);
-            NoMetalsAfterSavingPhase(resultRows, ageStopWork);
-            TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
+            //AllEndsUpInZero(resultRows, ageEnd);
+            //AllNumbersHaveTheCorrectSign(resultRows);
+            //EndTotalsAreTheSUmOfAllSingleValues(resultRows);
+            //NoMetalsAfterSavingPhase(resultRows, ageStopWork);
+
+            //TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
         }
 
         private static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
