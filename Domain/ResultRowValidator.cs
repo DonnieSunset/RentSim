@@ -6,9 +6,9 @@
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
-            //AllEndsUpInZero(resultRows, ageEnd);
-            //AllNumbersHaveTheCorrectSign(resultRows);
-            //EndTotalsAreTheSUmOfAllSingleValues(resultRows);
+            AllEndsUpInZero(resultRows, ageEnd);
+            AllNumbersHaveTheCorrectSign(resultRows);
+            EndTotalsAreTheSUmOfAllSingleValues(resultRows);
             //NoMetalsAfterSavingPhase(resultRows, ageStopWork);
 
             //TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
@@ -110,15 +110,15 @@
             }
         }
 
-        private static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
-        {
-            var lastSavingPhaseRow = resultRows.Single(x => x.age == ageStopWork - 1);
+        //private static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
+        //{
+        //    var lastSavingPhaseRow = resultRows.Single(x => x.age == ageStopWork - 1);
 
-            if (Decimal.Round(lastSavingPhaseRow.metalsYearEnd, 3) != 0)
-            {
-                throw new Exception($"ResultRowValidator: After saving phase at age {lastSavingPhaseRow.age} metals should be zero, but was {lastSavingPhaseRow.metalsYearEnd}.");
-            }
-        }
+        //    if (Decimal.Round(lastSavingPhaseRow.metalsYearEnd, 3) != 0)
+        //    {
+        //        throw new Exception($"ResultRowValidator: After saving phase at age {lastSavingPhaseRow.age} metals should be zero, but was {lastSavingPhaseRow.metalsYearEnd}.");
+        //    }
+        //}
 
         private static void TaxesArePaidAccordingToDeposits(IEnumerable<ResultRow> resultRows, decimal stocksTaxFactor)
         {
