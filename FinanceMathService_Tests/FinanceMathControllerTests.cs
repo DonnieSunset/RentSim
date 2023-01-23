@@ -60,13 +60,13 @@ namespace FinanceMathService_Tests
             Console.WriteLine($"{nameof(gesamtBetrag)}: {gesamtBetrag}");
             Console.WriteLine($"{nameof(rate)}: {rate}");
 
-            decimal faktor_cash = betrag_cash / gesamtBetrag;
-            decimal faktor_stocks = betrag_stocks / gesamtBetrag;
-            decimal faktor_metals = betrag_metals / gesamtBetrag;
+            decimal faktorCash = betrag_cash / gesamtBetrag;
+            decimal faktorStocks = betrag_stocks / gesamtBetrag;
+            decimal faktorMetals = betrag_metals / gesamtBetrag;
 
-            Console.WriteLine($"{nameof(faktor_cash)}: {faktor_cash}");
-            Console.WriteLine($"{nameof(faktor_cash)}: {faktor_cash}");
-            Console.WriteLine($"{nameof(faktor_cash)}: {faktor_cash}");
+            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
+            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
+            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
 
             decimal restbetrag = gesamtBetrag;
             for (int i = 0; i < anzahlJahre; i++)
@@ -75,9 +75,9 @@ namespace FinanceMathService_Tests
                 restbetrag -= rate;
 
                 // zinsen drauf
-                decimal anteilBetrag_cash = faktor_cash * restbetrag;
-                decimal anteilBetrag_stocks = faktor_stocks * restbetrag;
-                decimal anteilBetrag_metals = faktor_metals * restbetrag;
+                decimal anteilBetrag_cash = faktorCash * restbetrag;
+                decimal anteilBetrag_stocks = faktorStocks * restbetrag;
+                decimal anteilBetrag_metals = faktorMetals * restbetrag;
                 Assert.That(anteilBetrag_cash + anteilBetrag_stocks + anteilBetrag_metals, Is.EqualTo(restbetrag).Within(0.001));
 
                 anteilBetrag_cash *= (1 + (zins_cash / 100m));
@@ -85,6 +85,11 @@ namespace FinanceMathService_Tests
                 anteilBetrag_metals *= (1 + (zins_metals / 100m)); ;
 
                 restbetrag = anteilBetrag_cash + anteilBetrag_stocks + anteilBetrag_metals;
+
+                //faktoren neu berechnen da sich durch die unterschiedlichen zinssätze die asset zusammensetzung geändert hat
+                faktorCash = anteilBetrag_cash / restbetrag;
+                faktorStocks = anteilBetrag_stocks / restbetrag;
+                faktorMetals = anteilBetrag_metals / restbetrag;
             }
 
             Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001));

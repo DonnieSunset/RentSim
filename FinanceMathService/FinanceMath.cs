@@ -91,9 +91,11 @@ namespace FinanceMathService
             int numIterations = 0;
 
             decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            
             decimal angenommeneRate_min = 0;
             decimal angenommeneRate_max = gesamtBetrag;
             decimal restBetrag;
+            
             decimal angenommeneRate;
             do
             {
@@ -101,30 +103,37 @@ namespace FinanceMathService
                 angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
                 restBetrag = betrag_cash + betrag_stocks + betrag_metals;
-
-                decimal factor_cash = betrag_cash / gesamtBetrag;
-                decimal factor_stocks = betrag_stocks / gesamtBetrag;
-                decimal factor_metals = betrag_metals / gesamtBetrag;
+                decimal factorCashDyn = betrag_cash / gesamtBetrag;
+                decimal factorStocksDyn = betrag_stocks / gesamtBetrag;
+                decimal factorMetalsDyn = betrag_metals / gesamtBetrag;
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
                     // rate runter
-                    decimal rate_cash = factor_cash * angenommeneRate;
-                    decimal rate_stocks = factor_stocks * angenommeneRate;
-                    decimal rate_metals = factor_metals * angenommeneRate;
+                    decimal rate_cash = factorCashDyn * angenommeneRate;
+                    decimal rate_stocks = factorStocksDyn * angenommeneRate;
+                    decimal rate_metals = factorMetalsDyn * angenommeneRate;
 
                     restBetrag -= rate_cash + rate_stocks + rate_metals;
 
                     // zinsen drauf
-                    decimal anteil_cash = factor_cash * restBetrag;
-                    decimal anteil_stocks = factor_stocks * restBetrag;
-                    decimal anteil_metals = factor_metals * restBetrag;
+                    decimal restAnteil_cash = factorCashDyn * restBetrag;
+                    decimal restAnteil_stocks = factorStocksDyn * restBetrag;
+                    decimal restAnteil_metals = factorMetalsDyn * restBetrag;
 
-                    anteil_cash *= (1 + (zins_cash / 100m));
-                    anteil_stocks *= (1 + (zins_stocks / 100m));
-                    anteil_metals *= (1 + (zins_metals / 100m));
+                    decimal zinsen_cash = restAnteil_cash * (zins_cash / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks * (zins_stocks / 100m);
+                    decimal zinsen_metals = restAnteil_metals * (zins_metals / 100m);
 
-                    restBetrag = anteil_cash + anteil_stocks + anteil_metals;
+                    restAnteil_cash += zinsen_cash;
+                    restAnteil_stocks += zinsen_stocks;
+                    restAnteil_metals += zinsen_metals;
+
+                    restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
+
+                    factorCashDyn = restAnteil_cash / restBetrag;
+                    factorStocksDyn = restAnteil_stocks / restBetrag;
+                    factorMetalsDyn = restAnteil_metals / restBetrag;
 
                     var v = new { 
                         Age = i, 
