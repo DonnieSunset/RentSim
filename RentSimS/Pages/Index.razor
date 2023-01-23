@@ -193,6 +193,8 @@
 
     private async Task Recalc()
     {
+        // Saving Phase
+
         var totalSavingsCash = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
         var totalSavingsStocks = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
         var totalSavingsMetals = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
@@ -217,6 +219,7 @@
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
         }
 
+        // Later Needs
 
         decimal blubb1 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
         decimal blubb2 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
@@ -232,6 +235,8 @@
 
         rentAtStopWork_net = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork);
         rentAtStopWork_gross = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork);
+
+        // Rent Phase
 
         double factorCash = (double)(totalSavingsCash / totalSavings);
         double factorStocks = (double)(totalSavingsStocks / totalSavings);
@@ -250,9 +255,6 @@
             lifeAssumptions.ageEnd);
 
         var rentPhaseResultJson = JsonDocument.Parse(rentPhaseResultString);
-        //protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageRentStart, )
-        int i=0;
-        int k = 0;
         foreach (JsonElement o in rentPhaseResultJson.RootElement.EnumerateArray())
         {
             int age = o.GetProperty("Age").GetInt32();
@@ -269,14 +271,34 @@
             // this if is only necessary because we dont have a stopwork phase. Delete it once all phases are integrated in the correct order.
             if (age == lifeAssumptions.ageRentStart)
             {
-                i++;
                 protocolWriter.LogBalanceYearBegin(age, yearBegin_cash, yearBegin_stocks, yearBegin_metals);
             }
-            k++;
             protocolWriter.Log(age, new TransactionDetails { cashDeposit = -rate_cash, cashInterests = zins_cash });
             protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
         }
+
+        // Stop Work Phase
+
+        decimal rentStartAmount = protocolWriter.Protocol
+            .Single(x => x.age == lifeAssumptions.ageRentStart)
+            .TotalYearBegin;
+
+        var stopWorkPhaseResultString = await myFinanceMathClient.RateByNumericalSparkassenformel(
+            totalSavingsCash,
+            totalSavingsStocks,
+            totalSavingsMetals,
+            lifeAssumptions.cashGrowthRate,
+            lifeAssumptions.stocksGrowthRate,
+            lifeAssumptions.metalsGrowthRate,
+            rentStartAmount,
+            ageStopWork,
+            lifeAssumptions.ageRentStart);
+
+        var stopWorkPhaseResultJson = JsonDocument.Parse(stopWorkPhaseResultString);
+        Console.WriteLine();
+
+        // UI updates
 
         resultRows = protocolWriter.Protocol;
 
