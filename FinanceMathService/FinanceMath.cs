@@ -107,9 +107,18 @@ namespace FinanceMathService
                 decimal factorStocksDyn = betrag_stocks / gesamtBetrag;
                 decimal factorMetalsDyn = betrag_metals / gesamtBetrag;
 
+                decimal restAnteil_cash = factorCashDyn * restBetrag;
+                decimal restAnteil_stocks = factorStocksDyn * restBetrag;
+                decimal restAnteil_metals = factorMetalsDyn * restBetrag;
+
+
                 for (int i = yearStart; i < yearEnd; i++)
                 {
                     // rate runter
+                    decimal yearBegin_cash = restAnteil_cash;
+                    decimal yearBegin_stocks = restAnteil_stocks;
+                    decimal yearBegin_metals = restAnteil_metals;
+
                     decimal rate_cash = factorCashDyn * angenommeneRate;
                     decimal rate_stocks = factorStocksDyn * angenommeneRate;
                     decimal rate_metals = factorMetalsDyn * angenommeneRate;
@@ -117,9 +126,9 @@ namespace FinanceMathService
                     restBetrag -= rate_cash + rate_stocks + rate_metals;
 
                     // zinsen drauf
-                    decimal restAnteil_cash = factorCashDyn * restBetrag;
-                    decimal restAnteil_stocks = factorStocksDyn * restBetrag;
-                    decimal restAnteil_metals = factorMetalsDyn * restBetrag;
+                    restAnteil_cash = factorCashDyn * restBetrag;
+                    restAnteil_stocks = factorStocksDyn * restBetrag;
+                    restAnteil_metals = factorMetalsDyn * restBetrag;
 
                     decimal zinsen_cash = restAnteil_cash * (zins_cash / 100m);
                     decimal zinsen_stocks = restAnteil_stocks * (zins_stocks / 100m);
@@ -136,12 +145,24 @@ namespace FinanceMathService
                     factorMetalsDyn = restAnteil_metals / restBetrag;
 
                     var v = new { 
-                        Age = i, 
+                        Age = i,
+                        YearBegin = new
+                        {
+                            Cash = yearBegin_cash,
+                            Stocks = yearBegin_stocks,
+                            Metals = yearBegin_metals
+                        },
                         Rates = new
                         { 
-                            Rate_Cash = rate_cash,
-                            Rate_Stocks = rate_stocks,
-                            Rate_Metals = rate_metals,
+                            Cash = rate_cash,
+                            Stocks = rate_stocks,
+                            Metals = rate_metals,
+                        },
+                        Zins = new
+                        {
+                            Cash = zinsen_cash,
+                            Stocks = zinsen_stocks,
+                            Metals = zinsen_metals
                         }
                     };
                     protocol.Add(v);

@@ -296,6 +296,30 @@
             lifeAssumptions.ageRentStart);
 
         var stopWorkPhaseResultJson = JsonDocument.Parse(stopWorkPhaseResultString);
+        foreach (JsonElement o in stopWorkPhaseResultJson.RootElement.EnumerateArray())
+        {
+            int age = o.GetProperty("Age").GetInt32();
+            decimal yearBegin_cash = o.GetProperty("YearBegin").GetProperty("Cash").GetDecimal();
+            decimal yearBegin_stocks = o.GetProperty("YearBegin").GetProperty("Stocks").GetDecimal();
+            decimal yearBegin_metals = o.GetProperty("YearBegin").GetProperty("Metals").GetDecimal();
+            decimal rate_cash = o.GetProperty("Rates").GetProperty("Cash").GetDecimal();
+            decimal rate_stocks = o.GetProperty("Rates").GetProperty("Stocks").GetDecimal();
+            decimal rate_metals = o.GetProperty("Rates").GetProperty("Metals").GetDecimal();
+            decimal zins_cash = o.GetProperty("Zins").GetProperty("Cash").GetDecimal();
+            decimal zins_stocks = o.GetProperty("Zins").GetProperty("Stocks").GetDecimal();
+            decimal zins_metals = o.GetProperty("Zins").GetProperty("Metals").GetDecimal();
+
+            // this if is only necessary because we dont have a stopwork phase. Delete it once all phases are integrated in the correct order.
+            if (age == lifeAssumptions.ageRentStart)
+            {
+                protocolWriter.LogBalanceYearBegin(age, yearBegin_cash, yearBegin_stocks, yearBegin_metals);
+            }
+            protocolWriter.Log(age, new TransactionDetails { cashDeposit = -rate_cash, cashInterests = zins_cash });
+            protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
+            protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
+        }
+        
+        
         Console.WriteLine();
 
         // UI updates
