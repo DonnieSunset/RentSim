@@ -171,27 +171,37 @@ namespace FinanceMathService
             decimal angenommenesStartKapital;
             do
             {
-                angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
-                restBetrag = angenommenesStartKapital;
                 protocol.Clear();
+                angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
+
+                restBetrag = angenommenesStartKapital;
+                decimal restAnteil_cash = (decimal)factor_cash * restBetrag;
+                decimal restAnteil_stocks = (decimal)factor_stocks * restBetrag;
+                decimal restAnteil_metals = (decimal)factor_metals * restBetrag;
+
+                //Faktoren müssen dynamisch sein, da aich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
+                double factorCashDyn = factor_cash;
+                double factorStocksDyn = factor_stocks;
+                double factorMetalsDyn = factor_metals;
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
                     // rate runter
-                    decimal yearBegin_cash = (decimal)factor_cash * restBetrag;
-                    decimal yearBegin_stocks = (decimal)factor_stocks * restBetrag;
-                    decimal yearBegin_metals = (decimal)factor_metals * restBetrag;
+                    decimal yearBegin_cash = restAnteil_cash;
+                    decimal yearBegin_stocks = restAnteil_stocks;
+                    decimal yearBegin_metals = restAnteil_metals;
 
-                    decimal rate_cash = (decimal)factor_cash * rateTotal_perYear;
-                    decimal rate_stocks = (decimal)factor_stocks * rateTotal_perYear;
-                    decimal rate_metals = (decimal)factor_metals * rateTotal_perYear;
+                    //cash rate muss dynamisch sein, da wegen der unterschiedlichen zinsen auch die assetzusammensetzung schwankt
+                    decimal rate_cash = (decimal)factorCashDyn * rateTotal_perYear;
+                    decimal rate_stocks = (decimal)factorStocksDyn * rateTotal_perYear;
+                    decimal rate_metals = (decimal)factorMetalsDyn * rateTotal_perYear;
 
-                    restBetrag -= rate_cash + rate_stocks + rate_metals;
+                    restAnteil_cash -= rate_cash;
+                    restAnteil_stocks -= rate_stocks;
+                    restAnteil_metals -= rate_metals;
+                    //restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
 
                     // zinsen drauf
-                    decimal restAnteil_cash = (decimal)factor_cash * restBetrag;
-                    decimal restAnteil_stocks = (decimal)factor_stocks * restBetrag;
-                    decimal restAnteil_metals = (decimal)factor_metals * restBetrag;
 
                     decimal zinsen_cash = restAnteil_cash * ((decimal)zinsRate_cash / 100m);
                     decimal zinsen_stocks = restAnteil_stocks * ((decimal)zinsRate_stocks / 100m);
@@ -202,6 +212,11 @@ namespace FinanceMathService
                     restAnteil_metals += zinsen_metals;
 
                     restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
+
+                    factorCashDyn = (double)(restAnteil_cash / restBetrag);
+                    factorStocksDyn = (double)(restAnteil_stocks / restBetrag);
+                    factorMetalsDyn = (double)(restAnteil_metals / restBetrag);
+
 
                     var vs = new { 
                         Age = i, 

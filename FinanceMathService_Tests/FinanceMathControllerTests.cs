@@ -94,18 +94,14 @@ namespace FinanceMathService_Tests
         public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, double faktorCash, double zinsCash, double faktorStocks, double zinsStocks, double faktorMetals, double zinsMetals, decimal endBetrag, int yearStart, int yearEnd)
         {
             int anzahlJahre = yearEnd - yearStart;
-            //decimal gesamtBetrag = betrag1 + betrag2 + betrag3;
-            Console.WriteLine($"{nameof(faktorCash)}:{faktorCash}");
 
             decimal startCapital = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 totalRatePerYear,
                 faktorCash, faktorStocks, faktorMetals,
                 zinsCash, zinsStocks, zinsMetals,
-                endBetrag, yearStart, yearEnd,
+                endBetrag,
+                yearStart, yearEnd,
                 out _);
-
-            Console.WriteLine($"{nameof(startCapital)}: {startCapital}");
-            //Console.WriteLine($"{nameof(rate)}: {rate}");
 
             decimal restbetrag = startCapital;
             for (int i = 0; i < anzahlJahre; i++)
@@ -124,9 +120,14 @@ namespace FinanceMathService_Tests
                 anteilBetrag3 *= (decimal)(1 + (zinsMetals / 100d));
 
                 restbetrag = anteilBetrag1 + anteilBetrag2 + anteilBetrag3;
+
+                //faktoren neu berechnen da sich durch die unterschiedlichen zinssätze die asset zusammensetzung geändert hat
+                faktorCash = (double)(anteilBetrag1 / restbetrag);
+                faktorStocks = (double)(anteilBetrag2 / restbetrag);
+                faktorMetals = (double)(anteilBetrag3 / restbetrag);
             }
 
-            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount is reached.");
+            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount should be reached.");
         }
     }
 }
