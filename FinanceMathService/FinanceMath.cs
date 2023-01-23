@@ -69,47 +69,73 @@ namespace FinanceMathService
             return lowRiskAmount;
         }
 
-        public double RateByNumericalSparkassenformel(List<double> betrag, List<double> zins, double endbetrag, int yearStart, int yearEnd)
+        public decimal RateByNumericalSparkassenformel(
+            decimal betrag_cash,
+            decimal betrag_stocks,
+            decimal betrag_metals,
+            decimal zins_cash,
+            decimal zins_stocks,
+            decimal zins_metals,
+            decimal endbetrag, 
+            int yearStart, int yearEnd,
+            out List<object> protocol)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            const int MaxIterations = 100;
-            const double Precision = 0.001;
+            protocol = new List<object>();
 
-            List<object> result = new();
+            const int MaxIterations = 100;
+            const decimal Precision = 0.001m;
 
             int numIterations = 0;
 
-            double gesamtBetrag = betrag.Sum();
-            double angenommeneRate_min = 0;
-            double angenommeneRate_max = gesamtBetrag;
-            double restBetrag;
-            double angenommeneRate;
+            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            decimal angenommeneRate_min = 0;
+            decimal angenommeneRate_max = gesamtBetrag;
+            decimal restBetrag;
+            decimal angenommeneRate;
             do
             {
-                angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2d;
+                protocol.Clear();
+                angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
-                restBetrag = betrag.Sum();
-                List<double> faktors = betrag.Select(betrag => betrag / gesamtBetrag).ToList();
+                restBetrag = betrag_cash + betrag_stocks + betrag_metals;
+
+                decimal factor_cash = betrag_cash / gesamtBetrag;
+                decimal factor_stocks = betrag_stocks / gesamtBetrag;
+                decimal factor_metals = betrag_metals / gesamtBetrag;
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
                     // rate runter
-                    //restBetrag -= angenommeneRate;
-                    List<double> subRaten = faktors.Select(faktor => faktor * angenommeneRate).ToList();
-                    restBetrag -= subRaten.Sum();
+                    decimal rate_cash = factor_cash * angenommeneRate;
+                    decimal rate_stocks = factor_stocks * angenommeneRate;
+                    decimal rate_metals = factor_metals * angenommeneRate;
+
+                    restBetrag -= rate_cash + rate_stocks + rate_metals;
 
                     // zinsen drauf
-                    List<double> anteiligeBetraege = faktors.Select(faktor => faktor * restBetrag).ToList();
+                    decimal anteil_cash = factor_cash * restBetrag;
+                    decimal anteil_stocks = factor_stocks * restBetrag;
+                    decimal anteil_metals = factor_metals * restBetrag;
 
-                    for (int j = 0; j < anteiligeBetraege.Count; j++)
-                        anteiligeBetraege[j] *= zins[j];
+                    anteil_cash *= (1 + (zins_cash / 100m));
+                    anteil_stocks *= (1 + (zins_stocks / 100m));
+                    anteil_metals *= (1 + (zins_metals / 100m));
 
-                    restBetrag = anteiligeBetraege.Sum();
+                    restBetrag = anteil_cash + anteil_stocks + anteil_metals;
 
-                    //var v = new { Age = i, Rates = subRaten };
-                    //result.Add(v);
+                    var v = new { 
+                        Age = i, 
+                        Rates = new
+                        { 
+                            Rate_Cash = rate_cash,
+                            Rate_Stocks = rate_stocks,
+                            Rate_Metals = rate_metals,
+                        }
+                    };
+                    protocol.Add(v);
                 }
 
                 if (restBetrag >= endbetrag)
@@ -199,10 +225,8 @@ namespace FinanceMathService
                     restAnteil_cash -= rate_cash;
                     restAnteil_stocks -= rate_stocks;
                     restAnteil_metals -= rate_metals;
-                    //restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
 
                     // zinsen drauf
-
                     decimal zinsen_cash = restAnteil_cash * ((decimal)zinsRate_cash / 100m);
                     decimal zinsen_stocks = restAnteil_stocks * ((decimal)zinsRate_stocks / 100m);
                     decimal zinsen_metals = restAnteil_metals * ((decimal)zinsRate_metals / 100m);
@@ -216,7 +240,6 @@ namespace FinanceMathService
                     factorCashDyn = (double)(restAnteil_cash / restBetrag);
                     factorStocksDyn = (double)(restAnteil_stocks / restBetrag);
                     factorMetalsDyn = (double)(restAnteil_metals / restBetrag);
-
 
                     var vs = new { 
                         Age = i, 
@@ -253,18 +276,14 @@ namespace FinanceMathService
                     throw new Exception($"Too many iterations: {numIterations}");
                 }
 
-                //todo: log
-                Console.WriteLine($"{nameof(angenommenesStartKapital)}: {angenommenesStartKapital}  //  {nameof(restBetrag)}: {restBetrag}");
+                //Console.WriteLine($"{nameof(angenommenesStartKapital)}: {angenommenesStartKapital}  //  {nameof(restBetrag)}: {restBetrag}");
 
             } while (Math.Abs(restBetrag - endbetrag) > (decimal)Precision);
 
-            //todo: log
             Console.WriteLine("Duration: " + sw.Elapsed);
             Console.WriteLine("NumIterations: " + numIterations);
-            //Console.WriteLine("SH1: Nach erster iter: " + temp_nachErsterIter);
 
             return angenommenesStartKapital;
-            //return result;
         }
 
         public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)

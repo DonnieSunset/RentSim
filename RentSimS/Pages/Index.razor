@@ -278,7 +278,6 @@
             protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
         }
 
-        Console.WriteLine();
         resultRows = protocolWriter.Protocol;
 
         await DrawBarChart(barChart, protocolWriter.Protocol, lifeAssumptions);
