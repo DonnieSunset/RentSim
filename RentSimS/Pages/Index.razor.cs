@@ -20,7 +20,7 @@ namespace RentSimS.Pages
 
         private ChartColor chartColorNone = ChartColor.FromRgba(255, 255, 255, 0.0f);
 
-        public async Task DrawBarChart(BarChart<decimal>? barChart, IProtocolWriter protocolWriter, LifeAssumptions lifeAssumptions)
+        public async Task DrawBarChart(BarChart<decimal>? barChart, IReadOnlyCollection<ResultRow> resultRows, LifeAssumptions lifeAssumptions)
         {
             string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent + 1)
                 .Select(x => x.ToString())
@@ -30,31 +30,31 @@ namespace RentSimS.Pages
             BarChartDataset<decimal> dataBarChartCash = new BarChartDataset<decimal>
             {
                 Label = "Cash",
-                BackgroundColor = Enumerable.Repeat<string>(chartColorCash, protocolWriter.Protocol.Count()).ToList<string>(),
-                BorderColor = Enumerable.Repeat<string>(chartBorderColorCash, protocolWriter.Protocol.Count()).ToList<string>(),
-                Data = protocolWriter.Protocol
+                BackgroundColor = Enumerable.Repeat<string>(chartColorCash, resultRows.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(chartBorderColorCash, resultRows.Count()).ToList<string>(),
+                Data = resultRows
                                 .Select(x => x.cashYearBegin)
-                                    .Append(protocolWriter.Protocol.Last().cashYearEnd)
+                                    .Append(resultRows.Last().cashYearEnd)
                                 .ToList(),
             };
 
             BarChartDataset<decimal> dataBarChartStocks = new BarChartDataset<decimal>
             {
                 Label = "Stocks",
-                BackgroundColor = Enumerable.Repeat<string>(chartColorStocks, protocolWriter.Protocol.Count()).ToList<string>(),
-                BorderColor = Enumerable.Repeat<string>(chartBorderColorStocks, protocolWriter.Protocol.Count()).ToList<string>(),
-                Data = protocolWriter.Protocol.Select(x => x.stocksYearBegin)
-                                    .Append(protocolWriter.Protocol.Last().stocksYearEnd)
+                BackgroundColor = Enumerable.Repeat<string>(chartColorStocks, resultRows.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(chartBorderColorStocks, resultRows.Count()).ToList<string>(),
+                Data = resultRows.Select(x => x.stocksYearBegin)
+                                    .Append(resultRows.Last().stocksYearEnd)
                                 .ToList(),
             };
 
             BarChartDataset<decimal> dataBarChartMetals = new BarChartDataset<decimal>
             {
                 Label = "Metals",
-                BackgroundColor = Enumerable.Repeat<string>(chartColorMetals, protocolWriter.Protocol.Count()).ToList<string>(),
-                BorderColor = Enumerable.Repeat<string>(chartBorderColorMetals, protocolWriter.Protocol.Count()).ToList<string>(),
-                Data = protocolWriter.Protocol.Select(x => x.metalsYearBegin)
-                                    .Append(protocolWriter.Protocol.Last().metalsYearEnd)
+                BackgroundColor = Enumerable.Repeat<string>(chartColorMetals, resultRows.Count()).ToList<string>(),
+                BorderColor = Enumerable.Repeat<string>(chartBorderColorMetals, resultRows.Count()).ToList<string>(),
+                Data = resultRows.Select(x => x.metalsYearBegin)
+                                    .Append(resultRows.Last().metalsYearEnd)
                                 .ToList(),
             };
 
@@ -75,7 +75,7 @@ namespace RentSimS.Pages
             }
         }
 
-        public async Task DrawLineChart(LineChart<decimal>? lineChart, IProtocolWriter protocolWriter, LifeAssumptions lifeAssumptions)
+        public async Task DrawLineChart(LineChart<decimal>? lineChart, IReadOnlyCollection<ResultRow> resultRows, LifeAssumptions lifeAssumptions)
         {
             string[] labels = Enumerable.Range(lifeAssumptions.ageCurrent, lifeAssumptions.ageEnd - lifeAssumptions.ageCurrent + 1)
                 .Select(x => x.ToString())
@@ -89,9 +89,9 @@ namespace RentSimS.Pages
                 Fill = true,
                 PointRadius = 2,
                 BorderDash = new List<int> { },
-                Data = protocolWriter.Protocol
+                Data = resultRows
                                 .Select(x => x.cashYearBegin)
-                                    .Append(protocolWriter.Protocol.Last().cashYearEnd)
+                                    .Append(resultRows.Last().cashYearEnd)
                                 .ToList(),
             };
 
@@ -103,9 +103,9 @@ namespace RentSimS.Pages
                 Fill = true,
                 PointRadius = 2,
                 BorderDash = new List<int> { },
-                Data = protocolWriter.Protocol
+                Data = resultRows
                     .Select(x => x.stocksYearBegin)
-                        .Append(protocolWriter.Protocol.Last().stocksYearEnd)
+                        .Append(resultRows.Last().stocksYearEnd)
                     .ToList(),
             };
 
@@ -117,9 +117,9 @@ namespace RentSimS.Pages
                 Fill = true,
                 PointRadius = 2,
                 BorderDash = new List<int> { },
-                Data = protocolWriter.Protocol
+                Data = resultRows
                     .Select(x => x.metalsYearBegin)
-                        .Append(protocolWriter.Protocol.Last().metalsYearEnd)
+                        .Append(resultRows.Last().metalsYearEnd)
                     .ToList(),
             };
 
@@ -131,9 +131,9 @@ namespace RentSimS.Pages
                 Fill = true,
                 PointRadius = 2,
                 BorderDash = new List<int> { },
-                Data = protocolWriter.Protocol
+                Data = resultRows
                     .Select(x => x.TotalYearBegin)
-                        .Append(protocolWriter.Protocol.Last().TotalYearEnd)
+                        .Append(resultRows.Last().TotalYearEnd)
                     .ToList(),
             };
 

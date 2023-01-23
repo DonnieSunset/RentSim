@@ -137,50 +137,91 @@ namespace FinanceMathService
             return angenommeneRate;
         }
 
-        public decimal StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, List<double> faktors, List<double> zins, decimal endbetrag, int yearStart, int yearEnd)
+        public decimal StartCapitalByNumericalSparkassenformel(
+            decimal rateTotal_perYear, 
+            double factor_cash, 
+            double factor_stocks, 
+            double factor_metals, 
+            double zinsRate_cash, 
+            double zinsRate_stocks,
+            double zinsRate_metals,
+            decimal endbetrag, 
+            int yearStart, int yearEnd,
+            out List<object> protocol)
         {
+            if (Math.Abs(factor_cash + factor_stocks + factor_metals - 1) > 0.0001)
+            {
+                throw new ArgumentException("Zinsen dont sum up to 1");
+            }
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            //var result = new List<object>();
+            protocol = new List<object>();
 
             const int MaxIterations = 100;
             const double Precision = 0.001;
 
-            List<object> startCapitals = new();
-
             int numIterations = 0;
 
-            //double gesamtBetrag = betrag.Sum();
             decimal angenommenesStartKapital_min = 0;
-            decimal angenommenesStartKapital_max = rateTotal_perYear * (yearEnd - yearStart) * 2 + endbetrag;
+            decimal angenommenesStartKapital_max = rateTotal_perYear * (yearEnd - yearStart) * 2 + endbetrag; // simple heuristic
             decimal restBetrag;
             
             decimal angenommenesStartKapital;
             do
             {
                 angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
-
                 restBetrag = angenommenesStartKapital;
-                //List<double> faktors = betrag.Select(betrag => betrag / gesamtBetrag).ToList();
+                protocol.Clear();
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
                     // rate runter
-                    restBetrag -= rateTotal_perYear;
-                    //List<double> subRaten = faktors.Select(faktor => faktor * rateTotal_perYear).ToList();
-                    //restBetrag -= subRaten.Sum();
+                    decimal yearBegin_cash = (decimal)factor_cash * restBetrag;
+                    decimal yearBegin_stocks = (decimal)factor_stocks * restBetrag;
+                    decimal yearBegin_metals = (decimal)factor_metals * restBetrag;
+
+                    decimal rate_cash = (decimal)factor_cash * rateTotal_perYear;
+                    decimal rate_stocks = (decimal)factor_stocks * rateTotal_perYear;
+                    decimal rate_metals = (decimal)factor_metals * rateTotal_perYear;
+
+                    restBetrag -= rate_cash + rate_stocks + rate_metals;
 
                     // zinsen drauf
-                    List<decimal> anteiligeBetraege = faktors.Select(faktor => (decimal)faktor * restBetrag).ToList();
+                    decimal restAnteil_cash = (decimal)factor_cash * restBetrag;
+                    decimal restAnteil_stocks = (decimal)factor_stocks * restBetrag;
+                    decimal restAnteil_metals = (decimal)factor_metals * restBetrag;
 
-                    for (int j = 0; j < anteiligeBetraege.Count; j++)
-                        anteiligeBetraege[j] *= (decimal)(1+(zins[j]/100d));
+                    decimal zinsen_cash = restAnteil_cash * ((decimal)zinsRate_cash / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks * ((decimal)zinsRate_stocks / 100m);
+                    decimal zinsen_metals = restAnteil_metals * ((decimal)zinsRate_metals / 100m);
 
-                    restBetrag = anteiligeBetraege.Sum();
+                    restAnteil_cash += zinsen_cash;
+                    restAnteil_stocks += zinsen_stocks;
+                    restAnteil_metals += zinsen_metals;
 
-                    //var v = new { Age = i, Rates = subRaten };
-                    //result.Add(v);
+                    restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
+
+                    var vs = new { 
+                        Age = i, 
+                        YearBegin = new {
+                            Cash = yearBegin_cash, 
+                            Stocks = yearBegin_stocks, 
+                            Metals = yearBegin_metals
+                        },
+                        Rates = new { 
+                            Cash = rate_cash, 
+                            Stocks = rate_stocks, 
+                            Metals = rate_metals
+                        }, 
+                        Zins = new { 
+                            Cash = zinsen_cash,
+                            Stocks = zinsen_stocks,
+                            Metals = zinsen_metals
+                        } 
+                    };
+                    protocol.Add(vs);
                 }
 
                 if (restBetrag < endbetrag)
@@ -205,7 +246,10 @@ namespace FinanceMathService
             //todo: log
             Console.WriteLine("Duration: " + sw.Elapsed);
             Console.WriteLine("NumIterations: " + numIterations);
+            //Console.WriteLine("SH1: Nach erster iter: " + temp_nachErsterIter);
+
             return angenommenesStartKapital;
+            //return result;
         }
 
         public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)

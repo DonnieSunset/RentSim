@@ -80,18 +80,18 @@ namespace RentSimS.Clients
 //        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor1, double zins1, double factor2, double zins2, double factor3, double zins3, decimal endbetrag, int yearStart, int yearEnd)
 
 
-        public async Task<decimal> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor1, double zins1, double factor2, double zins2, double factor3, double zins3, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<string> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/StartCapitalByNumericalSparkassenformel";
             ub.Query =
                 $"?rateTotal_perYear={rateTotal_perYear.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor1={factor1.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins1={zins1.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor2={factor2.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins2={zins2.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor3={factor3.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins3={zins3.ToString(CultureInfo.InvariantCulture)}" +
+                $"&factor_cash={factor_cash.ToString(CultureInfo.InvariantCulture)}" +
+                $"&zins_cash={zins_cash.ToString(CultureInfo.InvariantCulture)}" +
+                $"&factor_stocks={factor_stocks.ToString(CultureInfo.InvariantCulture)}" +
+                $"&zins_stocks={zins_stocks.ToString(CultureInfo.InvariantCulture)}" +
+                $"&factor_metals={factor_metals.ToString(CultureInfo.InvariantCulture)}" +
+                $"&zins_metals={zins_metals.ToString(CultureInfo.InvariantCulture)}" +
                 $"&endbetrag={endbetrag.ToString(CultureInfo.InvariantCulture)}" +
                 $"&yearStart={yearStart}" +
                 $"&yearEnd={yearEnd}"
@@ -106,14 +106,15 @@ namespace RentSimS.Clients
                 }
 
                 var stringResponse = await response.Content.ReadAsStringAsync();
+                //var stringResponse = await response.Content.ReadFromJsonAsync();
                 if (stringResponse == null)
                 {
                     throw new Exception($"{nameof(stringResponse)} is null.");
                 }
 
-                decimal result = decimal.Parse(stringResponse, CultureInfo.InvariantCulture);
+                //decimal result = decimal.Parse(stringResponse, CultureInfo.InvariantCulture);
 
-                return result;
+                return stringResponse;
             }
         }
     }

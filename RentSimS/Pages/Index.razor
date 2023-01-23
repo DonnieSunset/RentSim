@@ -5,6 +5,7 @@
 @using SavingPhaseService.Contracts;
 @using Protocol;
 @using RentSimS.Clients;
+@using System.Text.Json;
 @inject IHttpClientFactory ClientFactory;
 @inject IServiceProvider serviceProvider;
 
@@ -119,7 +120,7 @@
 </Row>
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is5">
+    <Column ColumnSize="ColumnSize.Is10">
         <DataGrid TItem="ResultRow"
                   ColumnSize="ColumnSize.Is1"
                   Narrow="true"
@@ -131,6 +132,9 @@
             <DataGridCommandColumn TItem="ResultRow" />
             <DataGridColumn TItem="ResultRow" Field="age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End />
             <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="cashYearBegin" Caption="Cash YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="stocksYearBegin" Caption="Stocks YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="metalsYearBegin" Caption="Metals YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="CashDepositsTotal" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="StocksDepositsTotal" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="MetalsDepositsTotal" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
@@ -138,6 +142,9 @@
             <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="cashYearEnd" Caption="Cash YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="stocksYearEnd" Caption="Stocks YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="metalsYearEnd" Caption="Metals YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
         </DataGrid>
     </Column>
 </Row>
@@ -230,7 +237,7 @@
         double factorStocks = (double)(totalSavingsStocks / totalSavings);
         double factorMetals = (double)(totalSavingsMetals / totalSavings);
         decimal rateNeeded = (needs.needsComfort_AgeRentStart_WithInflation_PerMonth - rentAtStopWork_net) * 12;
-        var startCapital = await myFinanceMathClient.StartCapitalByNumericalSparkassenformel(
+        var rentPhaseResultString = await myFinanceMathClient.StartCapitalByNumericalSparkassenformel(
             rateNeeded,
             factorCash,
             lifeAssumptions.cashGrowthRate,
@@ -242,11 +249,40 @@
             lifeAssumptions.ageRentStart,
             lifeAssumptions.ageEnd);
 
-        
+        var rentPhaseResultJson = JsonDocument.Parse(rentPhaseResultString);
+        //protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageRentStart, )
+        int i=0;
+        int k = 0;
+        foreach (JsonElement o in rentPhaseResultJson.RootElement.EnumerateArray())
+        {
+            int age = o.GetProperty("Age").GetInt32();
+            decimal yearBegin_cash = o.GetProperty("YearBegin").GetProperty("Cash").GetDecimal();
+            decimal yearBegin_stocks = o.GetProperty("YearBegin").GetProperty("Stocks").GetDecimal();
+            decimal yearBegin_metals = o.GetProperty("YearBegin").GetProperty("Metals").GetDecimal();
+            decimal rate_cash = o.GetProperty("Rates").GetProperty("Cash").GetDecimal();
+            decimal rate_stocks = o.GetProperty("Rates").GetProperty("Stocks").GetDecimal();
+            decimal rate_metals = o.GetProperty("Rates").GetProperty("Metals").GetDecimal();
+            decimal zins_cash = o.GetProperty("Zins").GetProperty("Cash").GetDecimal();
+            decimal zins_stocks = o.GetProperty("Zins").GetProperty("Stocks").GetDecimal();
+            decimal zins_metals = o.GetProperty("Zins").GetProperty("Metals").GetDecimal();
+
+            // this if is only necessary because we dont have a stopwork phase. Delete it once all phases are integrated in the correct order.
+            if (age == lifeAssumptions.ageRentStart)
+            {
+                i++;
+                protocolWriter.LogBalanceYearBegin(age, yearBegin_cash, yearBegin_stocks, yearBegin_metals);
+            }
+            k++;
+            protocolWriter.Log(age, new TransactionDetails { cashDeposit = -rate_cash, cashInterests = zins_cash });
+            protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
+            protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
+        }
+
+        Console.WriteLine();
         resultRows = protocolWriter.Protocol;
 
-        await DrawBarChart(barChart, protocolWriter, lifeAssumptions);
-        await DrawLineChart(lineChart, protocolWriter, lifeAssumptions);
+        await DrawBarChart(barChart, protocolWriter.Protocol, lifeAssumptions);
+        await DrawLineChart(lineChart, protocolWriter.Protocol, lifeAssumptions);
 
         await InvokeAsync(async () =>
         {

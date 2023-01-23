@@ -91,17 +91,18 @@ namespace FinanceMathService_Tests
 
 
         [TestCase(200, 1/7d, 3, 2/7d, 1.5, 4/7d, 2, 5000, 50, 60)]
-        public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, double faktor1, double zins1, double faktor2, double zins2, double faktor3, double zins3, decimal endBetrag, int yearStart, int yearEnd)
+        public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, double faktorCash, double zinsCash, double faktorStocks, double zinsStocks, double faktorMetals, double zinsMetals, decimal endBetrag, int yearStart, int yearEnd)
         {
             int anzahlJahre = yearEnd - yearStart;
             //decimal gesamtBetrag = betrag1 + betrag2 + betrag3;
-            Console.WriteLine($"{nameof(faktor1)}:{faktor1}");
+            Console.WriteLine($"{nameof(faktorCash)}:{faktorCash}");
 
             decimal startCapital = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 totalRatePerYear,
-                new List<double> { faktor1, faktor2, faktor3 },
-                new List<double> { zins1, zins2, zins3 },
-                endBetrag, yearStart, yearEnd);
+                faktorCash, faktorStocks, faktorMetals,
+                zinsCash, zinsStocks, zinsMetals,
+                endBetrag, yearStart, yearEnd,
+                out _);
 
             Console.WriteLine($"{nameof(startCapital)}: {startCapital}");
             //Console.WriteLine($"{nameof(rate)}: {rate}");
@@ -113,14 +114,14 @@ namespace FinanceMathService_Tests
                 restbetrag -= totalRatePerYear;
 
                 // zinsen drauf
-                decimal anteilBetrag1 = (decimal)faktor1 * restbetrag;
-                decimal anteilBetrag2 = (decimal)faktor2 * restbetrag;
-                decimal anteilBetrag3 = (decimal)faktor3 * restbetrag;
+                decimal anteilBetrag1 = (decimal)faktorCash * restbetrag;
+                decimal anteilBetrag2 = (decimal)faktorStocks * restbetrag;
+                decimal anteilBetrag3 = (decimal)faktorMetals * restbetrag;
                 Assert.That(anteilBetrag1 + anteilBetrag2 + anteilBetrag3, Is.EqualTo(restbetrag).Within(0.001), "all part amounts should sum up to total amount.");
 
-                anteilBetrag1 *= (decimal)(1 + (zins1 / 100d));
-                anteilBetrag2 *= (decimal)(1 + (zins2 / 100d)); ;
-                anteilBetrag3 *= (decimal)(1 + (zins3 / 100d)); ;
+                anteilBetrag1 *= (decimal)(1 + (zinsCash / 100d));
+                anteilBetrag2 *= (decimal)(1 + (zinsStocks / 100d));
+                anteilBetrag3 *= (decimal)(1 + (zinsMetals / 100d));
 
                 restbetrag = anteilBetrag1 + anteilBetrag2 + anteilBetrag3;
             }

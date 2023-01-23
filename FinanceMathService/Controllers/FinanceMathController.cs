@@ -58,19 +58,21 @@ namespace FinanceMathService.Controllers
 
         [HttpGet("StartCapitalByNumericalSparkassenformel")]
         [Produces("application/json")]
-        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor1, double zins1, double factor2, double zins2, double factor3, double zins3, decimal endbetrag, int yearStart, int yearEnd)
+        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
+            List<object> proto;
             decimal result = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 rateTotal_perYear,
-                new List<double> { factor1, factor2, factor3 },
-                new List<double> { zins1, zins2, zins3 },
+                factor_cash, factor_stocks, factor_metals,
+                zins_cash, zins_stocks, zins_metals,
                 endbetrag,
-                yearStart, yearEnd
+                yearStart, yearEnd, 
+                out proto
             );
 
-            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(proto, new JsonSerializerOptions { WriteIndented = true });
         }
 
         [HttpGet("Sparkassenformel")]
