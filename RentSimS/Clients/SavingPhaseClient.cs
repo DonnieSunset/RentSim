@@ -1,4 +1,6 @@
-﻿using SavingPhaseService.Contracts;
+﻿using Domain;
+using Protocol;
+using SavingPhaseService.Contracts;
 using System.Globalization;
 
 namespace RentSimS.Clients
@@ -72,6 +74,38 @@ namespace RentSimS.Clients
 
                 return jsonResponse;
             }
+        }
+
+        public async Task<(decimal, decimal, decimal)> GetAndLogSavingPhase(
+            int ageFrom, int ageTo,
+            decimal cash_startCapital, int cash_growthRate, decimal cash_saveAmountPerMonth,
+            decimal stocks_startCapital, int stocks_growthRate, decimal stocks_saveAmountPerMonth,
+            decimal metals_startCapital, int metals_growthRate, decimal metals_saveAmountPerMonth,
+            IProtocolWriter protocolWriter)
+        {
+            var totalSavingsCash = await GetSavingPhaseResultAsync(ageFrom, ageTo, cash_startCapital, cash_growthRate, cash_saveAmountPerMonth);
+            var totalSavingsStocks = await GetSavingPhaseResultAsync(ageFrom, ageTo, stocks_startCapital, stocks_growthRate, stocks_saveAmountPerMonth);
+            var totalSavingsMetals = await GetSavingPhaseResultAsync(ageFrom, ageTo, metals_startCapital, metals_growthRate, metals_saveAmountPerMonth);
+
+            decimal totalSavings = totalSavingsCash + totalSavingsStocks + totalSavingsMetals;
+            
+            var savingPhaseSimCash = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, cash_startCapital, cash_growthRate, cash_saveAmountPerMonth);
+            var savingPhaseSimStocks = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, stocks_startCapital, stocks_growthRate, stocks_saveAmountPerMonth);
+            var savingPhaseSimMetals = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, metals_startCapital, metals_growthRate, metals_saveAmountPerMonth);
+            
+            protocolWriter.LogBalanceYearBegin(ageFrom, cash_startCapital, stocks_startCapital, metals_startCapital);
+            for (int age = ageFrom; age < ageTo; age++)
+            {
+                var cashEntry = savingPhaseSimCash.Entities.Single(x => x.Age == age);
+                var metalsEntry = savingPhaseSimMetals.Entities.Single(x => x.Age == age);
+                var stocksEntry = savingPhaseSimStocks.Entities.Single(x => x.Age == age);
+
+                protocolWriter.Log(age, new TransactionDetails { cashDeposit = cashEntry.Deposit, cashInterests = cashEntry.Interests });
+                protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
+                protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
+            }
+
+            return (totalSavingsCash, totalSavingsStocks, totalSavingsMetals);
         }
     }
 }

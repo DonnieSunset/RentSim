@@ -183,7 +183,7 @@
         get
         {
             //return result_MonthlyRateRentPhase.ToString("0:2C") + " €";
-            return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateRentPhase) + " €";
+            return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateRentPhase);
         }
         set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
     }
@@ -219,31 +219,17 @@
 
     private async Task Recalc()
     {
-        // Saving Phase
-
-        var totalSavingsCash = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
-        var totalSavingsStocks = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
-        var totalSavingsMetals = await mySavingPhaseClient.GetSavingPhaseResultAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
-
-        totalSavings = totalSavingsCash + totalSavingsMetals + totalSavingsStocks;
-
-        var savingPhaseSimCash = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth);
-        var savingPhaseSimMetals = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth);
-        var savingPhaseSimStocks = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth);
-
         var protocolWriter = new MemoryProtocolWriter();
-        protocolWriter.LogBalanceYearBegin(lifeAssumptions.ageCurrent, lifeAssumptions.cash, lifeAssumptions.stocks, lifeAssumptions.metals);
-        for (int age = lifeAssumptions.ageCurrent; age < ageStopWork; age++)
-        {
 
-            var cashEntry = savingPhaseSimCash.Entities.Single(x => x.Age == age);
-            var metalsEntry = savingPhaseSimMetals.Entities.Single(x => x.Age == age);
-            var stocksEntry = savingPhaseSimStocks.Entities.Single(x => x.Age == age);
-
-            protocolWriter.Log(age, new TransactionDetails { cashDeposit = cashEntry.Deposit, cashInterests = cashEntry.Interests });
-            protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests });
-            protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
-        }
+        // Saving Phase
+        (var totalSavingsCash, var totalSavingsStocks, var totalSavingsMetals) = await mySavingPhaseClient.GetAndLogSavingPhase(
+            lifeAssumptions.ageCurrent, ageStopWork,
+            lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth,
+            lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth,
+            lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth,
+            protocolWriter
+        );
+        totalSavings = totalSavingsCash + totalSavingsStocks + totalSavingsMetals;
 
         // Later Needs
 
