@@ -2,6 +2,7 @@
 {
     public class RentPhaseResult
     {
+        //not used
         public decimal rate_Cash;
         public decimal rateStocks_IncludedTaxes_BadCase;
         public decimal rateStocks_IncludedTaxes_GoodCase;
@@ -11,6 +12,10 @@
         public decimal neededPhaseBegin_Stocks;
         public decimal taxesPerYear_GoodCase; //todo: why do we need this? this should be calculated in the simulation phase.
         public decimal taxesPerYear_BadCase;
+        //
+
+        public decimal rate_perMonth;
+
 
         public void Print()
         {

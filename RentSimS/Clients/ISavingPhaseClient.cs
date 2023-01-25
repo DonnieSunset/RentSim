@@ -1,4 +1,5 @@
-﻿using Protocol;
+﻿using Finance.Results;
+using Protocol;
 using SavingPhaseService.Contracts;
 
 namespace RentSimS.Clients
@@ -8,7 +9,7 @@ namespace RentSimS.Clients
         public Task<decimal> GetSavingPhaseResultAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth);
         public Task<SimulationResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth);
 
-        public Task<(decimal, decimal, decimal)> GetAndLogSavingPhase(
+        public Task<SavingPhaseResult> GetAndLogSavingPhase(
             int ageFrom, int ageTo,
             decimal cash_startCapital, int cash_growthRate, decimal cash_saveAmountPerMonth,
             decimal stocks_startCapital, int stocks_growthRate, decimal stocks_saveAmountPerMonth,

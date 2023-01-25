@@ -39,7 +39,7 @@ namespace Finance
                     lifeAssumptions.inflationRate,
                     lifeAssumptions.needsCurrentAgeMinimal_perMonth,
                     lifeAssumptions.needsCurrentAgeComfort_perMonth,
-                    stateRentResult.assumedStateRent_FromStopWorkAge_PerMonth
+                    stateRentResult.assumedStateRent_Net_PerMonth
                 );
 
                 var rentPhaseResult = RentPhaseCalculator.CalculateResult(

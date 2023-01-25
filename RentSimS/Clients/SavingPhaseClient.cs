@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Finance.Results;
 using Protocol;
 using SavingPhaseService.Contracts;
 using System.Globalization;
@@ -76,7 +77,7 @@ namespace RentSimS.Clients
             }
         }
 
-        public async Task<(decimal, decimal, decimal)> GetAndLogSavingPhase(
+        public async Task<SavingPhaseResult> GetAndLogSavingPhase(
             int ageFrom, int ageTo,
             decimal cash_startCapital, int cash_growthRate, decimal cash_saveAmountPerMonth,
             decimal stocks_startCapital, int stocks_growthRate, decimal stocks_saveAmountPerMonth,
@@ -88,11 +89,11 @@ namespace RentSimS.Clients
             var totalSavingsMetals = await GetSavingPhaseResultAsync(ageFrom, ageTo, metals_startCapital, metals_growthRate, metals_saveAmountPerMonth);
 
             decimal totalSavings = totalSavingsCash + totalSavingsStocks + totalSavingsMetals;
-            
+
             var savingPhaseSimCash = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, cash_startCapital, cash_growthRate, cash_saveAmountPerMonth);
             var savingPhaseSimStocks = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, stocks_startCapital, stocks_growthRate, stocks_saveAmountPerMonth);
             var savingPhaseSimMetals = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, metals_startCapital, metals_growthRate, metals_saveAmountPerMonth);
-            
+
             protocolWriter.LogBalanceYearBegin(ageFrom, cash_startCapital, stocks_startCapital, metals_startCapital);
             for (int age = ageFrom; age < ageTo; age++)
             {
@@ -105,7 +106,12 @@ namespace RentSimS.Clients
                 protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests });
             }
 
-            return (totalSavingsCash, totalSavingsStocks, totalSavingsMetals);
+            return new SavingPhaseResult
+            {
+                savingsCash = totalSavingsCash,
+                savingsStocks = totalSavingsStocks,
+                savingsMetals = totalSavingsMetals,
+            };
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Finance
                 throw new InvalidDataException($"Param: {nameof(ageInQuestion)} is {ageInQuestion} but should be between {ageCurrent} and {ageRentStart}.");
             }
 
-            result.assumedStateRent_FromStopWorkAge_PerMonth = (netRentAgeRentStart - netRentAgeCurrent) / (ageRentStart - ageCurrent) * (ageInQuestion - ageCurrent) + netRentAgeCurrent;
+            result.assumedStateRent_Net_PerMonth = (netRentAgeRentStart - netRentAgeCurrent) / (ageRentStart - ageCurrent) * (ageInQuestion - ageCurrent) + netRentAgeCurrent;
             return result;
         }
 

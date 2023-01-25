@@ -78,16 +78,16 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsMinimum_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsMinimum_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.inflationRate" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Comfort:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsComfort_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@needs.needsComfort_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="State Rent"></Divider>
@@ -192,7 +192,7 @@
     LineChart<decimal>? lineChart;
 
     IEnumerable<ResultRow> resultRows;
-    LaterNeedsResult needs = new ();
+    LaterNeedsResult laterNeedsResult = new ();
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -222,14 +222,14 @@
         var protocolWriter = new MemoryProtocolWriter();
 
         // Saving Phase
-        (var totalSavingsCash, var totalSavingsStocks, var totalSavingsMetals) = await mySavingPhaseClient.GetAndLogSavingPhase(
+
+        var savingPhaseResult = await mySavingPhaseClient.GetAndLogSavingPhase(
             lifeAssumptions.ageCurrent, ageStopWork,
             lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth,
             lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth,
             lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth,
             protocolWriter
         );
-        totalSavings = totalSavingsCash + totalSavingsStocks + totalSavingsMetals;
 
         // Later Needs
 
@@ -237,60 +237,34 @@
         decimal blubb2 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
         decimal blubb3 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
         decimal blubb4 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
-        needs = new LaterNeedsResult
-            {
-                needsMinimum_AgeStopWork_WithInflation_PerMonth = blubb1,
-                needsComfort_AgeStopWork_WithInflation_PerMonth = blubb2,
-                needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
-                needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
-            };
+        laterNeedsResult = new LaterNeedsResult
+        {
+            needsMinimum_AgeStopWork_WithInflation_PerMonth = blubb1,
+            needsComfort_AgeStopWork_WithInflation_PerMonth = blubb2,
+            needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
+            needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
+        };
 
-        rentAtStopWork_net = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork);
-        rentAtStopWork_gross = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork);
+        // State Rent
+
+        StateRentResult stateRentResult = new()
+        {
+            assumedStateRent_Net_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
+            assumedStateRent_Gross_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork),
+        };
 
         // Rent Phase
 
-        double factorCash = (double)(totalSavingsCash / totalSavings);
-        double factorStocks = (double)(totalSavingsStocks / totalSavings);
-        double factorMetals = (double)(totalSavingsMetals / totalSavings);
-        decimal rateNeeded = (needs.needsComfort_AgeRentStart_WithInflation_PerMonth - rentAtStopWork_net) * 12;
-        var rentPhaseResultString = await myFinanceMathClient.StartCapitalByNumericalSparkassenformel(
-            rateNeeded,
-            factorCash,
-            lifeAssumptions.cashGrowthRate,
-            factorStocks,
-            lifeAssumptions.stocksGrowthRate,
-            factorMetals,
-            lifeAssumptions.metalsGrowthRate,
-            0,
-            lifeAssumptions.ageRentStart,
-            lifeAssumptions.ageEnd);
+        var rentPhaseResult = await myRentPhaseClient.GetAndLogRentPhase(
+            lifeAssumptions.ageRentStart, lifeAssumptions.ageEnd,
+            lifeAssumptions.cashGrowthRate, lifeAssumptions.stocksGrowthRate, lifeAssumptions.metalsGrowthRate, 
+            savingPhaseResult,
+            laterNeedsResult,
+            stateRentResult,
+            protocolWriter,
+            myFinanceMathClient
+        );
 
-        var rentPhaseResultJson = JsonDocument.Parse(rentPhaseResultString);
-        foreach (JsonElement o in rentPhaseResultJson.RootElement.EnumerateArray())
-        {
-            int age = o.GetProperty("Age").GetInt32();
-            decimal yearBegin_cash = o.GetProperty("YearBegin").GetProperty("Cash").GetDecimal();
-            decimal yearBegin_stocks = o.GetProperty("YearBegin").GetProperty("Stocks").GetDecimal();
-            decimal yearBegin_metals = o.GetProperty("YearBegin").GetProperty("Metals").GetDecimal();
-            decimal rate_cash = o.GetProperty("Rates").GetProperty("Cash").GetDecimal();
-            decimal rate_stocks = o.GetProperty("Rates").GetProperty("Stocks").GetDecimal();
-            decimal rate_metals = o.GetProperty("Rates").GetProperty("Metals").GetDecimal();
-            decimal zins_cash = o.GetProperty("Zins").GetProperty("Cash").GetDecimal();
-            decimal zins_stocks = o.GetProperty("Zins").GetProperty("Stocks").GetDecimal();
-            decimal zins_metals = o.GetProperty("Zins").GetProperty("Metals").GetDecimal();
-
-            // this if is only necessary because we dont have a stopwork phase. Delete it once all phases are integrated in the correct order.
-            if (age == lifeAssumptions.ageRentStart)
-            {
-                protocolWriter.LogBalanceYearBegin(age, yearBegin_cash, yearBegin_stocks, yearBegin_metals);
-            }
-            protocolWriter.Log(age, new TransactionDetails { cashDeposit = -rate_cash, cashInterests = zins_cash });
-            protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
-            protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
-        }
-
-        result_MonthlyRateRentPhase = -protocolWriter.Protocol.Single(x => x.age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
 
         // Stop Work Phase
 
@@ -299,9 +273,9 @@
             .TotalYearBegin;
 
         var stopWorkPhaseResultString = await myFinanceMathClient.RateByNumericalSparkassenformel(
-            totalSavingsCash,
-            totalSavingsStocks,
-            totalSavingsMetals,
+            savingPhaseResult.savingsCash,
+            savingPhaseResult.savingsStocks,
+            savingPhaseResult.savingsMetals,
             lifeAssumptions.cashGrowthRate,
             lifeAssumptions.stocksGrowthRate,
             lifeAssumptions.metalsGrowthRate,
