@@ -57,7 +57,7 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_totalSavings"/> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @ageStopWork:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_MonthlyRateStopWorkPhase" /> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @lifeAssumptions.ageRentStart:</FieldLabel>
@@ -161,7 +161,7 @@
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
 
-    decimal totalSavings;
+    decimal result_totalSavings;
     decimal rentAtStopWork_gross;
     decimal rentAtStopWork_net;
 
@@ -229,6 +229,7 @@
             lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth,
             protocolWriter
         );
+        result_totalSavings = savingPhaseResult.SavingsTotal;
 
         // Later Needs
 
@@ -251,6 +252,8 @@
             assumedStateRent_Net_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
             assumedStateRent_Gross_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork),
         };
+        rentAtStopWork_gross = stateRentResult.assumedStateRent_Gross_PerMonth;
+        rentAtStopWork_net = stateRentResult.assumedStateRent_Net_PerMonth;
 
         // Rent Phase
 
@@ -306,6 +309,7 @@
         }
 
         result_MonthlyRateStopWorkPhase = -protocolWriter.Protocol.Single(x => x.age == ageStopWork).TotalDeposits / 12m;
+        result_MonthlyRateRentPhase = -protocolWriter.Protocol.Single(x => x.age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
 
         // Re-balancing after Stop-Work phase
 
