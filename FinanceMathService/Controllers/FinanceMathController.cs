@@ -45,7 +45,7 @@ namespace FinanceMathService.Controllers
         public JsonResult RateByNumericalSparkassenformel(decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
+            
             List<object> proto;
             decimal result = myFinanceMath.RateByNumericalSparkassenformel(
                 betrag_cash, betrag_stocks, betrag_metals,

@@ -3,7 +3,9 @@ using Finance.Results;
 using Microsoft.AspNetCore.Mvc;
 using Protocol;
 using SavingPhaseService.Contracts;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Text.Json;
 
 namespace RentSimS.Clients
@@ -57,29 +59,41 @@ namespace RentSimS.Clients
             SavingPhaseResult savingPhaseResult,
             LaterNeedsResult laterNeedsResult,
             StateRentResult stateRentResult,
-            IProtocolWriter protocolWriter, IFinanceMathClient financeMathClient)
+            IProtocolWriter protocolWriter)
         {
-            var rentPhaseResult = new RentPhaseResult();
-
-            double factorCash = (double)(savingPhaseResult.savingsCash / savingPhaseResult.SavingsTotal);
-            double factorStocks = (double)(savingPhaseResult.savingsStocks / savingPhaseResult.SavingsTotal);
-            double factorMetals = (double)(savingPhaseResult.savingsMetals / savingPhaseResult.SavingsTotal);
             decimal rateNeeded = (laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth - stateRentResult.assumedStateRent_Net_PerMonth) * 12;
 
-            var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(
-                rateNeeded,
-                factorCash,
-                growRateCash,
-                factorStocks,
-                growRateStocks,
-                factorMetals,
-                growRateMetals,
-                0,
-                ageStart,
-                ageEnd);
+            var ub = new UriBuilder(myUrl);
+            ub.Path = "RentPhase/Simulate";
+            ub.Query = 
+                $"?ageStart={ageStart}" +
+                $"&ageEnd={ageEnd}" +
+                $"&totalRateNeeded_perYear={rateNeeded.ToString(CultureInfo.InvariantCulture)}" +
+                $"&capitalCash={savingPhaseResult.savingsCash.ToString(CultureInfo.InvariantCulture)}" +
+                $"&growthRateCash={growRateCash.ToString(CultureInfo.InvariantCulture)}" +
+                $"&capitalStocks={savingPhaseResult.savingsStocks.ToString(CultureInfo.InvariantCulture)}" +
+                $"&growthRateStocks={growRateStocks.ToString(CultureInfo.InvariantCulture)}" +
+                $"&capitalMetals={savingPhaseResult.savingsMetals.ToString(CultureInfo.InvariantCulture)}" +
+                $"&growthRateMetals={growRateMetals.ToString(CultureInfo.InvariantCulture)}";
 
-            var rentPhaseResultJson = JsonDocument.Parse(rentPhaseResultString);
-            foreach (JsonElement o in rentPhaseResultJson.RootElement.EnumerateArray())
+            string rentPhaseResultString;
+            using (var httpClient = new HttpClient())
+            {
+                HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Http response error: {response.Content}.");
+                }
+
+                rentPhaseResultString = await response.Content.ReadAsStringAsync();
+                if (rentPhaseResultString == null)
+                {
+                    throw new Exception($"{nameof(rentPhaseResultString)} is null.");
+                }
+            }
+
+            JsonDocument jsonDocument = JsonDocument.Parse(rentPhaseResultString);
+            foreach (JsonElement o in jsonDocument.RootElement.EnumerateArray())
             {
                 int age = o.GetProperty("Age").GetInt32();
                 decimal yearBegin_cash = o.GetProperty("YearBegin").GetProperty("Cash").GetDecimal();
@@ -102,6 +116,7 @@ namespace RentSimS.Clients
                 protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
             }
 
+            var rentPhaseResult = new RentPhaseResult();
             rentPhaseResult.rate_perMonth = -protocolWriter.Protocol.Single(x => x.age == ageStart).TotalDeposits / 12m;
 
             return rentPhaseResult;

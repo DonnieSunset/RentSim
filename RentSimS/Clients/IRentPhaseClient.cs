@@ -14,6 +14,6 @@ namespace RentSimS.Clients
             SavingPhaseResult savingPhaseResult,
             LaterNeedsResult laterNeedsResult,
             StateRentResult stateRentResult,
-            IProtocolWriter protocolWriter, IFinanceMathClient financeMathClient);
+            IProtocolWriter protocolWriter);
     }
 }

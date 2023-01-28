@@ -59,9 +59,9 @@
     <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@totalSavings"/> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @ageStopWork:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <TextEdit ReadOnly="true" @bind-Text="Result_MonthlyRateStopWorkPhase" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_MonthlyRateStopWorkPhase" /> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @lifeAssumptions.ageRentStart:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <TextEdit ReadOnly="true" @bind-Text="@Result_MonthlyRateRentPhase" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_MonthlyRateRentPhase" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Monthly Needs"></Divider>
@@ -154,7 +154,6 @@
 </Row>
 
 @code{
-    //SavingPhaseClient savingPhaseFacade;
     IFinanceMathClient myFinanceMathClient;
     ISavingPhaseClient mySavingPhaseClient;
     IRentPhaseClient myRentPhaseClient;
@@ -169,24 +168,24 @@
     decimal result_MonthlyRateStopWorkPhase;
     decimal result_MonthlyRateRentPhase;
 
-    private string Result_MonthlyRateStopWorkPhase
-    {
-        get
-        {
-            //return result_MonthlyRateStopWorkPhase.ToString("0:2C") + " €";
-            return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateStopWorkPhase);
-        }
-        set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
-    }
-    private string Result_MonthlyRateRentPhase
-    {
-        get
-        {
-            //return result_MonthlyRateRentPhase.ToString("0:2C") + " €";
-            return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateRentPhase);
-        }
-        set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
-    }
+    //private string Result_MonthlyRateStopWorkPhase
+    //{
+    //    get
+    //    {
+    //        //return result_MonthlyRateStopWorkPhase.ToString("0:2C") + " €";
+    //        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateStopWorkPhase);
+    //    }
+    //    set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
+    //}
+    //private string Result_MonthlyRateRentPhase
+    //{
+    //    get
+    //    {
+    //        //return result_MonthlyRateRentPhase.ToString("0:2C") + " €";
+    //        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateRentPhase);
+    //    }
+    //    set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
+    //}
 
     BarChart<decimal>? barChart;
     LineChart<decimal>? lineChart;
@@ -261,8 +260,7 @@
             savingPhaseResult,
             laterNeedsResult,
             stateRentResult,
-            protocolWriter,
-            myFinanceMathClient
+            protocolWriter
         );
 
 

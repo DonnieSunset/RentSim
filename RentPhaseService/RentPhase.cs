@@ -1,3 +1,6 @@
+using RentPhaseService.Clients;
+using RentPhaseService.Contracts;
+
 namespace RentPhaseService
 {
     public class RentPhase
@@ -32,6 +35,35 @@ namespace RentPhaseService
 
             decimal result = linearRentPerYear * numYearsToAgeInQuestion + netRentAgeCurrent;
             return result;
+        }
+
+        public async Task<string> Simulate(
+                int ageStart,
+                int ageEnd,
+                decimal totalRateNeeded_perYear,
+                decimal capitalCash, double growthRateCash,
+                decimal capitalStocks, double growthRateStocks,
+                decimal capitalMetals, double growthRateMetals,
+                IFinanceMathClient financeMathClient)
+        {
+            decimal capitalTotal = capitalCash + capitalStocks + capitalMetals;
+            double factorCash = (double)(capitalCash / capitalTotal);
+            double factorStocks = (double)(capitalStocks / capitalTotal);
+            double factorMetals = (double)(capitalMetals / capitalTotal);
+
+            var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(
+                   totalRateNeeded_perYear,
+                   factorCash,
+                   growthRateCash,
+                   factorStocks,
+                   growthRateStocks,
+                   factorMetals,
+                   growthRateMetals,
+                   0,
+                   ageStart,
+                   ageEnd);
+
+            return rentPhaseResultString;
         }
     }
 }
