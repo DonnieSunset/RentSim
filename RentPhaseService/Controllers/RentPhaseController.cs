@@ -67,6 +67,7 @@ namespace RentPhaseService.Controllers
             // 'result' delivers a correct json as string. However, if we just sent it here as string (i.e. as IResult),
             // the consumer will receive a JSON string with escape characters, which then is not parsable anymore.
             // So we deserialize and serialize it again :(
+            //return new JsonResult(result);
             var jo = JsonSerializer.Deserialize<object>(result);
             return new JsonResult(jo, new JsonSerializerOptions { WriteIndented = true });
         }

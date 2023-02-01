@@ -3,7 +3,7 @@ using RentPhaseService.Contracts;
 
 namespace RentPhaseService
 {
-    public class RentPhase
+    public class RentPhase : IRentPhase
     {
         public decimal ApproxStateRent(int ageCurrent, decimal netRentAgeCurrent, int ageRentStart, decimal netRentAgeRentStart, int ageInQuestion)
         {

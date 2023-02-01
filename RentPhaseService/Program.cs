@@ -1,3 +1,4 @@
+using RentPhaseService;
 using RentPhaseService.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,12 +11,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
+builder.Services.AddSingleton<IRentPhase, RentPhase>();
+
+
 var configBuiler = new ConfigurationBuilder()
             //.SetBasePath(app.Environment.ContentRootPath)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 var config = configBuiler.Build();
-var financeMathClientURL = config.GetValue<string>("FinanceMathClient:url");
 
+var financeMathClientURL = config.GetValue<string>("FinanceMathClient:url");
 builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathClientURL));
 
 var app = builder.Build();
@@ -25,6 +29,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
 }
 
 app.UseHttpsRedirection();

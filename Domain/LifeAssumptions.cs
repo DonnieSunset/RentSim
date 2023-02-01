@@ -10,20 +10,20 @@
         public int ageRentStart = 67;
         public int ageEnd = 80;
 
-        public int stocks = 106256;
+        public int stocks = 118033;
         public int stocksGrowthRate = 5;
         public int stocksSaveAmountPerMonth = 700;
 
-        public int cash = 46000;
+        public int cash = 44000;
         public int cashGrowthRate = 0;
         public int cashSaveAmountPerMonth = 371;
 
-        public int metals = 21100;
+        public int metals = 21200;
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 
-        public decimal needsCurrentAgeMinimal_perMonth = 1900;
-        public decimal needsCurrentAgeComfort_perMonth = 2900;
+        public decimal needsCurrentAgeMinimal_perMonth = 2000;
+        public decimal needsCurrentAgeComfort_perMonth = 3000;
 
         public double inflationRate = 0.03d;
 

@@ -32,6 +32,7 @@ builder.Services.AddSingleton<ISavingPhaseClient>(new SavingPhaseClient(savingPh
 builder.Services.AddSingleton<IRentPhaseClient>(new RentPhaseClient(rentPhaseServiceURL));
 
 
+
 builder.Services
     .AddBlazorise(options =>
     {
