@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RentPhaseService.Clients;
+using RentPhaseService.DTOs;
 using System.Text.Json;
 
 namespace RentPhaseService_Tests
@@ -31,9 +32,8 @@ namespace RentPhaseService_Tests
             var response = await SendToClient(url);
 
             var rentPhaseResultString = await response.Content.ReadAsStringAsync();
-            var parsedJson = JsonDocument.Parse(rentPhaseResultString);
 
-            Assert.That(parsedJson.RootElement.ValueKind == JsonValueKind.Array, "WebApi response must be valid Json.");
+            Assert.That(() => JsonDocument.Parse(rentPhaseResultString), Throws.Nothing, "WebApi response must be valid Json.");
         }
 
         private async Task<HttpResponseMessage?> SendToClient(string url)
@@ -76,12 +76,13 @@ namespace RentPhaseService_Tests
             }
         }
 
-        private string ValidFinancialMathServiceResponse
+        private SimulationResultDTO ValidFinancialMathServiceResponse
         {
             get
             {
-                return """
-                            [
+                string resultJson = """
+                            {
+                            "Entries": [
                             {
                             "Age": 60,
                             "YearBegin": {
@@ -101,7 +102,9 @@ namespace RentPhaseService_Tests
                             }
                             }
                             ]
+                            }
                             """;
+                return JsonSerializer.Deserialize<SimulationResultDTO>(resultJson);
             }
         }
     }
