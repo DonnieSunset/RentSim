@@ -97,20 +97,26 @@ namespace FinanceMathService_Tests
 
 
         // todo: das hier wäre ein kandidat für data driven tests, da gibts doch frameworks dafür
-        [TestCase(200, 1/7d, 3, 2/7d, 1.5, 4/7d, 2, 5000, 50, 60)]
-        public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, double faktorCash, double zinsCash, double faktorStocks, double zinsStocks, double faktorMetals, double zinsMetals, decimal endBetrag, int yearStart, int yearEnd)
+        [TestCase(200, 7000, 12000, 2000, 0.1, 8, 2, 5000, 50, 60)]
+        public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endBetrag, int yearStart, int yearEnd)
         {
             int anzahlJahre = yearEnd - yearStart;
 
             decimal startCapital = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 totalRatePerYear,
-                faktorCash, faktorStocks, faktorMetals,
-                zinsCash, zinsStocks, zinsMetals,
+                betrag_cash, betrag_stocks, betrag_metals,
+                zins_cash, zins_stocks, zins_metals,
                 endBetrag,
                 yearStart, yearEnd,
                 out _);
 
             decimal restbetrag = startCapital;
+
+            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            decimal faktorCash = betrag_cash / gesamtBetrag;
+            decimal faktorStocks = betrag_stocks / gesamtBetrag;
+            decimal faktorMetals = betrag_metals / gesamtBetrag;
+
             for (int i = 0; i < anzahlJahre; i++)
             {
                 // rate runter
@@ -122,16 +128,16 @@ namespace FinanceMathService_Tests
                 decimal anteilBetrag3 = (decimal)faktorMetals * restbetrag;
                 Assert.That(anteilBetrag1 + anteilBetrag2 + anteilBetrag3, Is.EqualTo(restbetrag).Within(0.001), "all part amounts should sum up to total amount.");
 
-                anteilBetrag1 *= (decimal)(1 + (zinsCash / 100d));
-                anteilBetrag2 *= (decimal)(1 + (zinsStocks / 100d));
-                anteilBetrag3 *= (decimal)(1 + (zinsMetals / 100d));
+                anteilBetrag1 *= 1 + (zins_cash / 100m);
+                anteilBetrag2 *= 1 + (zins_stocks / 100m);
+                anteilBetrag3 *= 1 + (zins_metals / 100m);
 
                 restbetrag = anteilBetrag1 + anteilBetrag2 + anteilBetrag3;
 
                 //faktoren neu berechnen da sich durch die unterschiedlichen zinssätze die asset zusammensetzung geändert hat
-                faktorCash = (double)(anteilBetrag1 / restbetrag);
-                faktorStocks = (double)(anteilBetrag2 / restbetrag);
-                faktorMetals = (double)(anteilBetrag3 / restbetrag);
+                faktorCash = anteilBetrag1 / restbetrag;
+                faktorStocks = anteilBetrag2 / restbetrag;
+                faktorMetals = anteilBetrag3 / restbetrag;
             }
 
             Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount should be reached.");

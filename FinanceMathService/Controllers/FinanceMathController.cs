@@ -45,14 +45,14 @@ namespace FinanceMathService.Controllers
 
         [HttpGet("StartCapitalByNumericalSparkassenformel")]
         [Produces("application/json")]
-        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, decimal amount_cash, decimal zins_cash, decimal amount_stocks, decimal zins_stocks, decimal amount_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
             SimulationResultDTO proto;
             decimal result = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 rateTotal_perYear,
-                factor_cash, factor_stocks, factor_metals,
+                amount_cash, amount_stocks, amount_metals,
                 zins_cash, zins_stocks, zins_metals,
                 endbetrag,
                 yearStart, yearEnd, 

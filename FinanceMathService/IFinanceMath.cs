@@ -19,12 +19,12 @@ namespace FinanceMathService
 
         public decimal StartCapitalByNumericalSparkassenformel(
             decimal rateTotal_perYear,
-            double factor_cash,
-            double factor_stocks,
-            double factor_metals,
-            double zinsRate_cash,
-            double zinsRate_stocks,
-            double zinsRate_metals,
+            decimal betrag_cash,
+            decimal betrag_stocks,
+            decimal betrag_metals,
+            decimal zinsRate_cash,
+            decimal zinsRate_stocks,
+            decimal zinsRate_metals,
             decimal endbetrag,
             int yearStart, int yearEnd,
             out SimulationResultDTO protocol);

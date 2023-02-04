@@ -176,18 +176,23 @@ namespace FinanceMathService
         }
 
         public decimal StartCapitalByNumericalSparkassenformel(
-            decimal rateTotal_perYear, 
-            double factor_cash, 
-            double factor_stocks, 
-            double factor_metals, 
-            double zinsRate_cash, 
-            double zinsRate_stocks,
-            double zinsRate_metals,
+            decimal rateTotal_perYear,
+            decimal betrag_cash,
+            decimal betrag_stocks,
+            decimal betrag_metals,
+            decimal zinsRate_cash,
+            decimal zinsRate_stocks,
+            decimal zinsRate_metals,
             decimal endbetrag, 
             int yearStart, int yearEnd,
             out SimulationResultDTO protocol)
         {
-            if (Math.Abs(factor_cash + factor_stocks + factor_metals - 1) > 0.0001)
+            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            decimal factor_cash = betrag_cash / gesamtBetrag;
+            decimal factor_stocks = betrag_stocks / gesamtBetrag;
+            decimal factor_metals = betrag_metals / gesamtBetrag;
+
+            if (Math.Abs(factor_cash + factor_stocks + factor_metals - 1m) > 0.0001m)
             {
                 throw new ArgumentException("Zinsen dont sum up to 1");
             }
@@ -216,9 +221,9 @@ namespace FinanceMathService
                 decimal restAnteil_metals = (decimal)factor_metals * restBetrag;
 
                 //Faktoren müssen dynamisch sein, da aich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
-                double factorCashDyn = factor_cash;
-                double factorStocksDyn = factor_stocks;
-                double factorMetalsDyn = factor_metals;
+                decimal factorCashDyn = factor_cash;
+                decimal factorStocksDyn = factor_stocks;
+                decimal factorMetalsDyn = factor_metals;
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
@@ -237,9 +242,9 @@ namespace FinanceMathService
                     restAnteil_metals -= rate_metals;
 
                     // zinsen drauf
-                    decimal zinsen_cash = restAnteil_cash * ((decimal)zinsRate_cash / 100m);
-                    decimal zinsen_stocks = restAnteil_stocks * ((decimal)zinsRate_stocks / 100m);
-                    decimal zinsen_metals = restAnteil_metals * ((decimal)zinsRate_metals / 100m);
+                    decimal zinsen_cash = restAnteil_cash * (zinsRate_cash / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks * (zinsRate_stocks / 100m);
+                    decimal zinsen_metals = restAnteil_metals * (zinsRate_metals / 100m);
 
                     restAnteil_cash += zinsen_cash;
                     restAnteil_stocks += zinsen_stocks;
@@ -247,9 +252,9 @@ namespace FinanceMathService
 
                     restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
 
-                    factorCashDyn = (double)(restAnteil_cash / restBetrag);
-                    factorStocksDyn = (double)(restAnteil_stocks / restBetrag);
-                    factorMetalsDyn = (double)(restAnteil_metals / restBetrag);
+                    factorCashDyn = restAnteil_cash / restBetrag;
+                    factorStocksDyn = restAnteil_stocks / restBetrag;
+                    factorMetalsDyn = restAnteil_metals / restBetrag;
 
                     protocol.Entities.Add(
                         new SimulationResultDTO.Entity
