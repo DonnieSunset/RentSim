@@ -2,6 +2,7 @@
 using Finance.Results;
 using Microsoft.AspNetCore.Mvc;
 using Protocol;
+using RentSimS.DTOs;
 using SavingPhaseService.Contracts;
 using System;
 using System.Globalization;
@@ -76,7 +77,7 @@ namespace RentSimS.Clients
                 $"&capitalMetals={savingPhaseResult.savingsMetals.ToString(CultureInfo.InvariantCulture)}" +
                 $"&growthRateMetals={growRateMetals.ToString(CultureInfo.InvariantCulture)}";
 
-            string rentPhaseResultString;
+            SimulationResultDTO objResponse;
             using (var httpClient = new HttpClient())
             {
                 HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
@@ -85,35 +86,19 @@ namespace RentSimS.Clients
                     throw new Exception($"Http response error: {response.Content}.");
                 }
 
-                rentPhaseResultString = await response.Content.ReadAsStringAsync();
-                if (rentPhaseResultString == null)
-                {
-                    throw new Exception($"{nameof(rentPhaseResultString)} is null.");
-                }
+                objResponse = await response.Content.ReadFromJsonAsync<SimulationResultDTO>();
             }
 
-            JsonDocument jsonDocument = JsonDocument.Parse(rentPhaseResultString);
-            foreach (JsonElement o in jsonDocument.RootElement.EnumerateArray())
+            foreach (var entry in objResponse.Entities) 
             {
-                int age = o.GetProperty("Age").GetInt32();
-                decimal yearBegin_cash = o.GetProperty("YearBegin").GetProperty("Cash").GetDecimal();
-                decimal yearBegin_stocks = o.GetProperty("YearBegin").GetProperty("Stocks").GetDecimal();
-                decimal yearBegin_metals = o.GetProperty("YearBegin").GetProperty("Metals").GetDecimal();
-                decimal rate_cash = o.GetProperty("Rates").GetProperty("Cash").GetDecimal();
-                decimal rate_stocks = o.GetProperty("Rates").GetProperty("Stocks").GetDecimal();
-                decimal rate_metals = o.GetProperty("Rates").GetProperty("Metals").GetDecimal();
-                decimal zins_cash = o.GetProperty("Zins").GetProperty("Cash").GetDecimal();
-                decimal zins_stocks = o.GetProperty("Zins").GetProperty("Stocks").GetDecimal();
-                decimal zins_metals = o.GetProperty("Zins").GetProperty("Metals").GetDecimal();
-
-                // this if is only necessary because we dont have a stopwork phase. Delete it once all phases are integrated in the correct order.
-                if (age == ageStart)
+                if (entry.Age == ageStart)
                 {
-                    protocolWriter.LogBalanceYearBegin(age, yearBegin_cash, yearBegin_stocks, yearBegin_metals);
+                    protocolWriter.LogBalanceYearBegin(entry.Age, entry.YearBegin.Cash, entry.YearBegin.Stocks, entry.YearBegin.Metals);
                 }
-                protocolWriter.Log(age, new TransactionDetails { cashDeposit = -rate_cash, cashInterests = zins_cash });
-                protocolWriter.Log(age, new TransactionDetails { stockDeposit = -rate_stocks, stockInterests = zins_stocks });
-                protocolWriter.Log(age, new TransactionDetails { metalDeposit = -rate_metals, metalInterests = zins_metals });
+
+                protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = -entry.Rates.Cash, cashInterests = entry.Zins.Cash });
+                protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = -entry.Rates.Stocks, stockInterests = entry.Zins.Stocks });
+                protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = -entry.Rates.Metals, metalInterests = entry.Zins.Metals });
             }
 
             var rentPhaseResult = new RentPhaseResult();

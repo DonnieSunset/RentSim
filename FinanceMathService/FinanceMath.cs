@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FinanceMathService.DTOs;
 using System.Diagnostics;
-using System.Text.Json;
 
 namespace FinanceMathService
 {
@@ -36,24 +35,7 @@ namespace FinanceMathService
                 return 0;
             }
 
-            //double lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + (totalAmount * stocksCrashFactor)) / stocksCrashFactor;
             double lowRiskAmount = (totalAmount_minNeededAfterCrash - (totalAmount * stocksCrashFactor)) / ( 1- stocksCrashFactor);
-
-            // wenn stocksCrashFactor=1, heisst uberhaut kein crash, man kann also alles auf aktien setzen
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + (totalAmount * stocksCrashFactor)) / stocksCrashFactor
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + (totalAmount * 1)) / 1
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + totalAmount )
-            // lowRiskAmount = totalAmount_minNeededAfterCrash
-            // das kann nicht sein, eigentlich müsste 0 rauskommen
-
-            // wenn stocksCrashFactor=0, heisst kompletter crash, man muss also mindestens den mindestbetrag auf lowRisk setzen
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + (totalAmount * stocksCrashFactor)) / stocksCrashFactor
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount + (totalAmount * 0)) / 0
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount ) / 0
-            // lowRiskAmount = (totalAmount_minNeededAfterCrash - totalAmount ) / 0
-            // das kann nicht sein, eigentlich müsste totalAmount_minNeededAfterCrash rauskommen
-
-
             double highRiskAmount = totalAmount - lowRiskAmount;
 
             if (highRiskAmount < 0)
@@ -78,12 +60,10 @@ namespace FinanceMathService
             decimal zins_metals,
             decimal endbetrag, 
             int yearStart, int yearEnd,
-            out List<object> protocol)
+            out SimulationResultDTO protocol)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-
-            protocol = new List<object>();
 
             const int MaxIterations = 100;
             const decimal Precision = 0.001m;
@@ -99,7 +79,7 @@ namespace FinanceMathService
             decimal angenommeneRate;
             do
             {
-                protocol.Clear();
+                protocol = new SimulationResultDTO();
                 angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
                 restBetrag = betrag_cash + betrag_stocks + betrag_metals;
@@ -144,28 +124,30 @@ namespace FinanceMathService
                     factorStocksDyn = restAnteil_stocks / restBetrag;
                     factorMetalsDyn = restAnteil_metals / restBetrag;
 
-                    var v = new { 
-                        Age = i,
-                        YearBegin = new
+                    protocol.Entities.Add(
+                        new SimulationResultDTO.Entity
                         {
-                            Cash = yearBegin_cash,
-                            Stocks = yearBegin_stocks,
-                            Metals = yearBegin_metals
-                        },
-                        Rates = new
-                        { 
-                            Cash = rate_cash,
-                            Stocks = rate_stocks,
-                            Metals = rate_metals,
-                        },
-                        Zins = new
-                        {
-                            Cash = zinsen_cash,
-                            Stocks = zinsen_stocks,
-                            Metals = zinsen_metals
+                            Age = i,
+                            YearBegin = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = yearBegin_cash,
+                                Stocks = yearBegin_stocks,
+                                Metals = yearBegin_metals
+                            },
+                            Rates = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = rate_cash,
+                                Stocks = rate_stocks,
+                                Metals = rate_metals,
+                            },
+                            Zins = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = zinsen_cash,
+                                Stocks = zinsen_stocks,
+                                Metals = zinsen_metals
+                            },
                         }
-                    };
-                    protocol.Add(v);
+                    );
                 }
 
                 if (restBetrag >= endbetrag)
@@ -203,7 +185,7 @@ namespace FinanceMathService
             double zinsRate_metals,
             decimal endbetrag, 
             int yearStart, int yearEnd,
-            out List<object> protocol)
+            out SimulationResultDTO protocol)
         {
             if (Math.Abs(factor_cash + factor_stocks + factor_metals - 1) > 0.0001)
             {
@@ -212,8 +194,6 @@ namespace FinanceMathService
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-
-            protocol = new List<object>();
 
             const int MaxIterations = 100;
             const double Precision = 0.001;
@@ -227,7 +207,7 @@ namespace FinanceMathService
             decimal angenommenesStartKapital;
             do
             {
-                protocol.Clear();
+                protocol = new SimulationResultDTO();
                 angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
 
                 restBetrag = angenommenesStartKapital;
@@ -271,25 +251,30 @@ namespace FinanceMathService
                     factorStocksDyn = (double)(restAnteil_stocks / restBetrag);
                     factorMetalsDyn = (double)(restAnteil_metals / restBetrag);
 
-                    var vs = new { 
-                        Age = i, 
-                        YearBegin = new {
-                            Cash = yearBegin_cash, 
-                            Stocks = yearBegin_stocks, 
-                            Metals = yearBegin_metals
-                        },
-                        Rates = new { 
-                            Cash = rate_cash, 
-                            Stocks = rate_stocks, 
-                            Metals = rate_metals
-                        }, 
-                        Zins = new { 
-                            Cash = zinsen_cash,
-                            Stocks = zinsen_stocks,
-                            Metals = zinsen_metals
-                        } 
-                    };
-                    protocol.Add(vs);
+                    protocol.Entities.Add(
+                        new SimulationResultDTO.Entity
+                        {
+                            Age = i,
+                            YearBegin = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = yearBegin_cash,
+                                Stocks = yearBegin_stocks,
+                                Metals = yearBegin_metals
+                            },
+                            Rates = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = rate_cash,
+                                Stocks = rate_stocks,
+                                Metals = rate_metals,
+                            },
+                            Zins = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = zinsen_cash,
+                                Stocks = zinsen_stocks,
+                                Metals = zinsen_metals
+                            },
+                        }
+                    );
                 }
 
                 if (restBetrag < endbetrag)
@@ -305,9 +290,6 @@ namespace FinanceMathService
                 {
                     throw new Exception($"Too many iterations: {numIterations}");
                 }
-
-                //Console.WriteLine($"{nameof(angenommenesStartKapital)}: {angenommenesStartKapital}  //  {nameof(restBetrag)}: {restBetrag}");
-
             } while (Math.Abs(restBetrag - endbetrag) > (decimal)Precision);
 
             Console.WriteLine("Duration: " + sw.Elapsed);

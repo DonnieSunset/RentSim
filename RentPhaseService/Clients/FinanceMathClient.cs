@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using RentPhaseService.DTOs;
+using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace RentPhaseService.Clients
@@ -41,7 +42,7 @@ namespace RentPhaseService.Clients
             }
         }
 
-        public async Task<string> RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<SimulationResultDTO> RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/RateByNumericalSparkassenformel";
@@ -65,17 +66,19 @@ namespace RentPhaseService.Clients
                     throw new Exception($"Http response error: {response.Content}.");
                 }
 
-                var stringResponse = await response.Content.ReadAsStringAsync();
-                if (stringResponse == null)
-                {
-                    throw new Exception($"{nameof(stringResponse)} is null.");
-                }
-                
-                return stringResponse;
+                //var stringResponse = await response.Content.ReadAsStringAsync();
+                //if (stringResponse == null)
+                //{
+                //    throw new Exception($"{nameof(stringResponse)} is null.");
+                //}
+
+                //return stringResponse;
+                var objResponse = await response.Content.ReadFromJsonAsync<SimulationResultDTO>();
+                return objResponse;
             }
         }
 
-        public async Task<string> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<SimulationResultDTO> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/StartCapitalByNumericalSparkassenformel";
@@ -91,7 +94,6 @@ namespace RentPhaseService.Clients
                 $"&yearStart={yearStart}" +
                 $"&yearEnd={yearEnd}"
                 ;
-            
 
             using (var httpClient = new HttpClient())
             {
@@ -118,15 +120,18 @@ namespace RentPhaseService.Clients
                     throw new Exception($"Http response error: {response.Content}.");
                 }
 
-                var stringResponse = await response.Content.ReadAsStringAsync();
-                File.WriteAllText(@"C:\temp\blubb.txt", stringResponse);
-                //var stringResponse = await response.Content.ReadFromJsonAsync< string>();
-                if (stringResponse == null)
-                {
-                    throw new Exception($"{nameof(stringResponse)} is null.");
-                }
+                //var stringResponse = await response.Content.ReadAsStringAsync();
+                //File.WriteAllText(@"C:\temp\blubb.txt", stringResponse);
+                ////var stringResponse = await response.Content.ReadFromJsonAsync< string>();
+                //if (stringResponse == null)
+                //{
+                //    throw new Exception($"{nameof(stringResponse)} is null.");
+                //}
 
-                return stringResponse;
+                //return stringResponse;
+
+                var objResponse = await response.Content.ReadFromJsonAsync<SimulationResultDTO>();
+                return objResponse;
             }
         }
     }

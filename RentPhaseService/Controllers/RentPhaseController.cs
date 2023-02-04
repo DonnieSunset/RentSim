@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentPhaseService.Clients;
 using System.Text.Json;
 using System.IO;
+using RentPhaseService.DTOs;
 
 namespace RentPhaseService.Controllers
 {
@@ -68,8 +69,13 @@ namespace RentPhaseService.Controllers
             // the consumer will receive a JSON string with escape characters, which then is not parsable anymore.
             // So we deserialize and serialize it again :(
             //return new JsonResult(result);
-            var jo = JsonSerializer.Deserialize<object>(result);
-            return new JsonResult(jo, new JsonSerializerOptions { WriteIndented = true });
+
+            //var jo = JsonSerializer.Deserialize<object>(result);
+
+            
+            //var objResult = JsonSerializer.Deserialize<SimulationResultDTO>(result);
+
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

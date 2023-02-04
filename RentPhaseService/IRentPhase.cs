@@ -1,4 +1,5 @@
 ﻿using RentPhaseService.Clients;
+using RentPhaseService.DTOs;
 
 namespace RentPhaseService
 {
@@ -7,7 +8,7 @@ namespace RentPhaseService
     {
         public decimal ApproxStateRent(int ageCurrent, decimal netRentAgeCurrent, int ageRentStart, decimal netRentAgeRentStart, int ageInQuestion);
 
-        public Task<string> Simulate(
+        public Task<SimulationResultDTO> Simulate(
             int ageStart,
             int ageEnd,
             decimal totalRateNeeded_perYear,

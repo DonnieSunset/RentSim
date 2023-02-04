@@ -1,5 +1,5 @@
 using RentPhaseService.Clients;
-using RentPhaseService.Contracts;
+using RentPhaseService.DTOs;
 
 namespace RentPhaseService
 {
@@ -37,7 +37,7 @@ namespace RentPhaseService
             return result;
         }
 
-        public async Task<string> Simulate(
+        public async Task<SimulationResultDTO> Simulate(
                 int ageStart,
                 int ageEnd,
                 decimal totalRateNeeded_perYear,

@@ -1,3 +1,4 @@
+using FinanceMathService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -24,29 +25,13 @@ namespace FinanceMathService.Controllers
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        //[HttpGet("RateByNumericalSparkassenformel")]
-        //[Produces("application/json")]
-        //public JsonResult RateByNumericalSparkassenformel(double betrag1, double zins1, double betrag2, double zins2, double endbetrag, int yearStart, int yearEnd)
-        //{
-        //    HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-        //    double result = myFinanceMath.RateByNumericalSparkassenformel(
-        //        new List<double> { betrag1, betrag2 },
-        //        new List<double> { zins1, zins2 },
-        //        endbetrag,
-        //        yearStart, yearEnd
-        //    );
-
-        //    return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
-        //}
-
         [HttpGet("RateByNumericalSparkassenformel")]
         [Produces("application/json")]
         public JsonResult RateByNumericalSparkassenformel(decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             
-            List<object> proto;
+            SimulationResultDTO proto;
             decimal result = myFinanceMath.RateByNumericalSparkassenformel(
                 betrag_cash, betrag_stocks, betrag_metals,
                 zins_cash, zins_stocks, zins_metals,
@@ -64,7 +49,7 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            List<object> proto;
+            SimulationResultDTO proto;
             decimal result = myFinanceMath.StartCapitalByNumericalSparkassenformel(
                 rateTotal_perYear,
                 factor_cash, factor_stocks, factor_metals,
