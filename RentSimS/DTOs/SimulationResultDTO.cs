@@ -10,7 +10,7 @@
         }
 
         public record Entity
-        { 
+        {
             public int Age { get; init; }
             public AssetsDTO YearBegin { get; init; }
             public AssetsDTO Rates { get; init; }

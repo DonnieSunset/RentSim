@@ -1,6 +1,4 @@
-﻿using SavingPhaseService.Clients;
-using SavingPhaseService.Contracts;
-using SavingPhaseService.Controllers;
+﻿using SavingPhaseService.DTOs;
 
 namespace SavingPhaseService
 {
@@ -8,28 +6,6 @@ namespace SavingPhaseService
     {
         public const decimal CAPITAL_YIELDS_TAX_FACTOR = 0.26m;
         public const decimal TAX_FREE_AMOUNT_PER_YEAR = 1000;
-
-        public async Task<decimal> Calculate(
-           int ageFrom,
-           int ageTo,
-           decimal startCapital,
-           int growthRate,
-           decimal saveAmountPerMonth,
-           bool capitalYieldsTax,
-           IFinanceMathClient financeMathClient
-           )
-        {
-            int duration = ageTo - ageFrom;
-            if (duration == 0)
-            {
-                return startCapital;
-            }
-
-            double interestFactor = 1 + (growthRate / 100d);
-            decimal result = await financeMathClient.GetSparkassenFormelAsync(startCapital, saveAmountPerMonth * 12, interestFactor, duration);
-
-            return result;
-        }
 
         public SavingPhaseServiceResult Simulate(
             int ageFrom,
@@ -53,7 +29,7 @@ namespace SavingPhaseService
                 decimal savings = saveAmountPerMonth * 12;
                 currentCapital += savings;
 
-                //pay taxes
+                // pay taxes
                 decimal taxes = 0;
                 if (capitalYieldsTax)
                 {
@@ -68,6 +44,7 @@ namespace SavingPhaseService
 
                 result.Entities.Add(new SavingPhaseServiceResult.Entity() { Age = age, Interests = interests, Deposit = savings, Taxes = taxes });
             }
+            result.FinalSavings = currentCapital;
 
             return result;
         }

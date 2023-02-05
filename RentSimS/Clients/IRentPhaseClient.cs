@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Finance.Results;
 using Protocol;
+using RentSimS.DTOs;
 
 namespace RentSimS.Clients
 {

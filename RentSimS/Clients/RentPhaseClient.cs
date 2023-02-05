@@ -1,13 +1,7 @@
-﻿using Domain;
-using Finance.Results;
-using Microsoft.AspNetCore.Mvc;
+﻿using Finance.Results;
 using Protocol;
 using RentSimS.DTOs;
-using SavingPhaseService.Contracts;
-using System;
 using System.Globalization;
-using System.IO;
-using System.Text.Json;
 
 namespace RentSimS.Clients
 {

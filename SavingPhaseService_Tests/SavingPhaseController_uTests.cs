@@ -1,7 +1,5 @@
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SavingPhaseService.Controllers;
 using SavingPhaseService;
 using SavingPhaseService.Clients;
 
@@ -10,7 +8,7 @@ namespace SavingPhaseService_Tests
     public class SavingPhaseController_uTests
     {
         [TestCase(42, 60, 160000, 3, 1000, 553362.51)]
-        public void Calculate_BasicInputValues_CorrectCalculation(
+        public void Simulate_BasicInputValues_CorrectSavingResult(
             int ageCurrent,
             int ageStopWork,
             decimal startCapital,
@@ -25,16 +23,16 @@ namespace SavingPhaseService_Tests
                 .Setup(x => x.GetSparkassenFormelAsync(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<double>(), It.IsAny<int>()))
                 .ReturnsAsync(553362.514294344m);
 
-            var actualResult = savingPhase.Calculate(
+            var actualResult = savingPhase.Simulate(
                 ageCurrent,
                 ageStopWork,
                 startCapital,
                 growthRate,
                 saveAmountPerMonth,
-                mockedFinanceMathClient.Object
-                ).Result;
+                false
+                );
 
-            Assert.That(actualResult, Is.EqualTo(expectedResult).Within(0.01));
+            Assert.That(actualResult.FinalSavings, Is.EqualTo(expectedResult).Within(0.01));
         }
     }
 }

@@ -61,12 +61,12 @@ namespace RentPhaseService_Tests
                 mockedFinanceMathClient
                     .Setup(x => x.StartCapitalByNumericalSparkassenformel(
                         It.IsAny<decimal>(), 
-                        It.IsAny<double>(), 
-                        It.IsAny<double>(), 
-                        It.IsAny<double>(), 
-                        It.IsAny<double>(), 
-                        It.IsAny<double>(), 
-                        It.IsAny<double>(), 
+                        It.IsAny<decimal>(), 
+                        It.IsAny<decimal>(), 
+                        It.IsAny<decimal>(), 
+                        It.IsAny<decimal>(), 
+                        It.IsAny<decimal>(), 
+                        It.IsAny<decimal>(), 
                         It.IsAny<decimal>(), 
                         It.IsAny<int>(), 
                         It.IsAny<int>()))

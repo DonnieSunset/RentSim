@@ -1,12 +1,10 @@
-﻿using Finance.Results;
-using Protocol;
-using SavingPhaseService.Contracts;
+﻿using Protocol;
+using RentSimS.DTOs;
 
 namespace RentSimS.Clients
 {
     public interface ISavingPhaseClient
     {
-        public Task<decimal> GetSavingPhaseResultAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth, bool capitalYieldsTax);
         public Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth, bool capitalYieldsTax);
 
         public Task<SavingPhaseResult> GetAndLogSavingPhase(

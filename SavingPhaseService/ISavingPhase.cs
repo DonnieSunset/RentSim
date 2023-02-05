@@ -1,19 +1,10 @@
 ﻿using SavingPhaseService.Clients;
-using SavingPhaseService.Contracts;
+using SavingPhaseService.DTOs;
 
 namespace SavingPhaseService
 {
     public interface ISavingPhase
     {
-        public Task<decimal> Calculate(
-           int ageFrom,
-           int ageTo,
-           decimal startCapital,
-           int growthRate,
-           decimal saveAmountPerMonth,
-           bool capitalYieldsTax,
-           IFinanceMathClient financeMathClient
-           );
 
         public SavingPhaseServiceResult Simulate(
             int ageFrom,

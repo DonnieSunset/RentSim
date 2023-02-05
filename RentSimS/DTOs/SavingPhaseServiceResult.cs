@@ -1,7 +1,9 @@
-﻿namespace SavingPhaseService.Contracts
+﻿namespace RentSimS.DTOs
 {
     public class SavingPhaseServiceResult
     {
+        public decimal FinalSavings { get; set; }
+
         public record Entity
         { 
             public int Age { get; init; }

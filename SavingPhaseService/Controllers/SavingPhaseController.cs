@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SavingPhaseService.Clients;
-using SavingPhaseService.Contracts;
+using SavingPhaseService.DTOs;
 using System.Text.Json;
 
 namespace SavingPhaseService.Controllers
@@ -29,33 +29,6 @@ namespace SavingPhaseService.Controllers
             _serviceProvider = serviceProvider;
 
             mySavingPhase = new SavingPhase();
-        }
-
-        [HttpGet("Calculate")]
-        [Produces("application/json")]
-        public async Task<JsonResult> CalculateAsync(
-            int ageFrom,
-            int ageTo,
-            decimal startCapital,
-            int growthRate,
-            decimal saveAmountPerMonth,
-            bool capitalYieldsTax
-            )
-        {
-            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-            var myMathClient = _serviceProvider.GetService<IFinanceMathClient>();
-
-            decimal result = await mySavingPhase.Calculate(
-                ageFrom,
-                ageTo,
-                startCapital,
-                growthRate,
-                saveAmountPerMonth,
-                capitalYieldsTax,
-                myMathClient);
-
-            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true }); ;
         }
 
         [HttpGet("Simulate")]
