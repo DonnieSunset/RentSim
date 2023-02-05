@@ -38,30 +38,30 @@ namespace RentPhaseService
         }
 
         public async Task<SimulationResultDTO> Simulate(
-                int ageStart,
-                int ageEnd,
+                int ageFrom,
+                int ageTo,
                 decimal totalRateNeeded_perYear,
-                decimal capitalCash, double growthRateCash,
-                decimal capitalStocks, double growthRateStocks,
-                decimal capitalMetals, double growthRateMetals,
+                decimal capitalCash, decimal growthRateCash,
+                decimal capitalStocks, decimal growthRateStocks,
+                decimal capitalMetals, decimal growthRateMetals,
                 IFinanceMathClient financeMathClient)
         {
-            decimal capitalTotal = capitalCash + capitalStocks + capitalMetals;
-            double factorCash = (double)(capitalCash / capitalTotal);
-            double factorStocks = (double)(capitalStocks / capitalTotal);
-            double factorMetals = (double)(capitalMetals / capitalTotal);
+            //decimal capitalTotal = capitalCash + capitalStocks + capitalMetals;
+            //double factorCash = (double)(capitalCash / capitalTotal);
+            //double factorStocks = (double)(capitalStocks / capitalTotal);
+            //double factorMetals = (double)(capitalMetals / capitalTotal);
 
             var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(
                    totalRateNeeded_perYear,
-                   factorCash,
+                   capitalCash,
                    growthRateCash,
-                   factorStocks,
+                   capitalStocks,
                    growthRateStocks,
-                   factorMetals,
+                   capitalMetals,
                    growthRateMetals,
                    0,
-                   ageStart,
-                   ageEnd);
+                   ageFrom,
+                   ageTo);
 
             return rentPhaseResultString;
         }

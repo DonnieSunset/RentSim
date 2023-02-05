@@ -11,13 +11,17 @@ namespace SavingPhaseService
            decimal startCapital,
            int growthRate,
            decimal saveAmountPerMonth,
-           IFinanceMathClient financeMathClient);
+           bool capitalYieldsTax,
+           IFinanceMathClient financeMathClient
+           );
 
-        public SimulationResult Simulate(
+        public SavingPhaseServiceResult Simulate(
             int ageFrom,
             int ageTo,
             decimal startCapital,
-            int growthRate,
-            decimal saveAmountPerMonth);
+            decimal growthRate,
+            decimal saveAmountPerMonth,
+            bool capitalYieldsTax
+            );
     }
 }

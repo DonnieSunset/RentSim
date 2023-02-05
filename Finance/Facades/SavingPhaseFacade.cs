@@ -43,7 +43,7 @@ namespace Finance.Facades
             return result;
         }
 
-        public async Task<SimulationResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth)
+        public async Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth)
         {
             var ub = new UriBuilder("https://localhost:44324");
             ub.Path = "SavingPhase/Simulate";
@@ -60,7 +60,7 @@ namespace Finance.Facades
                 throw new Exception($"Http response error: {response.Content}.");
             }
 
-            var jsonResponse = await response.Content.ReadFromJsonAsync<SimulationResult>();
+            var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResult>();
             if (jsonResponse == null)
             {
                 throw new Exception($"{nameof(jsonResponse)} is null.");

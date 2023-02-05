@@ -67,8 +67,8 @@ namespace RentSimS.Clients
             var ub = new UriBuilder(myUrl);
             ub.Path = "RentPhase/Simulate";
             ub.Query = 
-                $"?ageStart={ageStart}" +
-                $"&ageEnd={ageEnd}" +
+                $"?ageFrom={ageStart}" +
+                $"&ageTo={ageEnd}" +
                 $"&totalRateNeeded_perYear={rateNeeded.ToString(CultureInfo.InvariantCulture)}" +
                 $"&capitalCash={savingPhaseResult.savingsCash.ToString(CultureInfo.InvariantCulture)}" +
                 $"&growthRateCash={growRateCash.ToString(CultureInfo.InvariantCulture)}" +
@@ -96,9 +96,9 @@ namespace RentSimS.Clients
                     protocolWriter.LogBalanceYearBegin(entry.Age, entry.YearBegin.Cash, entry.YearBegin.Stocks, entry.YearBegin.Metals);
                 }
 
-                protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = -entry.Rates.Cash, cashInterests = entry.Zins.Cash });
-                protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = -entry.Rates.Stocks, stockInterests = entry.Zins.Stocks });
-                protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = -entry.Rates.Metals, metalInterests = entry.Zins.Metals });
+                protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = -entry.Rates.Cash, cashInterests = entry.Zins.Cash, cashTaxes = entry.Taxes.Cash });
+                protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = -entry.Rates.Stocks, stockInterests = entry.Zins.Stocks, stockTaxes = entry.Taxes.Stocks });
+                protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = -entry.Rates.Metals, metalInterests = entry.Zins.Metals, metalTaxes = entry.Taxes.Metals });
             }
 
             var rentPhaseResult = new RentPhaseResult();

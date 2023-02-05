@@ -46,18 +46,18 @@ namespace RentPhaseService.Controllers
         [HttpGet("Simulate")]
         [Produces("application/json")]
         public async Task<JsonResult> Simulate(
-            int ageStart,
-            int ageEnd,
+            int ageFrom,
+            int ageTo,
             decimal totalRateNeeded_perYear,
-            decimal capitalCash, double growthRateCash,
-            decimal capitalStocks, double growthRateStocks,
-            decimal capitalMetals, double growthRateMetals)
+            decimal capitalCash, decimal growthRateCash,
+            decimal capitalStocks, decimal growthRateStocks,
+            decimal capitalMetals, decimal growthRateMetals)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
             var result = await myRentPhase.Simulate(
-                ageStart,
-                ageEnd,
+                ageFrom,
+                ageTo,
                 totalRateNeeded_perYear,
                 capitalCash, growthRateCash,
                 capitalStocks, growthRateStocks,

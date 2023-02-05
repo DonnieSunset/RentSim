@@ -15,6 +15,7 @@
             public AssetsDTO YearBegin { get; init; }
             public AssetsDTO Rates { get; init; }
             public AssetsDTO Zins { get; init; }
+            public AssetsDTO Taxes { get; init; }
         }
 
         public List<Entity> Entities { get; init; }

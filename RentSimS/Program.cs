@@ -1,11 +1,7 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.DependencyInjection;
 using RentSimS.Clients;
-using RentSimS.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<WeatherForecastService>();
 
 var configBuiler = new ConfigurationBuilder()
             //.SetBasePath(app.Environment.ContentRootPath)

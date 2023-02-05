@@ -12,7 +12,6 @@ namespace SavingPhaseService_Tests
         /// <summary>
         /// Both work without parameters becasue calculation is even possible with default (0) values.
         /// </summary>
-        [TestCase("/SavingPhase/Calculate")]
         [TestCase("/SavingPhase/Simulate")]
         public async Task ReturnSuccessStatusCode(string url)
         {

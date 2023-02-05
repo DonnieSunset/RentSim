@@ -78,17 +78,17 @@ namespace RentPhaseService.Clients
             }
         }
 
-        public async Task<SimulationResultDTO> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, double factor_cash, double zins_cash, double factor_stocks, double zins_stocks, double factor_metals, double zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<SimulationResultDTO> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/StartCapitalByNumericalSparkassenformel";
             ub.Query =
                 $"?rateTotal_perYear={rateTotal_perYear.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor_cash={factor_cash.ToString(CultureInfo.InvariantCulture)}" +
+                $"&amount_cash={betrag_cash.ToString(CultureInfo.InvariantCulture)}" +
                 $"&zins_cash={zins_cash.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor_stocks={factor_stocks.ToString(CultureInfo.InvariantCulture)}" +
+                $"&amount_stocks={betrag_stocks.ToString(CultureInfo.InvariantCulture)}" +
                 $"&zins_stocks={zins_stocks.ToString(CultureInfo.InvariantCulture)}" +
-                $"&factor_metals={factor_metals.ToString(CultureInfo.InvariantCulture)}" +
+                $"&amount_metals={betrag_metals.ToString(CultureInfo.InvariantCulture)}" +
                 $"&zins_metals={zins_metals.ToString(CultureInfo.InvariantCulture)}" +
                 $"&endbetrag={endbetrag.ToString(CultureInfo.InvariantCulture)}" +
                 $"&yearStart={yearStart}" +

@@ -38,7 +38,9 @@ namespace SavingPhaseService.Controllers
             int ageTo,
             decimal startCapital,
             int growthRate,
-            decimal saveAmountPerMonth)
+            decimal saveAmountPerMonth,
+            bool capitalYieldsTax
+            )
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
@@ -50,6 +52,7 @@ namespace SavingPhaseService.Controllers
                 startCapital,
                 growthRate,
                 saveAmountPerMonth,
+                capitalYieldsTax,
                 myMathClient);
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true }); ;
@@ -62,16 +65,20 @@ namespace SavingPhaseService.Controllers
             int ageTo,
             decimal startCapital,
             int growthRate,
-            decimal saveAmountPerMonth)
+            decimal saveAmountPerMonth,
+            bool capitalYieldsTax
+            )
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            SimulationResult result = mySavingPhase.Simulate(
+            SavingPhaseServiceResult result = mySavingPhase.Simulate(
                 ageFrom,
                 ageTo,
                 startCapital,
                 growthRate,
-                saveAmountPerMonth);
+                saveAmountPerMonth,
+                capitalYieldsTax
+                );
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }

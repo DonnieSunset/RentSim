@@ -9,12 +9,12 @@ namespace RentPhaseService
         public decimal ApproxStateRent(int ageCurrent, decimal netRentAgeCurrent, int ageRentStart, decimal netRentAgeRentStart, int ageInQuestion);
 
         public Task<SimulationResultDTO> Simulate(
-            int ageStart,
-            int ageEnd,
+            int ageFrom,
+            int ageTo,
             decimal totalRateNeeded_perYear,
-            decimal capitalCash, double growthRateCash,
-            decimal capitalStocks, double growthRateStocks,
-            decimal capitalMetals, double growthRateMetals,
+            decimal capitalCash, decimal growthRateCash,
+            decimal capitalStocks, decimal growthRateStocks,
+            decimal capitalMetals, decimal growthRateMetals,
             IFinanceMathClient financeMathClient);
     }
 }

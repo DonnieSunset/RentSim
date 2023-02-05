@@ -1,17 +1,18 @@
 ﻿namespace SavingPhaseService.Contracts
 {
-    public class SimulationResult
+    public class SavingPhaseServiceResult
     {
         public record Entity
         { 
             public int Age { get; init; }
             public decimal Interests { get; init; }
             public decimal Deposit { get; init; }
+            public decimal Taxes { get; init; }
         }
 
         public List<Entity> Entities { get; init; }
 
-        public SimulationResult()
+        public SavingPhaseServiceResult()
         {
             Entities = new List<Entity>();
         }

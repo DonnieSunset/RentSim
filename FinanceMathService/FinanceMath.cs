@@ -146,6 +146,12 @@ namespace FinanceMathService
                                 Stocks = zinsen_stocks,
                                 Metals = zinsen_metals
                             },
+                            Taxes = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = 0,
+                                Stocks = 0,
+                                Metals = 0
+                            },
                         }
                     );
                 }
@@ -277,6 +283,12 @@ namespace FinanceMathService
                                 Cash = zinsen_cash,
                                 Stocks = zinsen_stocks,
                                 Metals = zinsen_metals
+                            },
+                            Taxes = new SimulationResultDTO.AssetsDTO
+                            {
+                                Cash = 0,
+                                Stocks = 0,
+                                Metals = 0
                             },
                         }
                     );
