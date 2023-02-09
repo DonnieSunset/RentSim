@@ -50,10 +50,10 @@ namespace Protocol
             affectedResultRow.stocks.Interests += transactionDetails.stockInterests;
             affectedResultRow.metals.Interests += transactionDetails.metalInterests;
 
-            //calculate year end
-            affectedResultRow.cash.YearEnd = affectedResultRow.cash.YearBegin + affectedResultRow.cash.Deposits + affectedResultRow.cash.Interests + affectedResultRow.cash.Taxes;
-            affectedResultRow.stocks.YearEnd = affectedResultRow.stocks.YearBegin + affectedResultRow.stocks.Deposits + affectedResultRow.stocks.Interests + affectedResultRow.stocks.Taxes;
-            affectedResultRow.metals.YearEnd = affectedResultRow.metals.YearBegin + affectedResultRow.metals.Deposits + affectedResultRow.metals.Interests + affectedResultRow.metals.Taxes;
+            //calculate year end --> this is done now in ResultRow itsself
+            //affectedResultRow.cash.YearEnd = affectedResultRow.cash.YearBegin + affectedResultRow.cash.Deposits + affectedResultRow.cash.Interests + affectedResultRow.cash.Taxes;
+            //affectedResultRow.stocks.YearEnd = affectedResultRow.stocks.YearBegin + affectedResultRow.stocks.Deposits + affectedResultRow.stocks.Interests + affectedResultRow.stocks.Taxes;
+            //affectedResultRow.metals.YearEnd = affectedResultRow.metals.YearBegin + affectedResultRow.metals.Deposits + affectedResultRow.metals.Interests + affectedResultRow.metals.Taxes;
 
             //calculate year begin of next row
             //var affectedResultRowNext = GetOrCreateRow(age + 1);

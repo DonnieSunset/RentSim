@@ -8,7 +8,13 @@
             public decimal Deposits { get; set; }
             public decimal Interests { get; set; }
             public decimal Taxes { get; set; }
-            public decimal YearEnd { get; set; }
+            public decimal YearEnd 
+            {
+                get
+                {
+                    return YearBegin + Deposits + Interests + Taxes;
+                }
+            }
         }
 
         public int Age { get; set; }
