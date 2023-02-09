@@ -15,21 +15,21 @@ namespace Protocol
         public void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks, decimal amountMetals)
         {
             var affectedResultRow = GetOrCreateRow(age);
-            affectedResultRow.cashYearBegin = amountCash;
-            affectedResultRow.stocksYearBegin = amountStocks;
-            affectedResultRow.metalsYearBegin = amountMetals;
+            affectedResultRow.cash.YearBegin = amountCash;
+            affectedResultRow.stocks.YearBegin = amountStocks;
+            affectedResultRow.metals.YearBegin = amountMetals;
         }
 
         public void Log(int age, TransactionDetails transactionDetails)
         {
             var affectedResultRow = GetOrCreateRow(age);
 
-            if (transactionDetails.cashDeposit != 0) 
-                affectedResultRow.cashDeposits.Add(transactionDetails.cashDeposit);
-            if (transactionDetails.stockDeposit != 0)
-                affectedResultRow.stocksDeposits.Add(transactionDetails.stockDeposit);
-            if (transactionDetails.metalDeposit != 0)
-                affectedResultRow.metalsDeposits.Add(transactionDetails.metalDeposit);
+            //if (transactionDetails.cashDeposit != 0) 
+            //    affectedResultRow.cash.Deposits.Add(transactionDetails.cashDeposit);
+            //if (transactionDetails.stockDeposit != 0)
+            //    affectedResultRow.stocks.Deposits.Add(transactionDetails.stockDeposit);
+            //if (transactionDetails.metalDeposit != 0)
+            //    affectedResultRow.metals.Deposits.Add(transactionDetails.metalDeposit);
 
             //if (transactionDetails.cashWithdrawal != 0)
             //    affectedResultRow.cashWithdrawals.Add(transactionDetails.cashWithdrawal);
@@ -38,18 +38,22 @@ namespace Protocol
             //if (transactionDetails.metalWithdrawal != 0)
             //    affectedResultRow.metalsWithdrawals.Add(transactionDetails.metalWithdrawal);
 
-            affectedResultRow.cashTaxes += transactionDetails.cashTaxes;
-            affectedResultRow.stocksTaxes += transactionDetails.stockTaxes;
-            affectedResultRow.metalsTaxes += transactionDetails.metalTaxes;
+            affectedResultRow.cash.Deposits += transactionDetails.cashDeposit;
+            affectedResultRow.stocks.Deposits += transactionDetails.stockDeposit;
+            affectedResultRow.metals.Deposits += transactionDetails.metalDeposit;
 
-            affectedResultRow.cashInterests += transactionDetails.cashInterests;
-            affectedResultRow.stocksInterests += transactionDetails.stockInterests;
-            affectedResultRow.metalsInterests += transactionDetails.metalInterests;
+            affectedResultRow.cash.Taxes += transactionDetails.cashTaxes;
+            affectedResultRow.stocks.Taxes += transactionDetails.stockTaxes;
+            affectedResultRow.metals.Taxes += transactionDetails.metalTaxes;
+
+            affectedResultRow.cash.Interests += transactionDetails.cashInterests;
+            affectedResultRow.stocks.Interests += transactionDetails.stockInterests;
+            affectedResultRow.metals.Interests += transactionDetails.metalInterests;
 
             //calculate year end
-            affectedResultRow.cashYearEnd = affectedResultRow.cashYearBegin + affectedResultRow.cashDeposits.Sum() + affectedResultRow.cashInterests + affectedResultRow.cashTaxes;
-            affectedResultRow.stocksYearEnd = affectedResultRow.stocksYearBegin + affectedResultRow.stocksDeposits.Sum() + affectedResultRow.stocksInterests + affectedResultRow.stocksTaxes;
-            affectedResultRow.metalsYearEnd = affectedResultRow.metalsYearBegin + affectedResultRow.metalsDeposits.Sum() + affectedResultRow.metalsInterests + affectedResultRow.metalsTaxes;
+            affectedResultRow.cash.YearEnd = affectedResultRow.cash.YearBegin + affectedResultRow.cash.Deposits + affectedResultRow.cash.Interests + affectedResultRow.cash.Taxes;
+            affectedResultRow.stocks.YearEnd = affectedResultRow.stocks.YearBegin + affectedResultRow.stocks.Deposits + affectedResultRow.stocks.Interests + affectedResultRow.stocks.Taxes;
+            affectedResultRow.metals.YearEnd = affectedResultRow.metals.YearBegin + affectedResultRow.metals.Deposits + affectedResultRow.metals.Interests + affectedResultRow.metals.Taxes;
 
             //calculate year begin of next row
             //var affectedResultRowNext = GetOrCreateRow(age + 1);
@@ -59,21 +63,21 @@ namespace Protocol
 
         private ResultRow GetOrCreateRow(int age)
         {
-            var row = myProtocol.SingleOrDefault(x => x.age == age);
+            var row = myProtocol.SingleOrDefault(x => x.Age == age);
 
             if (row == null)
             {
                 row = new ResultRow()
                 {
-                    age = age,
+                    Age = age,
                 };
 
-                var prevRow = myProtocol.SingleOrDefault(x => x.age == age - 1);
+                var prevRow = myProtocol.SingleOrDefault(x => x.Age == age - 1);
                 if (prevRow != null)
                 { 
-                    row.cashYearBegin = prevRow.cashYearEnd;
-                    row.stocksYearBegin = prevRow.stocksYearEnd;
-                    row.metalsYearBegin = prevRow.metalsYearEnd;
+                    row.cash.YearBegin = prevRow.cash.YearEnd;
+                    row.stocks.YearBegin = prevRow.stocks.YearEnd;
+                    row.metals.YearBegin = prevRow.metals.YearEnd;
                 }
 
                 myProtocol.Add(row);

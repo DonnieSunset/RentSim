@@ -12,11 +12,11 @@
 
         public int stocks = 118033;
         public int stocksGrowthRate = 5;
-        public int stocksSaveAmountPerMonth = 700;
+        public int stocksSaveAmountPerMonth = 1171;
 
         public int cash = 44000;
         public int cashGrowthRate = 0;
-        public int cashSaveAmountPerMonth = 371;
+        public int cashSaveAmountPerMonth = 0;
 
         public int metals = 21200;
         public int metalsGrowthRate = 1;

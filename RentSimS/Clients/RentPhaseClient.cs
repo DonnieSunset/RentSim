@@ -96,7 +96,7 @@ namespace RentSimS.Clients
             }
 
             var rentPhaseResult = new RentPhaseResult();
-            rentPhaseResult.rate_perMonth = -protocolWriter.Protocol.Single(x => x.age == ageStart).TotalDeposits / 12m;
+            rentPhaseResult.rate_perMonth = -protocolWriter.Protocol.Single(x => x.Age == ageStart).TotalDeposits / 12m;
 
             return rentPhaseResult;
         }
