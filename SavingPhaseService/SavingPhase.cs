@@ -4,47 +4,64 @@ namespace SavingPhaseService
 {
     internal class SavingPhase : ISavingPhase
     {
-        public const decimal CAPITAL_YIELDS_TAX_FACTOR = 0.26m;
+        public const decimal CAPITAL_YIELDS_TAX_FACTOR = 0.26375m;
         public const decimal TAX_FREE_AMOUNT_PER_YEAR = 1000;
 
-        public SavingPhaseServiceResult Simulate(
-            int ageFrom,
-            int ageTo,
-            decimal startCapital,
-            decimal growthRate,
-            decimal saveAmountPerMonth,
-            bool capitalYieldsTax
-            )
+        public SavingPhaseServiceResultDTO Simulate(SavingPhaseServiceInputDTO input)
         {
-            SavingPhaseServiceResult result = new();
-            decimal currentCapital = startCapital;
+            SavingPhaseServiceResultDTO result = new();
+            decimal currentCapitalCash = input.StartCapitalCash;
+            decimal currentCapitalStocks = input.StartCapitalStocks;
+            decimal currentCapitalMetals = input.StartCapitalMetals;
 
-            for (int age = ageFrom; age < ageTo; age++)
+            for (int age = input.AgeFrom; age < input.AgeTo; age++)
             {
-                // get interests
-                decimal interests = currentCapital * growthRate / 100m;
-                currentCapital += interests;
-
                 // add savings
-                decimal savings = saveAmountPerMonth * 12;
-                currentCapital += savings;
+                decimal savingsCash = input.SaveAmountPerMonthCash * 12;
+                decimal savingsStocks = input.SaveAmountPerMonthStocks * 12;
+                decimal savingsMetals = input.SaveAmountPerMonthMetals * 12;
+                currentCapitalCash += savingsCash;
+                currentCapitalStocks += savingsStocks;
+                currentCapitalMetals += savingsMetals;
 
-                // pay taxes
+                // get interests
+                decimal interestsCash = currentCapitalCash * input.GrowthRateCash / 100m;
+                decimal interestsStocks = currentCapitalStocks * input.GrowthRateStocks / 100m;
+                decimal interestsMetals = currentCapitalMetals * input.GrowthRateMetals / 100m;
+                currentCapitalCash += interestsCash;
+                currentCapitalStocks += interestsStocks;
+                currentCapitalMetals += interestsMetals;
+
+                // pay taxes for cash
                 decimal taxes = 0;
-                if (capitalYieldsTax)
-                {
-                    decimal taxRelevantInterests = interests - TAX_FREE_AMOUNT_PER_YEAR;
-                    if (taxRelevantInterests > 0)
-                    { 
-                        taxes = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
-                        taxes = -taxes;
-                    }
+                decimal taxRelevantInterests = interestsCash - TAX_FREE_AMOUNT_PER_YEAR;
+                if (taxRelevantInterests > 0)
+                { 
+                    taxes = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
+                    taxes = -taxes;
                 }
-                currentCapital += taxes;
+                currentCapitalCash += taxes;
 
-                result.Entities.Add(new SavingPhaseServiceResult.Entity() { Age = age, Interests = interests, Deposit = savings, Taxes = taxes });
+                result.Entities.Add(new SavingPhaseServiceResultDTO.AssetInfo() 
+                { 
+                    Age = age,
+
+                    DepositCash = savingsCash,
+                    DepositStocks = savingsStocks,
+                    DepositMetals = savingsMetals,
+
+                    InterestsCash = interestsCash,
+                    InterestsStocks = interestsStocks,
+                    InterestsMetals = interestsMetals,
+
+                    TaxesCash= taxes,
+                    TaxesStocks = 0,
+                    TaxesMetals = 0,
+                });
             }
-            result.FinalSavings = currentCapital;
+            result.FinalSavingsCash = currentCapitalCash;
+            result.FinalSavingsStocks = currentCapitalStocks;
+            result.FinalSavingsMetals = currentCapitalMetals;
 
             return result;
         }

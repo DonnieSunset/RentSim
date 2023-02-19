@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
+using SavingPhaseService.DTOs;
+using System.Net.Http.Json;
 
 namespace SavingPhaseService_Tests
 {
@@ -22,7 +24,7 @@ namespace SavingPhaseService_Tests
                 });
             var client = application.CreateClient();
 
-            var response = await client.GetAsync(url);
+            var response = await client.PostAsJsonAsync(url, new SavingPhaseServiceInputDTO());
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299

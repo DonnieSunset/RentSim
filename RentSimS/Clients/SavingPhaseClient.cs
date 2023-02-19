@@ -15,22 +15,16 @@ namespace RentSimS.Clients
           //  _clientFactory = httpClientFactory;
         }
 
-        public async Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(int ageFrom, int ageTo, decimal startCapital, int growthRate, decimal saveAmountPerMonth, bool capitalYieldsTax)
+        public async Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "SavingPhase/Simulate";
-            ub.Query = $"?ageFrom={ageFrom}" +
-                $"&ageTo={ageTo}" +
-                $"&startCapital={startCapital}" +
-                $"&growthRate={growthRate}" +
-                $"&saveAmountPerMonth={saveAmountPerMonth}" +
-                $"&capitalYieldsTax={capitalYieldsTax}"
-                ;
 
-            //var httpClient = _clientFactory.CreateClient("SavingPhaseService");
             using (var httpClient = new HttpClient())
             {
-                HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
+                HttpResponseMessage response = null;
+                response = await httpClient.PostAsJsonAsync(ub.ToString(), input);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Http response error: {response.Content}.");
@@ -46,34 +40,25 @@ namespace RentSimS.Clients
             }
         }
 
-        public async Task<SavingPhaseResult> GetAndLogSavingPhase(
-            int ageFrom, int ageTo,
-            decimal cash_startCapital, int cash_growthRate, decimal cash_saveAmountPerMonth, 
-            decimal stocks_startCapital, int stocks_growthRate, decimal stocks_saveAmountPerMonth,
-            decimal metals_startCapital, int metals_growthRate, decimal metals_saveAmountPerMonth,
-            IProtocolWriter protocolWriter)
+        public async Task<SavingPhaseResult> GetAndLogSavingPhase(SavingPhaseServiceInputDTO input, IProtocolWriter protocolWriter)
         {
-            var savingPhaseSimCash = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, cash_startCapital, cash_growthRate, cash_saveAmountPerMonth, true);
-            var savingPhaseSimStocks = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, stocks_startCapital, stocks_growthRate, stocks_saveAmountPerMonth, false);
-            var savingPhaseSimMetals = await GetSavingPhaseSimulationAsync(ageFrom, ageTo, metals_startCapital, metals_growthRate, metals_saveAmountPerMonth, false);
+            var savingPhaseSim = await GetSavingPhaseSimulationAsync(input);
 
-            protocolWriter.LogBalanceYearBegin(ageFrom, cash_startCapital, stocks_startCapital, metals_startCapital);
-            for (int age = ageFrom; age < ageTo; age++)
+            protocolWriter.LogBalanceYearBegin(input.AgeFrom, input.StartCapitalCash, input.StartCapitalStocks, input.StartCapitalMetals);
+            for (int age = input.AgeFrom; age < input.AgeTo; age++)
             {
-                var cashEntry = savingPhaseSimCash.Entities.Single(x => x.Age == age);
-                var stocksEntry = savingPhaseSimStocks.Entities.Single(x => x.Age == age);
-                var metalsEntry = savingPhaseSimMetals.Entities.Single(x => x.Age == age);
+                var entry = savingPhaseSim.Entities.Single(x => x.Age == age);
 
-                protocolWriter.Log(age, new TransactionDetails { cashDeposit = cashEntry.Deposit, cashInterests = cashEntry.Interests, cashTaxes = cashEntry.Taxes });
-                protocolWriter.Log(age, new TransactionDetails { stockDeposit = stocksEntry.Deposit, stockInterests = stocksEntry.Interests, stockTaxes = stocksEntry.Taxes });
-                protocolWriter.Log(age, new TransactionDetails { metalDeposit = metalsEntry.Deposit, metalInterests = metalsEntry.Interests, metalTaxes = metalsEntry.Taxes });
+                protocolWriter.Log(age, new TransactionDetails { cashDeposit = entry.DepositCash, cashInterests = entry.InterestsCash, cashTaxes = entry.TaxesCash });
+                protocolWriter.Log(age, new TransactionDetails { stockDeposit = entry.DepositStocks, stockInterests = entry.InterestsStocks, stockTaxes = entry.TaxesStocks });
+                protocolWriter.Log(age, new TransactionDetails { metalDeposit = entry.DepositMetals, metalInterests = entry.InterestsMetals, metalTaxes = entry.TaxesMetals });
             }
 
             return new SavingPhaseResult
             {
-                savingsCash = savingPhaseSimCash.FinalSavings,
-                savingsStocks = savingPhaseSimStocks.FinalSavings,
-                savingsMetals = savingPhaseSimMetals.FinalSavings,
+                savingsCash = savingPhaseSim.FinalSavingsCash,
+                savingsStocks = savingPhaseSim.FinalSavingsStocks,
+                savingsMetals = savingPhaseSim.FinalSavingsMetals,
             };
         }
     }

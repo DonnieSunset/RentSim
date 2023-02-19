@@ -230,14 +230,25 @@
         var protocolWriter = new MemoryProtocolWriter();
 
         // Saving Phase
+        var savingPhaseInput = new SavingPhaseServiceInputDTO
+        {
+            AgeFrom = lifeAssumptions.ageCurrent,
+            AgeTo = ageStopWork,
 
-        var savingPhaseResult = await mySavingPhaseClient.GetAndLogSavingPhase(
-            lifeAssumptions.ageCurrent, ageStopWork,
-            lifeAssumptions.cash, lifeAssumptions.cashGrowthRate, lifeAssumptions.cashSaveAmountPerMonth,
-            lifeAssumptions.stocks, lifeAssumptions.stocksGrowthRate, lifeAssumptions.stocksSaveAmountPerMonth,
-            lifeAssumptions.metals, lifeAssumptions.metalsGrowthRate, lifeAssumptions.metalsSaveAmountPerMonth,
-            protocolWriter
-        );
+            StartCapitalCash = lifeAssumptions.cash,
+            StartCapitalStocks = lifeAssumptions.stocks,
+            StartCapitalMetals = lifeAssumptions.metals,
+
+            GrowthRateCash = lifeAssumptions.cashGrowthRate,
+            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
+            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+
+            SaveAmountPerMonthCash = lifeAssumptions.cashSaveAmountPerMonth,
+            SaveAmountPerMonthStocks = lifeAssumptions.stocksSaveAmountPerMonth,
+            SaveAmountPerMonthMetals = lifeAssumptions.metalsSaveAmountPerMonth,
+        };
+
+        var savingPhaseResult = await mySavingPhaseClient.GetAndLogSavingPhase(savingPhaseInput, protocolWriter);
         result_totalSavings = savingPhaseResult.SavingsTotal;
 
         // Later Needs
