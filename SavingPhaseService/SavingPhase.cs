@@ -42,21 +42,30 @@ namespace SavingPhaseService
                 }
                 currentCapitalCash += taxes;
 
-                result.Entities.Add(new SavingPhaseServiceResultDTO.AssetInfo() 
+                result.Entities.Add(new SavingPhaseServiceResultDTO.Entity
                 { 
                     Age = age,
 
-                    DepositCash = savingsCash,
-                    DepositStocks = savingsStocks,
-                    DepositMetals = savingsMetals,
+                    Deposits = new SavingPhaseServiceResultDTO.AssetsDTO
+                    { 
+                        Cash = savingsCash,
+                        Stocks = savingsStocks,
+                        Metals = savingsMetals,
+                    },
 
-                    InterestsCash = interestsCash,
-                    InterestsStocks = interestsStocks,
-                    InterestsMetals = interestsMetals,
+                    Interests = new SavingPhaseServiceResultDTO.AssetsDTO
+                    {
+                        Cash = interestsCash,
+                        Stocks = interestsStocks,
+                        Metals = interestsMetals,
+                    },
 
-                    TaxesCash= taxes,
-                    TaxesStocks = 0,
-                    TaxesMetals = 0,
+                    Taxes = new SavingPhaseServiceResultDTO.AssetsDTO
+                    {
+                        Cash = taxes,
+                        Stocks = 0,
+                        Metals = 0,
+                    },
                 });
             }
             result.FinalSavingsCash = currentCapitalCash;

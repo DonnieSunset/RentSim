@@ -15,7 +15,7 @@ namespace RentSimS.Clients
           //  _clientFactory = httpClientFactory;
         }
 
-        public async Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input)
+        public async Task<SavingPhaseServiceResultDTO> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "SavingPhase/Simulate";
@@ -30,7 +30,7 @@ namespace RentSimS.Clients
                     throw new Exception($"Http response error: {response.Content}.");
                 }
 
-                var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResult>();
+                var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResultDTO>();
                 if (jsonResponse == null)
                 {
                     throw new Exception($"{nameof(jsonResponse)} is null.");
@@ -49,9 +49,9 @@ namespace RentSimS.Clients
             {
                 var entry = savingPhaseSim.Entities.Single(x => x.Age == age);
 
-                protocolWriter.Log(age, new TransactionDetails { cashDeposit = entry.DepositCash, cashInterests = entry.InterestsCash, cashTaxes = entry.TaxesCash });
-                protocolWriter.Log(age, new TransactionDetails { stockDeposit = entry.DepositStocks, stockInterests = entry.InterestsStocks, stockTaxes = entry.TaxesStocks });
-                protocolWriter.Log(age, new TransactionDetails { metalDeposit = entry.DepositMetals, metalInterests = entry.InterestsMetals, metalTaxes = entry.TaxesMetals });
+                protocolWriter.Log(age, new TransactionDetails { cashDeposit = entry.Deposits.Cash, cashInterests = entry.Interests.Cash, cashTaxes = entry.Taxes.Cash });
+                protocolWriter.Log(age, new TransactionDetails { stockDeposit = entry.Deposits.Stocks, stockInterests = entry.Interests.Stocks, stockTaxes = entry.Taxes.Stocks });
+                protocolWriter.Log(age, new TransactionDetails { metalDeposit = entry.Deposits.Metals, metalInterests = entry.Interests.Metals, metalTaxes = entry.Taxes.Metals });
             }
 
             return new SavingPhaseResult

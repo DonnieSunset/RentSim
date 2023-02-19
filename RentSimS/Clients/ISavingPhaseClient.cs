@@ -5,7 +5,7 @@ namespace RentSimS.Clients
 {
     public interface ISavingPhaseClient
     {
-        public Task<SavingPhaseServiceResult> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input);
+        public Task<SavingPhaseServiceResultDTO> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input);
 
         public Task<SavingPhaseResult> GetAndLogSavingPhase(SavingPhaseServiceInputDTO input, IProtocolWriter protocolWriter);
     }
