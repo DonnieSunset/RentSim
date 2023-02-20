@@ -1,6 +1,5 @@
 ﻿using RentPhaseService.DTOs;
 using System.Globalization;
-using System.Net.Http.Headers;
 
 namespace RentPhaseService.Clients
 {
@@ -42,7 +41,7 @@ namespace RentPhaseService.Clients
             }
         }
 
-        public async Task<SimulationResultDTO> RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<RentPhaseServiceResultDTO> RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/RateByNumericalSparkassenformel";
@@ -73,12 +72,12 @@ namespace RentPhaseService.Clients
                 //}
 
                 //return stringResponse;
-                var objResponse = await response.Content.ReadFromJsonAsync<SimulationResultDTO>();
+                var objResponse = await response.Content.ReadFromJsonAsync<RentPhaseServiceResultDTO>();
                 return objResponse;
             }
         }
 
-        public async Task<SimulationResultDTO> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<RentPhaseServiceResultDTO> StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/StartCapitalByNumericalSparkassenformel";
@@ -101,19 +100,11 @@ namespace RentPhaseService.Clients
                 {
 
                     httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                    //httpClient.DefaultRequestHeaders.Add("Content-Type", "application/json");
                 }catch(Exception ex)
                 {
                     Console.WriteLine();
                 }
-
-                //HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
-
-
                 HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
-
-
-
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -130,7 +121,7 @@ namespace RentPhaseService.Clients
 
                 //return stringResponse;
 
-                var objResponse = await response.Content.ReadFromJsonAsync<SimulationResultDTO>();
+                var objResponse = await response.Content.ReadFromJsonAsync<RentPhaseServiceResultDTO>();
                 return objResponse;
             }
         }

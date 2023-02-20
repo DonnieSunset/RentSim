@@ -14,6 +14,13 @@ namespace SavingPhaseService
             decimal currentCapitalStocks = input.StartCapitalStocks;
             decimal currentCapitalMetals = input.StartCapitalMetals;
 
+            result.FirstYearBeginValues = new SavingPhaseServiceResultDTO.AssetsDTO
+            {
+                Cash= currentCapitalCash,
+                Stocks= currentCapitalStocks,
+                Metals= currentCapitalMetals
+            };
+
             for (int age = input.AgeFrom; age < input.AgeTo; age++)
             {
                 // add savings

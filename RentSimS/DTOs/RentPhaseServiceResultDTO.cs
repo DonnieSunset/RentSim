@@ -1,12 +1,7 @@
-﻿namespace SavingPhaseService.DTOs
+﻿namespace RentSimS.DTOs
 {
-    public class SavingPhaseServiceResultDTO
+    public class RentPhaseServiceResultDTO
     {
-        public decimal FinalSavingsCash { get; set; }
-        public decimal FinalSavingsStocks { get; set; }
-        public decimal FinalSavingsMetals { get; set; }
-        public decimal FinalSavings { get { return FinalSavingsCash + FinalSavingsStocks + FinalSavingsMetals; } }
-
         public record AssetsDTO
         {
             public decimal Cash { get; init; }
@@ -25,7 +20,7 @@
         public List<Entity> Entities { get; init; }
         public AssetsDTO FirstYearBeginValues { get; set; }
 
-        public SavingPhaseServiceResultDTO()
+        public RentPhaseServiceResultDTO()
         {
             Entities = new List<Entity>();
             FirstYearBeginValues = new AssetsDTO();

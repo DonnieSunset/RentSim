@@ -4,16 +4,13 @@
     {
         private static int roundingAccuracy = 2;
 
-        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd/*, decimal stocksTaxFactor*/)
+        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd)
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
-            AllEndsUpInZero(resultRows, ageEnd);
             AllNumbersHaveTheCorrectSign(resultRows);
             EndTotalsAreTheSumOfAllSingleValues(resultRows);
-            //NoMetalsAfterSavingPhase(resultRows, ageStopWork);
-
-            //TaxesArePaidAccordingToDeposits(resultRows, stocksTaxFactor);
+            AllEndsUpInZero(resultRows, ageEnd);
         }
 
         private static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -75,20 +72,20 @@
             {
                 if (resultRow.Age < 0 ||
                     Decimal.Round(resultRow.cash.Interests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.cash.Taxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.cash.YearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.cash.YearEnd, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.stocks.Interests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.stocks.Taxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.stocks.YearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.stocks.YearEnd, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.metals.Interests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.metals.Taxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.metals.YearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.metals.YearEnd, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalInterests, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.cash.Taxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.stocks.Taxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.metals.Taxes, roundingAccuracy) > 0 ||
                     Decimal.Round(resultRow.TotalTaxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.cash.YearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.stocks.YearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.metals.YearBegin, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalYearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.cash.YearEnd, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.stocks.YearEnd, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.metals.YearEnd, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalYearEnd, roundingAccuracy) < 0)
                 {
                     throw new Exception($"ResultRowValidator: row of age {resultRow.Age} contains an entry with wrong sign.");
@@ -111,36 +108,5 @@
                 }
             }
         }
-
-        //private static void NoMetalsAfterSavingPhase(IEnumerable<ResultRow> resultRows, int ageStopWork)
-        //{
-        //    var lastSavingPhaseRow = resultRows.Single(x => x.age == ageStopWork - 1);
-
-        //    if (Decimal.Round(lastSavingPhaseRow.metalsYearEnd, 3) != 0)
-        //    {
-        //        throw new Exception($"ResultRowValidator: After saving phase at age {lastSavingPhaseRow.age} metals should be zero, but was {lastSavingPhaseRow.metalsYearEnd}.");
-        //    }
-        //}
-
-        //private static void TaxesArePaidAccordingToDeposits(IEnumerable<ResultRow> resultRows, decimal stocksTaxFactor)
-        //{
-        //    foreach (var resultRow in resultRows)
-        //    {
-        //        //tax relevant stocks deposits are only sells, not buys!
-        //        var stocksDeposits = resultRow.stocks.Deposits.Sum(x => { return x < 0 ? x : 0; });
-                
-        //        if (stocksDeposits < 0)
-        //        {
-        //            var actualTaxes = decimal.Round(resultRow.stocks.Taxes, roundingAccuracy);
-        //            var assumedTaxes = decimal.Round(stocksDeposits * (stocksTaxFactor - 1), roundingAccuracy);
-        //            if (actualTaxes != assumedTaxes)
-        //            {
-        //                throw new Exception($"ResultRowValidator: Taxes for stocks deposits of {stocksDeposits} at age {resultRow.age} are {actualTaxes} but should be {assumedTaxes}.");
-        //            }
-        //        }
-        //    }
-        //}
-
-        //todo: interests are not zero is asset is not zero and iterest factor is positive
     }
 }

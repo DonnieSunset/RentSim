@@ -60,7 +60,7 @@ namespace FinanceMathService
             decimal zins_metals,
             decimal endbetrag, 
             int yearStart, int yearEnd,
-            out SimulationResultDTO protocol)
+            out SimulationResultDTO result)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -73,13 +73,21 @@ namespace FinanceMathService
             decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
             
             decimal angenommeneRate_min = 0;
-            decimal angenommeneRate_max = gesamtBetrag;
+            decimal angenommeneRate_max = -gesamtBetrag;
             decimal restBetrag;
             
             decimal angenommeneRate;
             do
             {
-                protocol = new SimulationResultDTO();
+                result = new SimulationResultDTO()
+                {
+                    FirstYearBeginValues = new SimulationResultDTO.AssetsDTO()
+                    {
+                        Cash = betrag_cash,
+                        Stocks = betrag_stocks,
+                        Metals = betrag_metals,
+                    }
+                };
                 angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
                 restBetrag = betrag_cash + betrag_stocks + betrag_metals;
@@ -103,7 +111,7 @@ namespace FinanceMathService
                     decimal rate_stocks = factorStocksDyn * angenommeneRate;
                     decimal rate_metals = factorMetalsDyn * angenommeneRate;
 
-                    restBetrag -= rate_cash + rate_stocks + rate_metals;
+                    restBetrag += rate_cash + rate_stocks + rate_metals;
 
                     // zinsen drauf
                     restAnteil_cash = factorCashDyn * restBetrag;
@@ -124,23 +132,18 @@ namespace FinanceMathService
                     factorStocksDyn = restAnteil_stocks / restBetrag;
                     factorMetalsDyn = restAnteil_metals / restBetrag;
 
-                    protocol.Entities.Add(
+                    result.Entities.Add(
                         new SimulationResultDTO.Entity
                         {
                             Age = i,
-                            YearBegin = new SimulationResultDTO.AssetsDTO
-                            {
-                                Cash = yearBegin_cash,
-                                Stocks = yearBegin_stocks,
-                                Metals = yearBegin_metals
-                            },
-                            Rates = new SimulationResultDTO.AssetsDTO
+
+                            Deposits = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = rate_cash,
                                 Stocks = rate_stocks,
                                 Metals = rate_metals,
                             },
-                            Zins = new SimulationResultDTO.AssetsDTO
+                            Interests = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = zinsen_cash,
                                 Stocks = zinsen_stocks,
@@ -191,7 +194,7 @@ namespace FinanceMathService
             decimal zinsRate_metals,
             decimal endbetrag, 
             int yearStart, int yearEnd,
-            out SimulationResultDTO protocol)
+            out SimulationResultDTO result)
         {
             decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
             decimal factor_cash = betrag_cash / gesamtBetrag;
@@ -212,19 +215,26 @@ namespace FinanceMathService
             int numIterations = 0;
 
             decimal angenommenesStartKapital_min = 0;
-            decimal angenommenesStartKapital_max = rateTotal_perYear * (yearEnd - yearStart) * 2 + endbetrag; // simple heuristic
+            decimal angenommenesStartKapital_max = -rateTotal_perYear * (yearEnd - yearStart) * 2 + endbetrag; // simple heuristic
             decimal restBetrag;
             
             decimal angenommenesStartKapital;
             do
             {
-                protocol = new SimulationResultDTO();
+                result = new SimulationResultDTO();
                 angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
 
                 restBetrag = angenommenesStartKapital;
                 decimal restAnteil_cash = (decimal)factor_cash * restBetrag;
                 decimal restAnteil_stocks = (decimal)factor_stocks * restBetrag;
                 decimal restAnteil_metals = (decimal)factor_metals * restBetrag;
+
+                result.FirstYearBeginValues = new SimulationResultDTO.AssetsDTO
+                {
+                    Cash = restAnteil_cash,
+                    Stocks = restAnteil_stocks,
+                    Metals = restAnteil_metals,
+                };
 
                 //Faktoren müssen dynamisch sein, da aich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
                 decimal factorCashDyn = factor_cash;
@@ -233,19 +243,19 @@ namespace FinanceMathService
 
                 for (int i = yearStart; i < yearEnd; i++)
                 {
-                    // rate runter
-                    decimal yearBegin_cash = restAnteil_cash;
-                    decimal yearBegin_stocks = restAnteil_stocks;
-                    decimal yearBegin_metals = restAnteil_metals;
+                    //// rate runter
+                    //decimal yearBegin_cash = restAnteil_cash;
+                    //decimal yearBegin_stocks = restAnteil_stocks;
+                    //decimal yearBegin_metals = restAnteil_metals;
 
                     //cash rate muss dynamisch sein, da wegen der unterschiedlichen zinsen auch die assetzusammensetzung schwankt
                     decimal rate_cash = (decimal)factorCashDyn * rateTotal_perYear;
                     decimal rate_stocks = (decimal)factorStocksDyn * rateTotal_perYear;
                     decimal rate_metals = (decimal)factorMetalsDyn * rateTotal_perYear;
 
-                    restAnteil_cash -= rate_cash;
-                    restAnteil_stocks -= rate_stocks;
-                    restAnteil_metals -= rate_metals;
+                    restAnteil_cash += rate_cash;
+                    restAnteil_stocks += rate_stocks;
+                    restAnteil_metals += rate_metals;
 
                     // zinsen drauf
                     decimal zinsen_cash = restAnteil_cash * (zinsRate_cash / 100m);
@@ -262,23 +272,18 @@ namespace FinanceMathService
                     factorStocksDyn = restAnteil_stocks / restBetrag;
                     factorMetalsDyn = restAnteil_metals / restBetrag;
 
-                    protocol.Entities.Add(
+                    result.Entities.Add(
                         new SimulationResultDTO.Entity
                         {
                             Age = i,
-                            YearBegin = new SimulationResultDTO.AssetsDTO
-                            {
-                                Cash = yearBegin_cash,
-                                Stocks = yearBegin_stocks,
-                                Metals = yearBegin_metals
-                            },
-                            Rates = new SimulationResultDTO.AssetsDTO
+
+                            Deposits = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = rate_cash,
                                 Stocks = rate_stocks,
                                 Metals = rate_metals,
                             },
-                            Zins = new SimulationResultDTO.AssetsDTO
+                            Interests = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = zinsen_cash,
                                 Stocks = zinsen_stocks,

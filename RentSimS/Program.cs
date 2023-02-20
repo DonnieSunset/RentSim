@@ -10,21 +10,17 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
 
-var configBuiler = new ConfigurationBuilder()
+var configBuidler = new ConfigurationBuilder()
             //.SetBasePath(app.Environment.ContentRootPath)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-var config = configBuiler.Build();
+var config = configBuidler.Build();
 var financeMathServiceURL = config.GetValue<string>("FinanceMathService:url");
 var savingPhaseServiceURL = config.GetValue<string>("SavingPhaseService:url");
 var rentPhaseServiceURL = config.GetValue<string>("RentPhaseService:url");
 
-//builder.Services.AddHttpClient("SavingPhaseService", x => 
-//{
-//    x.BaseAddress = new UriBuilder(savingPhaseServiceURL).Uri;
-//});
 builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
-builder.Services.AddSingleton<ISavingPhaseClient>(new SavingPhaseClient(savingPhaseServiceURL));
-builder.Services.AddSingleton<IRentPhaseClient>(new RentPhaseClient(rentPhaseServiceURL));
+builder.Services.AddScoped<ISavingPhaseClient, SavingPhaseClient>();
+builder.Services.AddScoped<IRentPhaseClient, RentPhaseClient>();
 
 
 
@@ -36,7 +32,6 @@ builder.Services
     })
     .AddBootstrapProviders()
     .AddFontAwesomeIcons();
-
 
 var app = builder.Build();
 

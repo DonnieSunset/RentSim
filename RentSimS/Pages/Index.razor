@@ -248,8 +248,9 @@
             SaveAmountPerMonthMetals = lifeAssumptions.metalsSaveAmountPerMonth,
         };
 
-        var savingPhaseResult = await mySavingPhaseClient.GetAndLogSavingPhase(savingPhaseInput, protocolWriter);
-        result_totalSavings = savingPhaseResult.SavingsTotal;
+        var savingPhaseResult = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
+        mySavingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
+        result_totalSavings = savingPhaseResult.FinalSavings;
 
         // Later Needs
 
@@ -266,7 +267,6 @@
         };
 
         // State Rent
-
         StateRentResult stateRentResult = new()
         {
             assumedStateRent_Net_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
@@ -276,16 +276,28 @@
         rentAtStopWork_net = stateRentResult.assumedStateRent_Net_PerMonth;
 
         // Rent Phase
+        var rentPhaseInput = new RentPhaseServiceInputDTO ()
+        {
+            AgeFrom = lifeAssumptions.ageRentStart,
+            AgeTo = lifeAssumptions.ageEnd,
 
-        var rentPhaseResult = await myRentPhaseClient.GetAndLogRentPhase(
-            lifeAssumptions.ageRentStart, lifeAssumptions.ageEnd,
-            lifeAssumptions.cashGrowthRate, lifeAssumptions.stocksGrowthRate, lifeAssumptions.metalsGrowthRate, 
-            savingPhaseResult,
-            laterNeedsResult,
-            stateRentResult,
-            protocolWriter
-        );
+            // These 3 values are only needed to calculate the asset proportions.
+            // So do one of the following
+            // 1) put in here the results of the StopWorkPhase, which would be more accurate
+            // 2) put in at least the results of the SaveingPhase AFTER the rebalancing
+            StartCapitalCash = savingPhaseResult.FinalSavingsCash,
+            StartCapitalStocks = savingPhaseResult.FinalSavingsStocks,
+            StartCapitalMetals = savingPhaseResult.FinalSavingsMetals,
 
+            GrowthRateCash = lifeAssumptions.cashGrowthRate,
+            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
+            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+
+            TotalRateNeeded_PerYear = -(laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth - stateRentResult.assumedStateRent_Net_PerMonth) * 12
+        };
+
+        var rentPhaseResult = await myRentPhaseClient.GetRentPhaseSimulationAsync(rentPhaseInput);
+        myRentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
 
         // Stop Work Phase
 
@@ -294,9 +306,9 @@
             .TotalYearBegin;
 
         var stopWorkPhaseResult = await myFinanceMathClient.RateByNumericalSparkassenformel(
-            savingPhaseResult.savingsCash,
-            savingPhaseResult.savingsStocks,
-            savingPhaseResult.savingsMetals,
+            savingPhaseResult.FinalSavingsCash,
+            savingPhaseResult.FinalSavingsStocks,
+            savingPhaseResult.FinalSavingsMetals,
             lifeAssumptions.cashGrowthRate,
             lifeAssumptions.stocksGrowthRate,
             lifeAssumptions.metalsGrowthRate,
@@ -304,21 +316,18 @@
             ageStopWork,
             lifeAssumptions.ageRentStart);
 
+        var firstEntry = stopWorkPhaseResult.Entities.First();
+        protocolWriter.LogBalanceYearBegin(firstEntry.Age, stopWorkPhaseResult.FirstYearBeginValues.Cash, stopWorkPhaseResult.FirstYearBeginValues.Stocks, stopWorkPhaseResult.FirstYearBeginValues.Metals);
         foreach (var entry in stopWorkPhaseResult.Entities)
         {
-            if (entry.Age == lifeAssumptions.ageRentStart)
-            {
-                protocolWriter.LogBalanceYearBegin(entry.Age, entry.YearBegin.Cash, entry.YearBegin.Stocks, entry.YearBegin.Metals);
-            }
-
-            protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = -entry.Rates.Cash, cashInterests = entry.Zins.Cash });
-            protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = -entry.Rates.Stocks, stockInterests = entry.Zins.Stocks });
-            protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = -entry.Rates.Metals, metalInterests = entry.Zins.Metals });
+            protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = entry.Deposits.Cash, cashInterests = entry.Interests.Cash, cashTaxes = entry.Taxes.Cash });
+            protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = entry.Deposits.Stocks, stockInterests = entry.Interests.Stocks, stockTaxes = entry.Taxes.Stocks });
+            protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = entry.Deposits.Metals, metalInterests = entry.Interests.Metals, metalTaxes = entry.Taxes.Metals });
         }
-        
+        //protocolWriter.RecalcYearBeginEntries();
 
-        result_MonthlyRateStopWorkPhase = -protocolWriter.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
-        result_MonthlyRateRentPhase = -protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
+        result_MonthlyRateStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
+        result_MonthlyRateRentPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
 
         // Re-balancing after Stop-Work phase
 
@@ -334,6 +343,7 @@
         var metalsDiff = lastStopWorkPhase.metals.YearEnd - firstRentPhase.metals.YearBegin;
         protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { metalDeposit = -metalsDiff });
 
+        //protocolWriter.RecalcYearBeginEntries();
 
         // validation
 

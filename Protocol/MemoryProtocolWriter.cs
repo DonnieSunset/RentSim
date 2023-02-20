@@ -15,6 +15,7 @@ namespace Protocol
         public void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks, decimal amountMetals)
         {
             var affectedResultRow = GetOrCreateRow(age);
+
             affectedResultRow.cash.YearBegin = amountCash;
             affectedResultRow.stocks.YearBegin = amountStocks;
             affectedResultRow.metals.YearBegin = amountMetals;
@@ -23,20 +24,6 @@ namespace Protocol
         public void Log(int age, TransactionDetails transactionDetails)
         {
             var affectedResultRow = GetOrCreateRow(age);
-
-            //if (transactionDetails.cashDeposit != 0) 
-            //    affectedResultRow.cash.Deposits.Add(transactionDetails.cashDeposit);
-            //if (transactionDetails.stockDeposit != 0)
-            //    affectedResultRow.stocks.Deposits.Add(transactionDetails.stockDeposit);
-            //if (transactionDetails.metalDeposit != 0)
-            //    affectedResultRow.metals.Deposits.Add(transactionDetails.metalDeposit);
-
-            //if (transactionDetails.cashWithdrawal != 0)
-            //    affectedResultRow.cashWithdrawals.Add(transactionDetails.cashWithdrawal);
-            //if (transactionDetails.stockWithdrawal != 0)
-            //    affectedResultRow.stocksWithdrawals.Add(transactionDetails.stockWithdrawal);
-            //if (transactionDetails.metalWithdrawal != 0)
-            //    affectedResultRow.metalsWithdrawals.Add(transactionDetails.metalWithdrawal);
 
             affectedResultRow.cash.Deposits += transactionDetails.cashDeposit;
             affectedResultRow.stocks.Deposits += transactionDetails.stockDeposit;
@@ -49,17 +36,20 @@ namespace Protocol
             affectedResultRow.cash.Interests += transactionDetails.cashInterests;
             affectedResultRow.stocks.Interests += transactionDetails.stockInterests;
             affectedResultRow.metals.Interests += transactionDetails.metalInterests;
-
-            //calculate year end --> this is done now in ResultRow itsself
-            //affectedResultRow.cash.YearEnd = affectedResultRow.cash.YearBegin + affectedResultRow.cash.Deposits + affectedResultRow.cash.Interests + affectedResultRow.cash.Taxes;
-            //affectedResultRow.stocks.YearEnd = affectedResultRow.stocks.YearBegin + affectedResultRow.stocks.Deposits + affectedResultRow.stocks.Interests + affectedResultRow.stocks.Taxes;
-            //affectedResultRow.metals.YearEnd = affectedResultRow.metals.YearBegin + affectedResultRow.metals.Deposits + affectedResultRow.metals.Interests + affectedResultRow.metals.Taxes;
-
-            //calculate year begin of next row
-            //var affectedResultRowNext = GetOrCreateRow(age + 1);
-            //affectedResultRowNext.cashYearBegin = affectedResultRow.cashYearEnd;
-            //affectedResultRowNext.stocksYearBegin = affectedResultRow.stocksYearEnd;
         }
+
+        //public void RecalcYearBeginEntries()
+        //{
+        //    myProtocol.Sort();
+
+        //    //first entry definitely needs year begin from outside!!
+        //    for (int i = 1; i < myProtocol.Count; i++)
+        //    {
+        //        myProtocol[i].cash.YearBegin = myProtocol[i - 1].cash.YearEnd;
+        //        myProtocol[i].stocks.YearBegin = myProtocol[i - 1].stocks.YearEnd;
+        //        myProtocol[i].metals.YearBegin = myProtocol[i - 1].metals.YearEnd;
+        //    }
+        //}
 
         private ResultRow GetOrCreateRow(int age)
         {

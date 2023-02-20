@@ -5,14 +5,16 @@ namespace RentSimS.Clients
 {
     public class SavingPhaseClient : ISavingPhaseClient
     {
-        //private readonly IHttpClientFactory _clientFactory;
+        private string myUrl;
+        private readonly IHttpClientFactory myClientFactory;
+        private readonly IConfiguration myConfiguration;
 
-        public string myUrl { get; set; }
-
-        public SavingPhaseClient(string url)
+        public SavingPhaseClient(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
-            myUrl = url;
-          //  _clientFactory = httpClientFactory;
+            myClientFactory = clientFactory;
+            myConfiguration = configuration;
+
+            myUrl = myConfiguration.GetValue<string>("SavingPhaseService:url");
         }
 
         public async Task<SavingPhaseServiceResultDTO> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input)
@@ -20,46 +22,35 @@ namespace RentSimS.Clients
             var ub = new UriBuilder(myUrl);
             ub.Path = "SavingPhase/Simulate";
 
-            using (var httpClient = new HttpClient())
+            var httpClient = myClientFactory.CreateClient();
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(ub.ToString(), input);
+
+            if (!response.IsSuccessStatusCode)
             {
-                HttpResponseMessage response = null;
-                response = await httpClient.PostAsJsonAsync(ub.ToString(), input);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"Http response error: {response.Content}.");
-                }
-
-                var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResultDTO>();
-                if (jsonResponse == null)
-                {
-                    throw new Exception($"{nameof(jsonResponse)} is null.");
-                }
-
-                return jsonResponse;
+                throw new Exception($"Http response error: {response.Content}.");
             }
+
+            var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResultDTO>();
+            if (jsonResponse == null)
+            {
+                throw new Exception($"{nameof(jsonResponse)} is null.");
+            }
+
+            return jsonResponse;
         }
 
-        public async Task<SavingPhaseResult> GetAndLogSavingPhase(SavingPhaseServiceInputDTO input, IProtocolWriter protocolWriter)
+        public void LogSavingPhaseResult(SavingPhaseServiceResultDTO result, IProtocolWriter protocolWriter)
         {
-            var savingPhaseSim = await GetSavingPhaseSimulationAsync(input);
+            var firstEntry = result.Entities.First();
+            protocolWriter.LogBalanceYearBegin(firstEntry.Age, result.FirstYearBeginValues.Cash, result.FirstYearBeginValues.Stocks, result.FirstYearBeginValues.Metals);
 
-            protocolWriter.LogBalanceYearBegin(input.AgeFrom, input.StartCapitalCash, input.StartCapitalStocks, input.StartCapitalMetals);
-            for (int age = input.AgeFrom; age < input.AgeTo; age++)
+            foreach (var entity in result.Entities)
             {
-                var entry = savingPhaseSim.Entities.Single(x => x.Age == age);
-
-                protocolWriter.Log(age, new TransactionDetails { cashDeposit = entry.Deposits.Cash, cashInterests = entry.Interests.Cash, cashTaxes = entry.Taxes.Cash });
-                protocolWriter.Log(age, new TransactionDetails { stockDeposit = entry.Deposits.Stocks, stockInterests = entry.Interests.Stocks, stockTaxes = entry.Taxes.Stocks });
-                protocolWriter.Log(age, new TransactionDetails { metalDeposit = entry.Deposits.Metals, metalInterests = entry.Interests.Metals, metalTaxes = entry.Taxes.Metals });
+                protocolWriter.Log(entity.Age, new TransactionDetails { cashDeposit = entity.Deposits.Cash, cashInterests = entity.Interests.Cash, cashTaxes = entity.Taxes.Cash });
+                protocolWriter.Log(entity.Age, new TransactionDetails { stockDeposit = entity.Deposits.Stocks, stockInterests = entity.Interests.Stocks, stockTaxes = entity.Taxes.Stocks });
+                protocolWriter.Log(entity.Age, new TransactionDetails { metalDeposit = entity.Deposits.Metals, metalInterests = entity.Interests.Metals, metalTaxes = entity.Taxes.Metals });
             }
-
-            return new SavingPhaseResult
-            {
-                savingsCash = savingPhaseSim.FinalSavingsCash,
-                savingsStocks = savingPhaseSim.FinalSavingsStocks,
-                savingsMetals = savingPhaseSim.FinalSavingsMetals,
-            };
+            //protocolWriter.RecalcYearBeginEntries();
         }
     }
 }

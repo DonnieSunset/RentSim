@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RentPhaseService.Clients;
-using System.Text.Json;
-using System.IO;
 using RentPhaseService.DTOs;
+using System.Text.Json;
 
 namespace RentPhaseService.Controllers
 {
@@ -10,15 +9,15 @@ namespace RentPhaseService.Controllers
     [Route("[controller]")]
     public class RentPhaseController : ControllerBase
     {
-        RentPhase myRentPhase = new RentPhase();
-        private readonly IServiceProvider _serviceProvider;
-        private IFinanceMathClient myMathClient;
+        private readonly ILogger<RentPhaseController> myLogger;
+        private readonly IHttpClientFactory myHttpClientFactory;
+        private readonly IServiceProvider myServiceProvider;
 
-        public RentPhaseController(IServiceProvider serviceProvider)
+        public RentPhaseController(IServiceProvider serviceProvider, IHttpClientFactory httpClientFactory, ILogger<RentPhaseController> logger)
         {
-            _serviceProvider = serviceProvider;
-
-            myMathClient = _serviceProvider.GetService<IFinanceMathClient>();
+            myServiceProvider = serviceProvider;
+            myHttpClientFactory = httpClientFactory;
+            myLogger = logger;
         }
 
         [HttpGet("ApproxStateRent")]
@@ -33,7 +32,7 @@ namespace RentPhaseService.Controllers
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             HttpContext.Response.Headers.Add("Content-Type", "application/json");
 
-            var result = myRentPhase.ApproxStateRent(
+            var result = myServiceProvider.GetService<IRentPhase>().ApproxStateRent(
                 ageCurrent, 
                 netRentAgeCurrent, 
                 ageRentStart, 
@@ -43,39 +42,19 @@ namespace RentPhaseService.Controllers
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true }); ;
         }
 
-        [HttpGet("Simulate")]
+        [HttpPost("Simulate")]
         [Produces("application/json")]
-        public async Task<JsonResult> Simulate(
-            int ageFrom,
-            int ageTo,
-            decimal totalRateNeeded_perYear,
-            decimal capitalCash, decimal growthRateCash,
-            decimal capitalStocks, decimal growthRateStocks,
-            decimal capitalMetals, decimal growthRateMetals)
+        public async Task<JsonResult> Simulate(RentPhaseServiceInputDTO input)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            var result = await myRentPhase.Simulate(
-                ageFrom,
-                ageTo,
-                totalRateNeeded_perYear,
-                capitalCash, growthRateCash,
-                capitalStocks, growthRateStocks,
-                capitalMetals, growthRateMetals,
-                myMathClient);
+            var result = await myServiceProvider.GetService<IRentPhase>().Simulate(
+                input,
+                myServiceProvider.GetService<IFinanceMathClient>());
 
-            // This is a workaround!!
-            // 'result' delivers a correct json as string. However, if we just sent it here as string (i.e. as IResult),
-            // the consumer will receive a JSON string with escape characters, which then is not parsable anymore.
-            // So we deserialize and serialize it again :(
-            //return new JsonResult(result);
-
-            //var jo = JsonSerializer.Deserialize<object>(result);
-
-            
-            //var objResult = JsonSerializer.Deserialize<SimulationResultDTO>(result);
-
-            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(
+                result, 
+                new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

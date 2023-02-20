@@ -76,7 +76,7 @@ namespace RentPhaseService_Tests
             }
         }
 
-        private SimulationResultDTO ValidFinancialMathServiceResponse
+        private RentPhaseServiceResultDTO ValidFinancialMathServiceResponse
         {
             get
             {
@@ -85,17 +85,12 @@ namespace RentPhaseService_Tests
                             "Entries": [
                             {
                             "Age": 60,
-                            "YearBegin": {
-                                "Cash": 73571.069836616516113281250,
-                                "Stocks": 183927.674591541290283203125,
-                                "Metals": 110356.604754924774169921875
-                            },
-                            "Rates": {
+                            "Deposits": {
                                 "Cash": 8000.0,
                                 "Stocks": 20000.0,
                                 "Metals": 12000.0
                             },
-                            "Zins": {
+                            "Interests": {
                                 "Cash": 1967.13209509849548339843750,
                                 "Stocks": 3278.55349183082580566406250,
                                 "Metals": 983.56604754924774169921875
@@ -104,7 +99,7 @@ namespace RentPhaseService_Tests
                             ]
                             }
                             """;
-                return JsonSerializer.Deserialize<SimulationResultDTO>(resultJson);
+                return JsonSerializer.Deserialize<RentPhaseServiceResultDTO>(resultJson);
             }
         }
     }

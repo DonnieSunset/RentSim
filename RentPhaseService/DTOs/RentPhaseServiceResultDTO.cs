@@ -1,6 +1,6 @@
 ﻿namespace RentPhaseService.DTOs
 {
-    public class SimulationResultDTO
+    public class RentPhaseServiceResultDTO
     {
         public record AssetsDTO
         {
@@ -10,19 +10,20 @@
         }
 
         public record Entity
-        { 
+        {
             public int Age { get; init; }
-            public AssetsDTO YearBegin { get; init; }
-            public AssetsDTO Rates { get; init; }
-            public AssetsDTO Zins { get; init; }
+            public AssetsDTO Deposits { get; init; }
+            public AssetsDTO Interests { get; init; }
             public AssetsDTO Taxes { get; init; }
         }
 
         public List<Entity> Entities { get; init; }
+        public AssetsDTO FirstYearBeginValues { get; set; }
 
-        public SimulationResultDTO()
+        public RentPhaseServiceResultDTO()
         {
             Entities = new List<Entity>();
+            FirstYearBeginValues = new AssetsDTO();
         }
     }
 }
