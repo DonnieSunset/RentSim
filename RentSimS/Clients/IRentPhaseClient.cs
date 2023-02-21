@@ -9,6 +9,6 @@ namespace RentSimS.Clients
 
         public Task<RentPhaseServiceResultDTO> GetRentPhaseSimulationAsync(RentPhaseServiceInputDTO input);
 
-        public void LogRentPhaseResult(/*RentPhaseServiceInputDTO input, */RentPhaseServiceResultDTO result, IProtocolWriter protocol);
+        public void LogRentPhaseResult(RentPhaseServiceResultDTO result, IProtocolWriter protocol);
     }
 }

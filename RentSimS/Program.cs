@@ -21,6 +21,7 @@ var rentPhaseServiceURL = config.GetValue<string>("RentPhaseService:url");
 builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
 builder.Services.AddScoped<ISavingPhaseClient, SavingPhaseClient>();
 builder.Services.AddScoped<IRentPhaseClient, RentPhaseClient>();
+builder.Services.AddScoped<IStopWorkPhaseClient, StopWorkPhaseClient>();
 
 
 

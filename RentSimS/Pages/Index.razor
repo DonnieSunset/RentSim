@@ -166,6 +166,7 @@
     IFinanceMathClient myFinanceMathClient;
     ISavingPhaseClient mySavingPhaseClient;
     IRentPhaseClient myRentPhaseClient;
+    IStopWorkPhaseClient myStopWorkPhaseClient;
 
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
@@ -209,6 +210,7 @@
             myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
             mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
             myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
+            myStopWorkPhaseClient = serviceProvider.GetService<IStopWorkPhaseClient>();
 
             Recalc();         
         }
@@ -300,31 +302,28 @@
         myRentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
 
         // Stop Work Phase
-
         decimal rentStartAmount = protocolWriter.Protocol
             .Single(x => x.Age == lifeAssumptions.ageRentStart)
             .TotalYearBegin;
 
-        var stopWorkPhaseResult = await myFinanceMathClient.RateByNumericalSparkassenformel(
-            savingPhaseResult.FinalSavingsCash,
-            savingPhaseResult.FinalSavingsStocks,
-            savingPhaseResult.FinalSavingsMetals,
-            lifeAssumptions.cashGrowthRate,
-            lifeAssumptions.stocksGrowthRate,
-            lifeAssumptions.metalsGrowthRate,
-            rentStartAmount,
-            ageStopWork,
-            lifeAssumptions.ageRentStart);
-
-        var firstEntry = stopWorkPhaseResult.Entities.First();
-        protocolWriter.LogBalanceYearBegin(firstEntry.Age, stopWorkPhaseResult.FirstYearBeginValues.Cash, stopWorkPhaseResult.FirstYearBeginValues.Stocks, stopWorkPhaseResult.FirstYearBeginValues.Metals);
-        foreach (var entry in stopWorkPhaseResult.Entities)
+        var stopWorkPhaseInput = new StopWorkPhaseServiceInputDTO
         {
-            protocolWriter.Log(entry.Age, new TransactionDetails { cashDeposit = entry.Deposits.Cash, cashInterests = entry.Interests.Cash, cashTaxes = entry.Taxes.Cash });
-            protocolWriter.Log(entry.Age, new TransactionDetails { stockDeposit = entry.Deposits.Stocks, stockInterests = entry.Interests.Stocks, stockTaxes = entry.Taxes.Stocks });
-            protocolWriter.Log(entry.Age, new TransactionDetails { metalDeposit = entry.Deposits.Metals, metalInterests = entry.Interests.Metals, metalTaxes = entry.Taxes.Metals });
-        }
-        //protocolWriter.RecalcYearBeginEntries();
+            AgeFrom = ageStopWork,
+            AgeTo = lifeAssumptions.ageRentStart,
+
+            StartCapitalCash = savingPhaseResult.FinalSavingsCash,
+            StartCapitalStocks = savingPhaseResult.FinalSavingsStocks,
+            StartCapitalMetals = savingPhaseResult.FinalSavingsMetals,
+
+            GrowthRateCash = lifeAssumptions.cashGrowthRate,
+            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
+            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+
+            EndCapitalTotal = rentStartAmount
+        };
+
+        var stopWorkPhaseResult = await myStopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
+        myStopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
 
         result_MonthlyRateStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
         result_MonthlyRateRentPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;

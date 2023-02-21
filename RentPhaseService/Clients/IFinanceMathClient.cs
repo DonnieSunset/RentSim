@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RentPhaseService.DTOs;
+﻿using RentPhaseService.DTOs;
 
 namespace RentPhaseService.Clients
 {
