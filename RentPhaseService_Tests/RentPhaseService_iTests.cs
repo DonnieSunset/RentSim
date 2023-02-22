@@ -60,16 +60,7 @@ namespace RentPhaseService_Tests
                 var mockedFinanceMathClient = new Mock<IFinanceMathClient>();
                 mockedFinanceMathClient
                     .Setup(x => x.StartCapitalByNumericalSparkassenformel(
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<decimal>(), 
-                        It.IsAny<int>(), 
-                        It.IsAny<int>()))
+                        It.IsAny<RentPhaseServiceInputDTO>()))
                     .ReturnsAsync(ValidFinancialMathServiceResponse);
 
                 return mockedFinanceMathClient;

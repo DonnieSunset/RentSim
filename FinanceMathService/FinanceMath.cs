@@ -51,26 +51,19 @@ namespace FinanceMathService
             return lowRiskAmount;
         }
 
-        public decimal RateByNumericalSparkassenformel(
-            decimal betrag_cash,
-            decimal betrag_stocks,
-            decimal betrag_metals,
-            decimal zins_cash,
-            decimal zins_stocks,
-            decimal zins_metals,
-            decimal endbetrag, 
-            int yearStart, int yearEnd,
-            out SimulationResultDTO result)
+        public SimulationResultDTO RateByNumericalSparkassenformel(RateByNumericalSparkassenformelInputDTO input)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
+
+            SimulationResultDTO result = new ();
 
             const int MaxIterations = 100;
             const decimal Precision = 0.001m;
 
             int numIterations = 0;
 
-            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            decimal gesamtBetrag = input.StartCapitalCash + input.StartCapitalStocks + input.StartCapitalMetals;
             
             decimal angenommeneRate_min = 0;
             decimal angenommeneRate_max = -gesamtBetrag;
@@ -83,29 +76,26 @@ namespace FinanceMathService
                 {
                     FirstYearBeginValues = new SimulationResultDTO.AssetsDTO()
                     {
-                        Cash = betrag_cash,
-                        Stocks = betrag_stocks,
-                        Metals = betrag_metals,
+                        Cash = input.StartCapitalCash,
+                        Stocks = input.StartCapitalStocks,
+                        Metals = input.StartCapitalMetals,
                     }
                 };
                 angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
-                restBetrag = betrag_cash + betrag_stocks + betrag_metals;
-                decimal factorCashDyn = betrag_cash / gesamtBetrag;
-                decimal factorStocksDyn = betrag_stocks / gesamtBetrag;
-                decimal factorMetalsDyn = betrag_metals / gesamtBetrag;
+                restBetrag = gesamtBetrag;
+                decimal factorCashDyn = input.StartCapitalCash / gesamtBetrag;
+                decimal factorStocksDyn = input.StartCapitalStocks / gesamtBetrag;
+                decimal factorMetalsDyn = input.StartCapitalMetals / gesamtBetrag;
 
-                decimal restAnteil_cash = factorCashDyn * restBetrag;
-                decimal restAnteil_stocks = factorStocksDyn * restBetrag;
-                decimal restAnteil_metals = factorMetalsDyn * restBetrag;
+                decimal restAnteil_cash;
+                decimal restAnteil_stocks;
+                decimal restAnteil_metals;
 
 
-                for (int i = yearStart; i < yearEnd; i++)
+                for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
                     // rate runter
-                    decimal yearBegin_cash = restAnteil_cash;
-                    decimal yearBegin_stocks = restAnteil_stocks;
-                    decimal yearBegin_metals = restAnteil_metals;
 
                     decimal rate_cash = factorCashDyn * angenommeneRate;
                     decimal rate_stocks = factorStocksDyn * angenommeneRate;
@@ -118,9 +108,9 @@ namespace FinanceMathService
                     restAnteil_stocks = factorStocksDyn * restBetrag;
                     restAnteil_metals = factorMetalsDyn * restBetrag;
 
-                    decimal zinsen_cash = restAnteil_cash * (zins_cash / 100m);
-                    decimal zinsen_stocks = restAnteil_stocks * (zins_stocks / 100m);
-                    decimal zinsen_metals = restAnteil_metals * (zins_metals / 100m);
+                    decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
+                    decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
                     restAnteil_cash += zinsen_cash;
                     restAnteil_stocks += zinsen_stocks;
@@ -159,7 +149,7 @@ namespace FinanceMathService
                     );
                 }
 
-                if (restBetrag >= endbetrag)
+                if (restBetrag >= input.EndCapitalTotal)
                 {
                     angenommeneRate_min = angenommeneRate;
                 }
@@ -176,30 +166,20 @@ namespace FinanceMathService
                 //todo: log
                 Console.WriteLine($"{nameof(angenommeneRate)}: {angenommeneRate}  //  {nameof(restBetrag)}: {restBetrag}");
 
-            } while (Math.Abs(restBetrag - endbetrag) > Precision);
+            } while (Math.Abs(restBetrag - input.EndCapitalTotal) > Precision);
 
             //todo: log
             Console.WriteLine("Duration: " + sw.Elapsed);
             Console.WriteLine("NumIterations: " + numIterations);
-            return angenommeneRate;
+            return result;
         }
 
-        public decimal StartCapitalByNumericalSparkassenformel(
-            decimal rateTotal_perYear,
-            decimal betrag_cash,
-            decimal betrag_stocks,
-            decimal betrag_metals,
-            decimal zinsRate_cash,
-            decimal zinsRate_stocks,
-            decimal zinsRate_metals,
-            decimal endbetrag, 
-            int yearStart, int yearEnd,
-            out SimulationResultDTO result)
+        public SimulationResultDTO StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input)
         {
-            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
-            decimal factor_cash = betrag_cash / gesamtBetrag;
-            decimal factor_stocks = betrag_stocks / gesamtBetrag;
-            decimal factor_metals = betrag_metals / gesamtBetrag;
+            decimal gesamtBetrag = input.StartCapitalCash + input.StartCapitalStocks + input.StartCapitalMetals;
+            decimal factor_cash = input.StartCapitalCash / gesamtBetrag;
+            decimal factor_stocks = input.StartCapitalStocks / gesamtBetrag;
+            decimal factor_metals = input.StartCapitalMetals / gesamtBetrag;
 
             if (Math.Abs(factor_cash + factor_stocks + factor_metals - 1m) > 0.0001m)
             {
@@ -213,12 +193,15 @@ namespace FinanceMathService
             const double Precision = 0.001;
 
             int numIterations = 0;
+            decimal endbetrag = 0;
 
             decimal angenommenesStartKapital_min = 0;
-            decimal angenommenesStartKapital_max = -rateTotal_perYear * (yearEnd - yearStart) * 2 + endbetrag; // simple heuristic
+            decimal angenommenesStartKapital_max = - input.TotalRateNeeded_PerYear * (input.AgeTo - input.AgeFrom) * 2 + endbetrag; // simple heuristic
             decimal restBetrag;
             
             decimal angenommenesStartKapital;
+
+            SimulationResultDTO result;
             do
             {
                 result = new SimulationResultDTO();
@@ -241,7 +224,7 @@ namespace FinanceMathService
                 decimal factorStocksDyn = factor_stocks;
                 decimal factorMetalsDyn = factor_metals;
 
-                for (int i = yearStart; i < yearEnd; i++)
+                for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
                     //// rate runter
                     //decimal yearBegin_cash = restAnteil_cash;
@@ -249,18 +232,18 @@ namespace FinanceMathService
                     //decimal yearBegin_metals = restAnteil_metals;
 
                     //cash rate muss dynamisch sein, da wegen der unterschiedlichen zinsen auch die assetzusammensetzung schwankt
-                    decimal rate_cash = (decimal)factorCashDyn * rateTotal_perYear;
-                    decimal rate_stocks = (decimal)factorStocksDyn * rateTotal_perYear;
-                    decimal rate_metals = (decimal)factorMetalsDyn * rateTotal_perYear;
+                    decimal rate_cash = (decimal)factorCashDyn * input.TotalRateNeeded_PerYear;
+                    decimal rate_stocks = (decimal)factorStocksDyn * input.TotalRateNeeded_PerYear;
+                    decimal rate_metals = (decimal)factorMetalsDyn * input.TotalRateNeeded_PerYear;
 
                     restAnteil_cash += rate_cash;
                     restAnteil_stocks += rate_stocks;
                     restAnteil_metals += rate_metals;
 
                     // zinsen drauf
-                    decimal zinsen_cash = restAnteil_cash * (zinsRate_cash / 100m);
-                    decimal zinsen_stocks = restAnteil_stocks * (zinsRate_stocks / 100m);
-                    decimal zinsen_metals = restAnteil_metals * (zinsRate_metals / 100m);
+                    decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
+                    decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
                     restAnteil_cash += zinsen_cash;
                     restAnteil_stocks += zinsen_stocks;
@@ -299,7 +282,7 @@ namespace FinanceMathService
                     );
                 }
 
-                if (restBetrag < endbetrag)
+                if (restBetrag < 0)
                 {
                     angenommenesStartKapital_min = angenommenesStartKapital;
                 }
@@ -317,7 +300,7 @@ namespace FinanceMathService
             Console.WriteLine("Duration: " + sw.Elapsed);
             Console.WriteLine("NumIterations: " + numIterations);
 
-            return angenommenesStartKapital;
+            return result;
         }
 
         public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)

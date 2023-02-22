@@ -1,6 +1,6 @@
-﻿namespace StopWorkPhaseService.DTOs
+﻿namespace FinanceMathService.DTOs
 {
-    public class StopWorkPhaseServiceInputDTO
+    public class RateByNumericalSparkassenformelInputDTO
     {
         public int AgeFrom { get; set; }
         public int AgeTo { get; set; }

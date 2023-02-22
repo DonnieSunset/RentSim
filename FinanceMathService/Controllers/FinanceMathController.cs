@@ -25,41 +25,26 @@ namespace FinanceMathService.Controllers
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        [HttpGet("RateByNumericalSparkassenformel")]
+        [HttpPost("RateByNumericalSparkassenformel")]
         [Produces("application/json")]
-        public JsonResult RateByNumericalSparkassenformel(decimal betrag_cash, decimal zins_cash, decimal betrag_stocks, decimal zins_stocks, decimal betrag_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public JsonResult RateByNumericalSparkassenformel(RateByNumericalSparkassenformelInputDTO input)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            
-            SimulationResultDTO proto;
-            decimal result = myFinanceMath.RateByNumericalSparkassenformel(
-                betrag_cash, betrag_stocks, betrag_metals,
-                zins_cash, zins_stocks, zins_metals,
-                endbetrag,
-                yearStart, yearEnd,
-                out proto
-            );
 
-            return new JsonResult(proto, new JsonSerializerOptions { WriteIndented = true });
+            SimulationResultDTO result = myFinanceMath.RateByNumericalSparkassenformel(input);
+
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        [HttpGet("StartCapitalByNumericalSparkassenformel")]
+        [HttpPost("StartCapitalByNumericalSparkassenformel")]
         [Produces("application/json")]
-        public JsonResult StartCapitalByNumericalSparkassenformel(decimal rateTotal_perYear, decimal amount_cash, decimal zins_cash, decimal amount_stocks, decimal zins_stocks, decimal amount_metals, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public JsonResult StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            SimulationResultDTO proto;
-            decimal result = myFinanceMath.StartCapitalByNumericalSparkassenformel(
-                rateTotal_perYear,
-                amount_cash, amount_stocks, amount_metals,
-                zins_cash, zins_stocks, zins_metals,
-                endbetrag,
-                yearStart, yearEnd, 
-                out proto
-            );
+            SimulationResultDTO result = myFinanceMath.StartCapitalByNumericalSparkassenformel(input);
 
-            return new JsonResult(proto, new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
         [HttpGet("Sparkassenformel")]

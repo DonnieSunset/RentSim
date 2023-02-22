@@ -6,28 +6,9 @@ namespace FinanceMathService
     {
         public double NonRiskAssetsNeededInCaseOfRiskAssetCrash(double totalAmount, double stocksCrashFactor, double totalAmount_minNeededAfterCrash);
 
-        public decimal RateByNumericalSparkassenformel(
-            decimal betrag_cash,
-            decimal betrag_stocks,
-            decimal betrag_metals,
-            decimal zins_cash,
-            decimal zins_stocks,
-            decimal zins_metals,
-            decimal endbetrag,
-            int yearStart, int yearEnd,
-            out SimulationResultDTO protocol);
+        public SimulationResultDTO RateByNumericalSparkassenformel(RateByNumericalSparkassenformelInputDTO input);
 
-        public decimal StartCapitalByNumericalSparkassenformel(
-            decimal rateTotal_perYear,
-            decimal betrag_cash,
-            decimal betrag_stocks,
-            decimal betrag_metals,
-            decimal zinsRate_cash,
-            decimal zinsRate_stocks,
-            decimal zinsRate_metals,
-            decimal endbetrag,
-            int yearStart, int yearEnd,
-            out SimulationResultDTO protocol);
+        public SimulationResultDTO StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input);
 
         public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre);
         public decimal AmountWithInflation(int ageStart, int ageEnd, decimal amount, double inflationRate);

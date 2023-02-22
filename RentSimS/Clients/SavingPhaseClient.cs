@@ -50,7 +50,6 @@ namespace RentSimS.Clients
                 protocolWriter.Log(entity.Age, new TransactionDetails { stockDeposit = entity.Deposits.Stocks, stockInterests = entity.Interests.Stocks, stockTaxes = entity.Taxes.Stocks });
                 protocolWriter.Log(entity.Age, new TransactionDetails { metalDeposit = entity.Deposits.Metals, metalInterests = entity.Interests.Metals, metalTaxes = entity.Taxes.Metals });
             }
-            //protocolWriter.RecalcYearBeginEntries();
         }
     }
 }

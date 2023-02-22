@@ -12,25 +12,14 @@ namespace StopWorkPhaseService.Clients
             myUrl = url;
         }
 
-        public async Task<StopWorkPhaseServiceResultDTO> RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endbetrag, int yearStart, int yearEnd)
+        public async Task<StopWorkPhaseServiceResultDTO> RateByNumericalSparkassenformel(StopWorkPhaseServiceInputDTO input)
         {
             var ub = new UriBuilder(myUrl);
             ub.Path = "FinanceMath/RateByNumericalSparkassenformel";
-            ub.Query =
-                $"?betrag_cash={betrag_cash.ToString(CultureInfo.InvariantCulture)}" +
-                $"&betrag_stocks={betrag_stocks.ToString(CultureInfo.InvariantCulture)}" +
-                $"&betrag_metals={betrag_metals.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins_cash={zins_cash.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins_stocks={zins_stocks.ToString(CultureInfo.InvariantCulture)}" +
-                $"&zins_metals={zins_metals.ToString(CultureInfo.InvariantCulture)}" +
-                $"&endbetrag={endbetrag.ToString(CultureInfo.InvariantCulture)}" +
-                $"&yearStart={yearStart}" +
-                $"&yearEnd={yearEnd}"
-                ;
 
             using (var httpClient = new HttpClient())
             {
-                HttpResponseMessage response = await httpClient.GetAsync(ub.ToString());
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(ub.ToString(), input);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Http response error: {response.Content}.");

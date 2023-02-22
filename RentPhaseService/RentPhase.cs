@@ -39,17 +39,7 @@ namespace RentPhaseService
 
         public async Task<RentPhaseServiceResultDTO> Simulate(RentPhaseServiceInputDTO input, IFinanceMathClient financeMathClient)
         {
-            var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(
-                   input.TotalRateNeeded_PerYear,
-                   input.StartCapitalCash,
-                   input.GrowthRateCash,
-                   input.StartCapitalStocks,
-                   input.GrowthRateStocks,
-                   input.StartCapitalMetals,
-                   input.GrowthRateMetals,
-                   0,
-                   input.AgeFrom,
-                   input.AgeTo);
+            var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(input);
 
             return rentPhaseResultString;
         }

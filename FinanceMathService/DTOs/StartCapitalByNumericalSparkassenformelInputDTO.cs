@@ -1,6 +1,6 @@
-﻿namespace StopWorkPhaseService.DTOs
+﻿namespace FinanceMathService.DTOs
 {
-    public class StopWorkPhaseServiceInputDTO
+    public class StartCapitalByNumericalSparkassenformelInputDTO
     {
         public int AgeFrom { get; set; }
         public int AgeTo { get; set; }
@@ -11,6 +11,6 @@
         public decimal GrowthRateStocks { get; set; }
         public decimal GrowthRateMetals { get; set; }
 
-        public decimal EndCapitalTotal { get; set; }
+        public decimal TotalRateNeeded_PerYear { get; set; }
     }
 }
