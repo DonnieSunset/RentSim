@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RentPhaseService.Clients;
 using RentPhaseService.DTOs;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace RentPhaseService_Tests
@@ -17,26 +18,52 @@ namespace RentPhaseService_Tests
     /// </summary>
     public class RentPhaseService_iTests
     {
-        [TestCase("/RentPhase/Simulate?ageStart=65&ageEnd=80&totalRateNeeded_perYear=40000&capitalCash=200000&growthRateCash=3&capitalStocks=200000&growthRateStocks=3&capitalMetals=200000&growthRateMetals=3")]
+        [TestCase("/RentPhase/Simulate")]
         public async Task ClientTest_Simulate_ReturnsSuccessfulStatusCode(string url)
         {
-            var response = await SendToClient(url);
+            RentPhaseServiceInputDTO input = new RentPhaseServiceInputDTO()
+            {
+                AgeFrom = 65,
+                AgeTo = 80,
+                GrowthRateCash = 3,
+                GrowthRateMetals = 3,
+                GrowthRateStocks = 3,
+                FractionCash = 200000m / 60000m,
+                FractionMetals = 200000m / 60000m,
+                FractionStocks = 200000m / 60000m,
+                TotalRateNeeded_PerYear = 40000,
+            };
+
+            var response = await SendToClient(url, input);
 
             Assert.That(() => response.EnsureSuccessStatusCode(), Throws.Nothing); // Status Code 200-299
             Assert.That("application/json; charset=utf-8", Is.EqualTo(response.Content.Headers.ContentType.ToString()));
         }
 
-        [TestCase("/RentPhase/Simulate?ageStart=65&ageEnd=80&totalRateNeeded_perYear=40000&capitalCash=200000&growthRateCash=3&capitalStocks=200000&growthRateStocks=3&capitalMetals=200000&growthRateMetals=3")]
+        [TestCase("/RentPhase/Simulate")]
         public async Task ClientTest_Simulate_ReturnsValidJson(string url)
         {
-            var response = await SendToClient(url);
+            RentPhaseServiceInputDTO input = new RentPhaseServiceInputDTO()
+            {
+                AgeFrom = 65,
+                AgeTo = 80,
+                GrowthRateCash = 3,
+                GrowthRateMetals = 3,
+                GrowthRateStocks = 3,
+                FractionCash = 200000m / 60000m,
+                FractionMetals = 200000m / 60000m,
+                FractionStocks = 200000m / 60000m,
+                TotalRateNeeded_PerYear = 40000,
+            };
+
+            var response = await SendToClient(url, input);
 
             var rentPhaseResultString = await response.Content.ReadAsStringAsync();
 
             Assert.That(() => JsonDocument.Parse(rentPhaseResultString), Throws.Nothing, "WebApi response must be valid Json.");
         }
 
-        private async Task<HttpResponseMessage?> SendToClient(string url)
+        private async Task<HttpResponseMessage?> SendToClient(string url, RentPhaseServiceInputDTO input)
         {
             var application = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -49,7 +76,7 @@ namespace RentPhaseService_Tests
                 });
 
             var client = application.CreateClient();
-            var response = await client.GetAsync(url);
+            var response = await client.PostAsJsonAsync(url, input);
 
             return response;
         }

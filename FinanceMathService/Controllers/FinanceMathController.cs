@@ -47,16 +47,16 @@ namespace FinanceMathService.Controllers
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        [HttpGet("Sparkassenformel")]
-        [Produces("application/json")]
-        public JsonResult SparkassenFormel(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
-        {
-            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        //[HttpGet("Sparkassenformel")]
+        //[Produces("application/json")]
+        //public JsonResult SparkassenFormel(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
+        //{
+        //    HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            decimal result = myFinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
+        //    decimal result = myFinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
 
-            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
-        }
+        //    return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
+        //}
 
         [HttpGet("AmountWithInflation")]
         [Produces("application/json")]

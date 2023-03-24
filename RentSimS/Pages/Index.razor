@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using System.Globalization;
 @using Domain;
-@using Finance.Results;
 @using Protocol;
 @using RentSimS.Clients;
 @using System.Text.Json;
@@ -30,25 +29,29 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Asset Class:</FieldLabel>
-    <FieldLabel ColumnSize="ColumnSize.Is1">Initial Savings:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Initial Deposits:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">Initial Interests:</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is1">Interest Rate (%):</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is1">Monthly Savings:</FieldLabel>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash.FromDeposits" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash.FromInterests" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" Step="1" Min=0 onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
@@ -237,9 +240,9 @@
             AgeFrom = lifeAssumptions.ageCurrent,
             AgeTo = ageStopWork,
 
-            StartCapitalCash = lifeAssumptions.cash,
-            StartCapitalStocks = lifeAssumptions.stocks,
-            StartCapitalMetals = lifeAssumptions.metals,
+            StartCapitalCash = new CAmount(lifeAssumptions.cash),
+            StartCapitalStocks = new CAmount(lifeAssumptions.stocks),
+            StartCapitalMetals = new CAmount(lifeAssumptions.metals),
 
             GrowthRateCash = lifeAssumptions.cashGrowthRate,
             GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
@@ -283,13 +286,9 @@
             AgeFrom = lifeAssumptions.ageRentStart,
             AgeTo = lifeAssumptions.ageEnd,
 
-            // These 3 values are only needed to calculate the asset proportions.
-            // So do one of the following
-            // 1) put in here the results of the StopWorkPhase, which would be more accurate
-            // 2) put in at least the results of the SaveingPhase AFTER the rebalancing
-            StartCapitalCash = savingPhaseResult.FinalSavingsCash,
-            StartCapitalStocks = savingPhaseResult.FinalSavingsStocks,
-            StartCapitalMetals = savingPhaseResult.FinalSavingsMetals,
+            FractionCash = savingPhaseResult.FinalSavingsCash.Total / savingPhaseResult.FinalSavings,
+            FractionStocks = savingPhaseResult.FinalSavingsStocks.Total / savingPhaseResult.FinalSavings,
+            FractionMetals = savingPhaseResult.FinalSavingsMetals.Total / savingPhaseResult.FinalSavings,
 
             GrowthRateCash = lifeAssumptions.cashGrowthRate,
             GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
@@ -311,9 +310,10 @@
             AgeFrom = ageStopWork,
             AgeTo = lifeAssumptions.ageRentStart,
 
-            StartCapitalCash = savingPhaseResult.FinalSavingsCash,
-            StartCapitalStocks = savingPhaseResult.FinalSavingsStocks,
-            StartCapitalMetals = savingPhaseResult.FinalSavingsMetals,
+            // todo: assign correctly once CAmount is applied to SavingPhaseResult
+            StartCapitalCash = new CAmount (savingPhaseResult.FinalSavingsCash),
+            StartCapitalStocks = new CAmount (savingPhaseResult.FinalSavingsStocks),
+            StartCapitalMetals = new CAmount (savingPhaseResult.FinalSavingsMetals),
 
             GrowthRateCash = lifeAssumptions.cashGrowthRate,
             GrowthRateStocks = lifeAssumptions.stocksGrowthRate,

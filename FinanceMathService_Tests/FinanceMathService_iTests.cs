@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FinanceMathService.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
+using System.Net.Http.Json;
 
 namespace FinanceMathService_Tests
 {
@@ -11,7 +13,6 @@ namespace FinanceMathService_Tests
     public class FinanceMathService_iTests
     {
         [TestCase("/FinanceMath/NonRiskAssets?totalAmount=500&stocksCrashFactor=0.5&totalAmount_minNeededAfterCrash=400")]
-        [TestCase("/FinanceMath/RateByNumericalSparkassenformel?betrag_cash=10000&zins_cash=0&betrag_stocks=100000&zins_stocks=8&betrag_metals=10000&zins_metals=1&endbetrag=0&yearStart=60&yearEnd=70")]
         public async Task ReturnHelloWorld(string url)
         {
             var application = new WebApplicationFactory<Program>()
@@ -22,6 +23,39 @@ namespace FinanceMathService_Tests
             var client = application.CreateClient();
 
             var response = await client.GetAsync(url);
+
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            Assert.That("application/json; charset=utf-8", Is.EqualTo(response.Content.Headers.ContentType.ToString()));
+        }
+
+        [TestCase("/FinanceMath/RateByNumericalSparkassenformel")]
+        public async Task ReturnHelloWorld2(string url)
+        {
+            RateByNumericalSparkassenformelInputDTO input = new RateByNumericalSparkassenformelInputDTO()
+            {
+                AgeFrom = 60,
+                AgeTo = 70,
+
+                GrowthRateCash = 0,
+                GrowthRateStocks = 8,
+                GrowthRateMetals = 1,
+
+                StartCapitalCash = new CAmount() { FromDeposits = 10000 },
+                StartCapitalStocks = new CAmount() { FromDeposits = 100000 },
+                StartCapitalMetals = new CAmount() { FromDeposits = 10000 },
+
+                EndCapitalTotal = 0
+            };
+
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    // ... Configure test services
+                });
+            var client = application.CreateClient();
+
+            var response = await client.PostAsJsonAsync(url, input);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299

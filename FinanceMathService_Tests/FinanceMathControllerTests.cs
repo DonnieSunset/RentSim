@@ -1,4 +1,5 @@
 using FinanceMathService;
+using FinanceMathService.DTOs;
 using NUnit.Framework;
 
 namespace FinanceMathService_Tests
@@ -25,7 +26,6 @@ namespace FinanceMathService_Tests
 
             //Console.WriteLine($"{nameof(lowRiskAMount)}: {lowRiskAMount}");
             //Console.WriteLine($"{nameof(highRiskAmount)}: {highRiskAmount}");
-
             //Console.WriteLine($"{nameof(totalAmount)}: {totalAmount} / {nameof(stocksCrashFactor)}: {stocksCrashFactor} / {nameof(totalAmountMinNeededAfterCrash)}: {totalAmountMinNeededAfterCrash} / {nameof(lowRiskAMount)}: {lowRiskAMount}");
 
             Assert.That(lowRiskAMount, Is.GreaterThanOrEqualTo(0));
@@ -48,99 +48,90 @@ namespace FinanceMathService_Tests
         [TestCase(2000, 1000, 1000, 3, 1.5, 2, 500, 50, 60)]
         public void Test_RateByNumericalSparkassenformel(decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endBetrag, int yearStart, int yearEnd)
         {
-            int anzahlJahre = yearEnd - yearStart;
-            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
+            var input = new RateByNumericalSparkassenformelInputDTO
+            {
+                AgeFrom = yearStart,
+                AgeTo = yearEnd,
 
-            decimal rate = myFinanceMath.RateByNumericalSparkassenformel(
-                betrag_cash, betrag_stocks, betrag_metals ,
-                zins_cash, zins_stocks, zins_metals,
-                endBetrag, yearStart, yearEnd,
-                out _);
+                StartCapitalCash = new CAmount { FromDeposits = betrag_cash },
+                StartCapitalStocks = new CAmount { FromDeposits = betrag_stocks },
+                StartCapitalMetals = new CAmount { FromDeposits = betrag_metals },
 
-            Console.WriteLine($"{nameof(gesamtBetrag)}: {gesamtBetrag}");
-            Console.WriteLine($"{nameof(rate)}: {rate}");
+                GrowthRateCash = zins_cash,
+                GrowthRateStocks = zins_stocks,
+                GrowthRateMetals = zins_metals,
 
-            decimal faktorCash = betrag_cash / gesamtBetrag;
-            decimal faktorStocks = betrag_stocks / gesamtBetrag;
-            decimal faktorMetals = betrag_metals / gesamtBetrag;
+                EndCapitalTotal = endBetrag
+            };
 
-            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
-            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
-            Console.WriteLine($"{nameof(faktorCash)}: {faktorCash}");
+            var result = myFinanceMath.RateByNumericalSparkassenformel(input);
 
-            decimal restbetrag = gesamtBetrag;
-            for (int i = 0; i < anzahlJahre; i++)
+            decimal restbetrag = betrag_cash + betrag_stocks + betrag_metals;
+            for (int i = 0; i < yearEnd - yearStart; i++)
             {
                 // rate runter
-                restbetrag -= rate;
+                restbetrag += result.Entities[i].Deposits.Cash;
+                restbetrag += result.Entities[i].Deposits.Stocks;
+                restbetrag += result.Entities[i].Deposits.Metals;
 
                 // zinsen drauf
-                decimal anteilBetrag_cash = faktorCash * restbetrag;
-                decimal anteilBetrag_stocks = faktorStocks * restbetrag;
-                decimal anteilBetrag_metals = faktorMetals * restbetrag;
-                Assert.That(anteilBetrag_cash + anteilBetrag_stocks + anteilBetrag_metals, Is.EqualTo(restbetrag).Within(0.001));
+                restbetrag += result.Entities[i].Interests.Cash;
+                restbetrag += result.Entities[i].Interests.Stocks;
+                restbetrag += result.Entities[i].Interests.Metals;
 
-                anteilBetrag_cash *= (1 + (zins_cash / 100m));
-                anteilBetrag_stocks *= (1 + (zins_stocks / 100m)); ;
-                anteilBetrag_metals *= (1 + (zins_metals / 100m)); ;
-
-                restbetrag = anteilBetrag_cash + anteilBetrag_stocks + anteilBetrag_metals;
-
-                //faktoren neu berechnen da sich durch die unterschiedlichen zinssätze die asset zusammensetzung geändert hat
-                faktorCash = anteilBetrag_cash / restbetrag;
-                faktorStocks = anteilBetrag_stocks / restbetrag;
-                faktorMetals = anteilBetrag_metals / restbetrag;
+                //steuern runter
+                restbetrag += result.Entities[i].Taxes.Cash;
+                restbetrag += result.Entities[i].Taxes.Stocks;
+                restbetrag += result.Entities[i].Taxes.Metals;
             }
 
-            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001));
+            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount should be reached.");
         }
 
 
         // todo: das hier wäre ein kandidat für data driven tests, da gibts doch frameworks dafür
-        [TestCase(200, 7000, 12000, 2000, 0.1, 8, 2, 5000, 50, 60)]
+        [TestCase(-20000, 10000, 300000, 20000, 0.1, 8, 2, 0, 50, 60)]
         public void Test_StartCapitalByNumericalSparkassenformel(decimal totalRatePerYear, decimal betrag_cash, decimal betrag_stocks, decimal betrag_metals, decimal zins_cash, decimal zins_stocks, decimal zins_metals, decimal endBetrag, int yearStart, int yearEnd)
         {
-            int anzahlJahre = yearEnd - yearStart;
+            var input = new StartCapitalByNumericalSparkassenformelInputDTO
+            {
+                AgeFrom = yearStart,
+                AgeTo = yearEnd,
 
-            decimal startCapital = myFinanceMath.StartCapitalByNumericalSparkassenformel(
-                totalRatePerYear,
-                betrag_cash, betrag_stocks, betrag_metals,
-                zins_cash, zins_stocks, zins_metals,
-                endBetrag,
-                yearStart, yearEnd,
-                out _);
+                FractionCash = betrag_cash / (betrag_cash + betrag_stocks + betrag_metals),
+                FractionStocks = betrag_stocks / (betrag_cash + betrag_stocks + betrag_metals),
+                FractionMetals = betrag_metals / (betrag_cash + betrag_stocks + betrag_metals),
 
-            decimal restbetrag = startCapital;
+                GrowthRateCash = zins_cash,
+                GrowthRateStocks = zins_stocks,
+                GrowthRateMetals = zins_metals,
 
-            decimal gesamtBetrag = betrag_cash + betrag_stocks + betrag_metals;
-            decimal faktorCash = betrag_cash / gesamtBetrag;
-            decimal faktorStocks = betrag_stocks / gesamtBetrag;
-            decimal faktorMetals = betrag_metals / gesamtBetrag;
+                TotalRateNeeded_PerYear = totalRatePerYear,
+            };
+            input.Validate();
 
-            for (int i = 0; i < anzahlJahre; i++)
+            var result = myFinanceMath.StartCapitalByNumericalSparkassenformel(input);
+
+            decimal restbetrag = result.FirstYearBeginValues.Cash + result.FirstYearBeginValues.Stocks + result.FirstYearBeginValues.Metals;
+            for (int i = 0; i < yearEnd - yearStart; i++)
             {
                 // rate runter
-                restbetrag -= totalRatePerYear;
+                restbetrag += result.Entities[i].Deposits.Cash;
+                restbetrag += result.Entities[i].Deposits.Stocks;
+                restbetrag += result.Entities[i].Deposits.Metals;
 
                 // zinsen drauf
-                decimal anteilBetrag1 = (decimal)faktorCash * restbetrag;
-                decimal anteilBetrag2 = (decimal)faktorStocks * restbetrag;
-                decimal anteilBetrag3 = (decimal)faktorMetals * restbetrag;
-                Assert.That(anteilBetrag1 + anteilBetrag2 + anteilBetrag3, Is.EqualTo(restbetrag).Within(0.001), "all part amounts should sum up to total amount.");
+                restbetrag += result.Entities[i].Interests.Cash;
+                restbetrag += result.Entities[i].Interests.Stocks;
+                restbetrag += result.Entities[i].Interests.Metals;
 
-                anteilBetrag1 *= 1 + (zins_cash / 100m);
-                anteilBetrag2 *= 1 + (zins_stocks / 100m);
-                anteilBetrag3 *= 1 + (zins_metals / 100m);
-
-                restbetrag = anteilBetrag1 + anteilBetrag2 + anteilBetrag3;
-
-                //faktoren neu berechnen da sich durch die unterschiedlichen zinssätze die asset zusammensetzung geändert hat
-                faktorCash = anteilBetrag1 / restbetrag;
-                faktorStocks = anteilBetrag2 / restbetrag;
-                faktorMetals = anteilBetrag3 / restbetrag;
+                // steuern runter
+                restbetrag += result.Entities[i].Taxes.Cash;
+                restbetrag += result.Entities[i].Taxes.Stocks;
+                restbetrag += result.Entities[i].Taxes.Metals;
             }
 
-            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "end amount should be reached.");
+            Assert.That(restbetrag, Is.EqualTo(endBetrag).Within(0.001), "End amount should be reached.");
         }
     }
 }

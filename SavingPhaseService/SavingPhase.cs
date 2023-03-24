@@ -10,9 +10,9 @@ namespace SavingPhaseService
         public SavingPhaseServiceResultDTO Simulate(SavingPhaseServiceInputDTO input)
         {
             SavingPhaseServiceResultDTO result = new();
-            decimal currentCapitalCash = input.StartCapitalCash;
-            decimal currentCapitalStocks = input.StartCapitalStocks;
-            decimal currentCapitalMetals = input.StartCapitalMetals;
+            decimal currentCapitalCash = input.StartCapitalCash.Total;
+            decimal currentCapitalStocks = input.StartCapitalStocks.Total;
+            decimal currentCapitalMetals = input.StartCapitalMetals.Total;
 
             result.FirstYearBeginValues = new SavingPhaseServiceResultDTO.AssetsDTO
             {
@@ -75,9 +75,9 @@ namespace SavingPhaseService
                     },
                 });
             }
-            result.FinalSavingsCash = currentCapitalCash;
-            result.FinalSavingsStocks = currentCapitalStocks;
-            result.FinalSavingsMetals = currentCapitalMetals;
+            result.FinalSavingsCash.FromDeposits = currentCapitalCash;
+            result.FinalSavingsStocks.FromDeposits = currentCapitalStocks;
+            result.FinalSavingsMetals.FromDeposits = currentCapitalMetals;
 
             return result;
         }

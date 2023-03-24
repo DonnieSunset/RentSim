@@ -10,7 +10,7 @@ namespace FinanceMathService
 
         public SimulationResultDTO StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input);
 
-        public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre);
+        //public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre);
         public decimal AmountWithInflation(int ageStart, int ageEnd, decimal amount, double inflationRate);
 
     }

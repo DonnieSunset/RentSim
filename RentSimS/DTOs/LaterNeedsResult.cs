@@ -1,4 +1,4 @@
-﻿namespace Finance.Results
+﻿namespace RentSimS.DTOs
 {
     public class LaterNeedsResult
     {

@@ -10,15 +10,15 @@
         public int ageRentStart = 67;
         public int ageEnd = 80;
 
-        public int stocks = 118033;
+        public CAmount stocks = new CAmount { FromDeposits = 118033 };
         public int stocksGrowthRate = 5;
         public int stocksSaveAmountPerMonth = 1171;
 
-        public int cash = 44000;
+        public CAmount cash = new CAmount { FromDeposits = 44000 };
         public int cashGrowthRate = 0;
         public int cashSaveAmountPerMonth = 0;
 
-        public int metals = 21200;
+        public CAmount metals = new CAmount { FromDeposits = 21200 };
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 
@@ -43,64 +43,8 @@
 
         public decimal taxFactor_Stocks = 1.26m;
 
-        //public decimal NetStateRentFromStopWorkAge_perMonth
-        //{
-        //    get
-        //    {
-        //        return RentCalculator.ApproxNetRent(
-        //            ageCurrent,
-        //            netStateRentFromCurrentAge_perMonth,
-        //            ageRentStart,
-        //            netStateRentFromRentStartAge_perMonth,
-        //            ageStopWork);
-        //    }
-        //}
-
-
-        //public Rent Rent { get; private set; }
-        //public RentPhaseInputData RentPhase 
-        //{
-        //    get 
-        //    {
-        //        return new RentPhaseInputData(
-        //            ageCurrent,
-        //            ageRentStart,
-        //            ageEnd,
-        //            inflationRate,
-        //            needsCurrentAgeMinimal,
-        //            needsCurrentAgeComfort,
-        //            rentPhase_InterestRate_Cash,
-        //            rentPhase_InterestRate_Stocks_GoodCase,
-        //            rentPhase_InterestRate_Stocks_BadCase,
-        //            rentPhase_CrashFactor_Stocks_BadCase,
-        //            NetStateRentFromStopWorkAge_perMonth,
-        //            taxFactor_Stocks
-        //            );
-        //    }
-        //    //private set { }; 
-        //}
-
         public LifeAssumptions()
         {
-            ///Rent phases will get their flat data here. In the constructor, they create the more complex structures that reqire calculations..
-
-            //{
-                //InterestRate_Cash = rentPhase_InterestRate_Cash,
-                //InterestRate_Stocks_BadCase = rentPhase_InterestRate_Stocks_BadCase,
-                //InterestRate_Stocks_GoodCase = rentPhase_InterestRate_Stocks_GoodCase,
-                //CrashFactor_Stocks_BadCase = rentPhase_CrashFactor_Stocks_BadCase,
-
-                //InflationRate = inflationRate,
-
-                //AgeCurrent = ageCurrent,
-                //AgeRentStart = ageRentStart,
-                //AgeEnd = ageEnd,
-
-                //NeedsCurrentAgeMinimal = needsNowMinimum,
-                //NeedsCurrentAgeComfort = needsNowComfort
-            //};
-
-            //Rent = new Rent(netStateRentFromCurrentAge_perMonth, netStateRentFromRentStartAge_perMonth, RentPhase.DurationInYears);
         }
     }
 }

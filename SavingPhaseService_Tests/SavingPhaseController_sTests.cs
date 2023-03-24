@@ -17,15 +17,15 @@ namespace SavingPhaseService_Tests
                     AgeFrom = 40,
                     AgeTo = 50,
 
-                    StartCapitalCash = 100000,
+                    StartCapitalCash = { FromDeposits = 100000 },
                     GrowthRateCash = 1,
                     SaveAmountPerMonthCash = 300,
 
-                    StartCapitalStocks = 180000,
+                    StartCapitalStocks = { FromDeposits = 180000 },
                     GrowthRateStocks = 8,
                     SaveAmountPerMonthStocks = 717,
 
-                    StartCapitalMetals = 12000,
+                    StartCapitalMetals = { FromDeposits = 12000 },
                     GrowthRateMetals = 0,
                     SaveAmountPerMonthMetals = 0,
 
