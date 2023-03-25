@@ -5,6 +5,10 @@ namespace FinanceMathService
 {
     internal class FinanceMath : IFinanceMath
     {
+        //todo: duplicated in SavingPhase
+        public const decimal CAPITAL_YIELDS_TAX_FACTOR = 0.26375m;
+        public const decimal TAX_FREE_AMOUNT_PER_YEAR = 1000;
+
         const int MaxIterations = 100;
         const decimal Precision = 0.001m;
 
@@ -66,6 +70,7 @@ namespace FinanceMathService
             
             decimal angenommeneRate;
             SimulationResultDTO result;
+
             do
             {
                 result = new ()
@@ -91,12 +96,27 @@ namespace FinanceMathService
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
                     // rate runter
-
                     decimal rate_cash = factorCashDyn * angenommeneRate;
                     decimal rate_stocks = factorStocksDyn * angenommeneRate;
                     decimal rate_metals = factorMetalsDyn * angenommeneRate;
 
                     restBetrag += rate_cash + rate_stocks + rate_metals;
+
+                    // todo: duplicate code
+                    // pay taxes
+                    // Step 1) calculate CAmount out of rate_stocks, based on input.
+                    //         We assume that we dispose the same fraction of deposits and interests as in the input
+                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, input.StartCapitalStocks);
+                    // Step 2) From this CAmount, we can calculate the amount of tax that has to be payed
+                    decimal taxes_stocks = 0;
+                    decimal taxRelevantInterests = Math.Abs(rateStocksCAmount.FromInterests) - TAX_FREE_AMOUNT_PER_YEAR;
+                    if (taxRelevantInterests > 0)
+                    {
+                        taxes_stocks = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
+                        taxes_stocks = -taxes_stocks;
+                    }
+                    // Step 3) We substract this from restBetrag (taxes are negative)
+                    restBetrag += taxes_stocks;
 
                     // zinsen drauf
                     restAnteil_cash = factorCashDyn * restBetrag;
@@ -137,7 +157,7 @@ namespace FinanceMathService
                             Taxes = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = 0,
-                                Stocks = 0,
+                                Stocks = taxes_stocks,
                                 Metals = 0
                             },
                         }
@@ -170,9 +190,7 @@ namespace FinanceMathService
 
         public SimulationResultDTO StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input)
         {
-
-
-                input.Validate();
+            input.Validate();
 
             int numIterations = 0;
             decimal endbetrag = 0;
@@ -201,7 +219,7 @@ namespace FinanceMathService
                     Metals = restAnteil_metals,
                 };
 
-                // Faktoren müssen dynamisch sein, da aich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
+                // Faktoren müssen dynamisch sein, da sich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
                 decimal factorCashDyn = input.FractionCash;
                 decimal factorStocksDyn = input.FractionStocks;
                 decimal factorMetalsDyn = input.FractionMetals;
@@ -217,10 +235,37 @@ namespace FinanceMathService
                     restAnteil_stocks += rate_stocks;
                     restAnteil_metals += rate_metals;
 
+                    // todo: duplicate code
+                    // pay taxes
+                    // Step 1) calculate CAmount out of rate_stocks, based on input.
+                    //         We assume that we dispose the same fraction of deposits and interests as in the input
+                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, input.StartCapitalStocks);
+                    // Step 2) From this CAmount, we can calculate the amount of tax that has to be payed
+                    decimal taxes_stocks = 0;
+                    decimal taxRelevantInterests = Math.Abs(rateStocksCAmount.FromInterests) - TAX_FREE_AMOUNT_PER_YEAR;
+                    if (taxRelevantInterests > 0)
+                    {
+                        taxes_stocks = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
+                        taxes_stocks = -taxes_stocks;
+                    }
+
+                    if (restAnteil_stocks > 0 && restAnteil_stocks < -taxes_stocks)
+                    {
+                        Console.WriteLine();
+                    }
+
+                    // Step 3) We substract this from restBetrag (taxes are negative)
+                    restAnteil_stocks += taxes_stocks;
+
                     // zinsen drauf
                     decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
                     decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
                     decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
+
+                    //if (zinsen_cash < 0 || zinsen_stocks < 0 || zinsen_metals < 0)
+                    //{
+                    //    Console.WriteLine();
+                    //}
 
                     restAnteil_cash += zinsen_cash;
                     restAnteil_stocks += zinsen_stocks;
@@ -252,7 +297,7 @@ namespace FinanceMathService
                             Taxes = new SimulationResultDTO.AssetsDTO
                             {
                                 Cash = 0,
-                                Stocks = 0,
+                                Stocks = taxes_stocks,
                                 Metals = 0
                             },
                         }
@@ -272,29 +317,12 @@ namespace FinanceMathService
                 {
                     throw new Exception($"Too many iterations: {numIterations}");
                 }
-            } while (Math.Abs(restBetrag - endbetrag) > (decimal)Precision);
+            } while (Math.Abs(restBetrag - endbetrag) > Precision);
 
             Console.WriteLine("NumIterations: " + numIterations);
 
             return result;
         }
-
-        //public decimal SparkassenFormel(decimal anfangskapital, decimal rate_proJahr, double zinsFaktor, int anzahlJahre)
-        //{
-        //    decimal zinsFaktor_d = (decimal)zinsFaktor;
-
-        //    decimal endKapital;
-        //    if (zinsFaktor_d == 1)
-        //    {
-        //        endKapital = anfangskapital + rate_proJahr * anzahlJahre;
-        //    }
-        //    else
-        //    {
-        //        endKapital = anfangskapital * Pow(zinsFaktor_d, anzahlJahre) + (rate_proJahr * 1 * ((Pow(zinsFaktor_d, anzahlJahre)) - 1) / (zinsFaktor_d - 1));
-        //    }
-
-        //    return endKapital;
-        //}
 
         public decimal AmountWithInflation(int ageStart, int ageEnd, decimal amount, double inflationRate)
         {
@@ -311,10 +339,5 @@ namespace FinanceMathService
 
             return result;
         }
-
-        //private static decimal Pow(decimal a, int b)
-        //{
-        //    return (decimal)Math.Pow((double)a, b);
-        //}
     }
 }

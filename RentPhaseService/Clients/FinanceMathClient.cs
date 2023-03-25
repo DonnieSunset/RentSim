@@ -50,7 +50,6 @@ namespace RentPhaseService.Clients
             {
                 try
                 {
-
                     httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
                 }
                 catch(Exception ex)

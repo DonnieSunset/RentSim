@@ -281,14 +281,14 @@
         rentAtStopWork_net = stateRentResult.assumedStateRent_Net_PerMonth;
 
         // Rent Phase
-        var rentPhaseInput = new RentPhaseServiceInputDTO ()
+        var rentPhaseInput = new RentPhaseServiceInputDTO()
         {
             AgeFrom = lifeAssumptions.ageRentStart,
             AgeTo = lifeAssumptions.ageEnd,
 
-            FractionCash = savingPhaseResult.FinalSavingsCash.Total / savingPhaseResult.FinalSavings,
-            FractionStocks = savingPhaseResult.FinalSavingsStocks.Total / savingPhaseResult.FinalSavings,
-            FractionMetals = savingPhaseResult.FinalSavingsMetals.Total / savingPhaseResult.FinalSavings,
+            StartCapitalCash = new CAmount(savingPhaseResult.FinalSavingsCash),
+            StartCapitalStocks = new CAmount(savingPhaseResult.FinalSavingsStocks),
+            StartCapitalMetals = new CAmount(savingPhaseResult.FinalSavingsMetals),
 
             GrowthRateCash = lifeAssumptions.cashGrowthRate,
             GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
@@ -310,7 +310,6 @@
             AgeFrom = ageStopWork,
             AgeTo = lifeAssumptions.ageRentStart,
 
-            // todo: assign correctly once CAmount is applied to SavingPhaseResult
             StartCapitalCash = new CAmount (savingPhaseResult.FinalSavingsCash),
             StartCapitalStocks = new CAmount (savingPhaseResult.FinalSavingsStocks),
             StartCapitalMetals = new CAmount (savingPhaseResult.FinalSavingsMetals),

@@ -104,7 +104,7 @@
 
                 if (!eqCash || !eqStocks || !eqMetals || !eqTotals)
                 {
-                    throw new Exception($"ResultRowValidator: sum of single values at age {resultRow.Age} does not sum up to total value.");
+                    throw new Exception($"ResultRowValidator: The sum of single values at age {resultRow.Age} does not sum up to total value.");
                 }
             }
         }

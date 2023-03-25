@@ -17,8 +17,12 @@
 
         public void DistributeEqually(decimal amount)
         {
-            FromDeposits += (FromDeposits / Total) * amount;
-            FromInterests += (FromInterests / Total) * amount;
+            // Total changes during the first op,
+            // thats why it cannot be re-used in the second op and we have to bufferit
+            var totalBuffered = Total;
+
+            FromDeposits += (FromDeposits / totalBuffered) * amount;
+            FromInterests += (FromInterests / totalBuffered) * amount;
         }
     }
 }

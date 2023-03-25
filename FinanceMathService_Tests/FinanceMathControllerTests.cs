@@ -98,9 +98,9 @@ namespace FinanceMathService_Tests
                 AgeFrom = yearStart,
                 AgeTo = yearEnd,
 
-                FractionCash = betrag_cash / (betrag_cash + betrag_stocks + betrag_metals),
-                FractionStocks = betrag_stocks / (betrag_cash + betrag_stocks + betrag_metals),
-                FractionMetals = betrag_metals / (betrag_cash + betrag_stocks + betrag_metals),
+                StartCapitalCash = new CAmount() { FromDeposits = betrag_cash },
+                StartCapitalStocks = new CAmount() { FromDeposits = betrag_stocks },
+                StartCapitalMetals = new CAmount() { FromDeposits = betrag_metals },
 
                 GrowthRateCash = zins_cash,
                 GrowthRateStocks = zins_stocks,

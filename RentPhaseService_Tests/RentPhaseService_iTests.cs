@@ -28,9 +28,9 @@ namespace RentPhaseService_Tests
                 GrowthRateCash = 3,
                 GrowthRateMetals = 3,
                 GrowthRateStocks = 3,
-                FractionCash = 200000m / 60000m,
-                FractionMetals = 200000m / 60000m,
-                FractionStocks = 200000m / 60000m,
+                StartCapitalCash = new CAmount() { FromDeposits = 20000 },
+                StartCapitalStocks = new CAmount() { FromDeposits = 20000 },
+                StartCapitalMetals = new CAmount() { FromDeposits = 20000 },
                 TotalRateNeeded_PerYear = 40000,
             };
 
@@ -50,9 +50,9 @@ namespace RentPhaseService_Tests
                 GrowthRateCash = 3,
                 GrowthRateMetals = 3,
                 GrowthRateStocks = 3,
-                FractionCash = 200000m / 60000m,
-                FractionMetals = 200000m / 60000m,
-                FractionStocks = 200000m / 60000m,
+                StartCapitalCash = new CAmount() { FromDeposits = 20000 },
+                StartCapitalStocks = new CAmount() { FromDeposits = 20000 },
+                StartCapitalMetals = new CAmount() { FromDeposits = 20000 },
                 TotalRateNeeded_PerYear = 40000,
             };
 

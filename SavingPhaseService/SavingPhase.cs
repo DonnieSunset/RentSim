@@ -10,15 +10,15 @@ namespace SavingPhaseService
         public SavingPhaseServiceResultDTO Simulate(SavingPhaseServiceInputDTO input)
         {
             SavingPhaseServiceResultDTO result = new();
-            decimal currentCapitalCash = input.StartCapitalCash.Total;
-            decimal currentCapitalStocks = input.StartCapitalStocks.Total;
-            decimal currentCapitalMetals = input.StartCapitalMetals.Total;
+            CAmount currentCapitalCash = new CAmount(input.StartCapitalCash);
+            CAmount currentCapitalStocks = new CAmount(input.StartCapitalStocks);
+            CAmount currentCapitalMetals = new CAmount(input.StartCapitalMetals);
 
             result.FirstYearBeginValues = new SavingPhaseServiceResultDTO.AssetsDTO
             {
-                Cash= currentCapitalCash,
-                Stocks= currentCapitalStocks,
-                Metals= currentCapitalMetals
+                Cash = currentCapitalCash.Total,
+                Stocks = currentCapitalStocks.Total,
+                Metals = currentCapitalMetals.Total
             };
 
             for (int age = input.AgeFrom; age < input.AgeTo; age++)
@@ -27,18 +27,19 @@ namespace SavingPhaseService
                 decimal savingsCash = input.SaveAmountPerMonthCash * 12;
                 decimal savingsStocks = input.SaveAmountPerMonthStocks * 12;
                 decimal savingsMetals = input.SaveAmountPerMonthMetals * 12;
-                currentCapitalCash += savingsCash;
-                currentCapitalStocks += savingsStocks;
-                currentCapitalMetals += savingsMetals;
+                currentCapitalCash.FromDeposits += savingsCash;
+                currentCapitalStocks.FromDeposits += savingsStocks;
+                currentCapitalMetals.FromDeposits += savingsMetals;
 
                 // get interests
-                decimal interestsCash = currentCapitalCash * input.GrowthRateCash / 100m;
-                decimal interestsStocks = currentCapitalStocks * input.GrowthRateStocks / 100m;
-                decimal interestsMetals = currentCapitalMetals * input.GrowthRateMetals / 100m;
-                currentCapitalCash += interestsCash;
-                currentCapitalStocks += interestsStocks;
-                currentCapitalMetals += interestsMetals;
+                decimal interestsCash = currentCapitalCash.Total * input.GrowthRateCash / 100m;
+                decimal interestsStocks = currentCapitalStocks.Total * input.GrowthRateStocks / 100m;
+                decimal interestsMetals = currentCapitalMetals.Total * input.GrowthRateMetals / 100m;
+                currentCapitalCash.FromInterests += interestsCash;
+                currentCapitalStocks.FromInterests += interestsStocks;
+                currentCapitalMetals.FromInterests += interestsMetals;
 
+                // todo: duplicate code
                 // pay taxes for cash
                 decimal taxes = 0;
                 decimal taxRelevantInterests = interestsCash - TAX_FREE_AMOUNT_PER_YEAR;
@@ -47,7 +48,8 @@ namespace SavingPhaseService
                     taxes = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
                     taxes = -taxes;
                 }
-                currentCapitalCash += taxes;
+                currentCapitalCash.DistributeEqually(taxes);
+                //currentCapitalCash.FromDeposits += taxes;
 
                 result.Entities.Add(new SavingPhaseServiceResultDTO.Entity
                 { 
@@ -75,9 +77,9 @@ namespace SavingPhaseService
                     },
                 });
             }
-            result.FinalSavingsCash.FromDeposits = currentCapitalCash;
-            result.FinalSavingsStocks.FromDeposits = currentCapitalStocks;
-            result.FinalSavingsMetals.FromDeposits = currentCapitalMetals;
+            result.FinalSavingsCash = currentCapitalCash;
+            result.FinalSavingsStocks = currentCapitalStocks;
+            result.FinalSavingsMetals = currentCapitalMetals;
 
             return result;
         }
