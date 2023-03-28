@@ -85,28 +85,36 @@ namespace FinanceMathService
                 angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
                 restBetrag = gesamtBetrag;
-                decimal factorCashDyn = input.StartCapitalCash.Total / gesamtBetrag;
-                decimal factorStocksDyn = input.StartCapitalStocks.Total / gesamtBetrag;
-                decimal factorMetalsDyn = input.StartCapitalMetals.Total / gesamtBetrag;
+                //decimal factorCashDyn = input.FractionCash;
+                //decimal factorStocksDyn = input.FractionStocks;
+                //decimal factorMetalsDyn = input.FractionMetals;
 
-                decimal restAnteil_cash;
-                decimal restAnteil_stocks;
-                decimal restAnteil_metals;
+                decimal restAnteil_cash = input.StartCapitalCash.Total;
+                CAmount restAnteil_stocks = new CAmount(input.StartCapitalStocks);
+                decimal restAnteil_metals = input.StartCapitalMetals.Total;
 
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
+                    decimal factorCashDyn = restAnteil_cash / restBetrag;
+                    decimal factorStocksDyn = restAnteil_stocks.Total / restBetrag;
+                    decimal factorMetalsDyn = restAnteil_metals / restBetrag;
+
                     // rate runter
                     decimal rate_cash = factorCashDyn * angenommeneRate;
                     decimal rate_stocks = factorStocksDyn * angenommeneRate;
                     decimal rate_metals = factorMetalsDyn * angenommeneRate;
 
-                    restBetrag += rate_cash + rate_stocks + rate_metals;
+                    //restBetrag += rate_cash + rate_stocks + rate_metals;
+
+                    restAnteil_cash += rate_cash;
+                    restAnteil_stocks.DistributeEqually(rate_stocks);
+                    restAnteil_metals += rate_metals;
 
                     // todo: duplicate code
                     // pay taxes
                     // Step 1) calculate CAmount out of rate_stocks, based on input.
                     //         We assume that we dispose the same fraction of deposits and interests as in the input
-                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, input.StartCapitalStocks);
+                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, restAnteil_stocks);
                     // Step 2) From this CAmount, we can calculate the amount of tax that has to be payed
                     decimal taxes_stocks = 0;
                     decimal taxRelevantInterests = Math.Abs(rateStocksCAmount.FromInterests) - TAX_FREE_AMOUNT_PER_YEAR;
@@ -116,26 +124,32 @@ namespace FinanceMathService
                         taxes_stocks = -taxes_stocks;
                     }
                     // Step 3) We substract this from restBetrag (taxes are negative)
-                    restBetrag += taxes_stocks;
+                    restAnteil_stocks.DistributeEqually(taxes_stocks);
 
                     // zinsen drauf
-                    restAnteil_cash = factorCashDyn * restBetrag;
-                    restAnteil_stocks = factorStocksDyn * restBetrag;
-                    restAnteil_metals = factorMetalsDyn * restBetrag;
+                    //restAnteil_cash = factorCashDyn * restBetrag;
+                    //restAnteil_stocks = factorStocksDyn * restBetrag;
+                    //restAnteil_metals = factorMetalsDyn * restBetrag;
+
+                    //decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
+                    //decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
+                    //decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
                     decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
-                    decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks.Total * (input.GrowthRateStocks / 100m);
                     decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
+                    //restAnteil_cash += zinsen_cash;
+                    //restAnteil_stocks += zinsen_stocks;
+                    //restAnteil_metals += zinsen_metals;
+
                     restAnteil_cash += zinsen_cash;
-                    restAnteil_stocks += zinsen_stocks;
+                    restAnteil_stocks.FromInterests += zinsen_stocks;
                     restAnteil_metals += zinsen_metals;
 
-                    restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
+                    restBetrag = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
 
-                    factorCashDyn = restAnteil_cash / restBetrag;
-                    factorStocksDyn = restAnteil_stocks / restBetrag;
-                    factorMetalsDyn = restAnteil_metals / restBetrag;
+
 
                     result.Entities.Add(
                         new SimulationResultDTO.Entity
@@ -208,38 +222,43 @@ namespace FinanceMathService
                 angenommenesStartKapital = (angenommenesStartKapital_min + angenommenesStartKapital_max) / 2m;
 
                 restBetrag = angenommenesStartKapital;
-                decimal restAnteil_cash = input.FractionCash * restBetrag;
-                decimal restAnteil_stocks = input.FractionStocks * restBetrag;
-                decimal restAnteil_metals = input.FractionMetals * restBetrag;
+                decimal restAnteil_cash = restBetrag * input.FractionCash;
+                CAmount restAnteil_stocks = CAmount.From(restBetrag * input.FractionStocks, input.StartCapitalStocks);
+                decimal restAnteil_metals = restBetrag * input.FractionMetals;
 
                 result.FirstYearBeginValues = new SimulationResultDTO.AssetsDTO
                 {
                     Cash = restAnteil_cash,
-                    Stocks = restAnteil_stocks,
+                    Stocks = restAnteil_stocks.Total,
                     Metals = restAnteil_metals,
                 };
 
-                // Faktoren müssen dynamisch sein, da sich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
-                decimal factorCashDyn = input.FractionCash;
-                decimal factorStocksDyn = input.FractionStocks;
-                decimal factorMetalsDyn = input.FractionMetals;
+                
+                //decimal factorCashDyn;// = input.FractionCash;
+                //decimal factorStocksDyn;// = input.FractionStocks;
+                //decimal factorMetalsDyn;// = input.FractionMetals;
 
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
+                    // Faktoren müssen dynamisch sein, da sich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
+                    decimal factorCashDyn = restAnteil_cash / restBetrag;
+                    decimal factorStocksDyn = restAnteil_stocks.Total / restBetrag;
+                    decimal factorMetalsDyn = restAnteil_metals / restBetrag;
+
                     // cash rate muss dynamisch sein, da wegen der unterschiedlichen zinsen auch die assetzusammensetzung schwankt
-                    decimal rate_cash = (decimal)factorCashDyn * input.TotalRateNeeded_PerYear;
-                    decimal rate_stocks = (decimal)factorStocksDyn * input.TotalRateNeeded_PerYear;
-                    decimal rate_metals = (decimal)factorMetalsDyn * input.TotalRateNeeded_PerYear;
+                    decimal rate_cash = factorCashDyn * input.TotalRateNeeded_PerYear;
+                    decimal rate_stocks = factorStocksDyn * input.TotalRateNeeded_PerYear;
+                    decimal rate_metals = factorMetalsDyn * input.TotalRateNeeded_PerYear;
 
                     restAnteil_cash += rate_cash;
-                    restAnteil_stocks += rate_stocks;
+                    restAnteil_stocks.DistributeEqually(rate_stocks);
                     restAnteil_metals += rate_metals;
 
                     // todo: duplicate code
                     // pay taxes
                     // Step 1) calculate CAmount out of rate_stocks, based on input.
                     //         We assume that we dispose the same fraction of deposits and interests as in the input
-                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, input.StartCapitalStocks);
+                    CAmount rateStocksCAmount = CAmount.From(rate_stocks, restAnteil_stocks);
                     // Step 2) From this CAmount, we can calculate the amount of tax that has to be payed
                     decimal taxes_stocks = 0;
                     decimal taxRelevantInterests = Math.Abs(rateStocksCAmount.FromInterests) - TAX_FREE_AMOUNT_PER_YEAR;
@@ -249,17 +268,12 @@ namespace FinanceMathService
                         taxes_stocks = -taxes_stocks;
                     }
 
-                    if (restAnteil_stocks > 0 && restAnteil_stocks < -taxes_stocks)
-                    {
-                        Console.WriteLine();
-                    }
-
                     // Step 3) We substract this from restBetrag (taxes are negative)
-                    restAnteil_stocks += taxes_stocks;
+                    restAnteil_stocks.DistributeEqually(taxes_stocks);
 
                     // zinsen drauf
                     decimal zinsen_cash = restAnteil_cash * (input.GrowthRateCash / 100m);
-                    decimal zinsen_stocks = restAnteil_stocks * (input.GrowthRateStocks / 100m);
+                    decimal zinsen_stocks = restAnteil_stocks.Total * (input.GrowthRateStocks / 100m);
                     decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
                     //if (zinsen_cash < 0 || zinsen_stocks < 0 || zinsen_metals < 0)
@@ -268,14 +282,12 @@ namespace FinanceMathService
                     //}
 
                     restAnteil_cash += zinsen_cash;
-                    restAnteil_stocks += zinsen_stocks;
+                    restAnteil_stocks.FromInterests += zinsen_stocks;
                     restAnteil_metals += zinsen_metals;
 
-                    restBetrag = restAnteil_cash + restAnteil_stocks + restAnteil_metals;
+                    restBetrag = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
 
-                    factorCashDyn = restAnteil_cash / restBetrag;
-                    factorStocksDyn = restAnteil_stocks / restBetrag;
-                    factorMetalsDyn = restAnteil_metals / restBetrag;
+
 
                     result.Entities.Add(
                         new SimulationResultDTO.Entity

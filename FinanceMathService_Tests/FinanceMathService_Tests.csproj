@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FinanceMathService\FinanceMathService.csproj" />
+    <ProjectReference Include="..\Protocol\Protocol.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,5 +12,9 @@
         public decimal GrowthRateMetals { get; set; }
 
         public decimal EndCapitalTotal { get; set; }
+
+        public decimal FractionCash => StartCapitalCash.Total / (StartCapitalCash.Total + StartCapitalStocks.Total + StartCapitalMetals.Total);
+        public decimal FractionStocks => StartCapitalStocks.Total / (StartCapitalCash.Total + StartCapitalStocks.Total + StartCapitalMetals.Total);
+        public decimal FractionMetals => StartCapitalMetals.Total / (StartCapitalCash.Total + StartCapitalStocks.Total + StartCapitalMetals.Total);
     }
 }

@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace FinanceMathService_Tests
 {
-    public class FinanceMath_uTests
+    public class FinanceMathControllerTests
     {
         private FinanceMath myFinanceMath = new FinanceMath();
 
