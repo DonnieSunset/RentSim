@@ -10,7 +10,7 @@ namespace FinanceMathService
         public const decimal TAX_FREE_AMOUNT_PER_YEAR = 1000;
 
         const int MaxIterations = 100;
-        const decimal Precision = 0.001m;
+        public const decimal Precision = 0.001m;
 
         /// <summary>
         /// 
@@ -215,6 +215,8 @@ namespace FinanceMathService
             
             decimal angenommenesStartKapital;
 
+            decimal restAnteil_cash_last = 0, restAnteil_stocks_last = 0, restAnteil_metals_last = 0;
+
             SimulationResultDTO result;
             do
             {
@@ -234,21 +236,36 @@ namespace FinanceMathService
                 };
 
                 
-                //decimal factorCashDyn;// = input.FractionCash;
-                //decimal factorStocksDyn;// = input.FractionStocks;
-                //decimal factorMetalsDyn;// = input.FractionMetals;
+                //decimal factorCashDyn = input.FractionCash;
+                //decimal factorStocksDyn = input.FractionStocks;
+                //decimal factorMetalsDyn = input.FractionMetals;
 
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
+                    //decimal lastrestAnteil_cash = restAnteil_cash;
+                    //decimal lastrestAnteil_stocks = restAnteil_stocks.Total;
+                    //decimal lastrestAnteil_metals = restAnteil_metals;
+                    //decimal lastrestAnteil_total = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
+
+                    //if (restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals - restBetrag > Precision)
+                    //{
+                    //    throw new Exception("Something is wrong here.");
+                    //}
+
                     // Faktoren müssen dynamisch sein, da sich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
                     decimal factorCashDyn = restAnteil_cash / restBetrag;
-                    decimal factorStocksDyn = restAnteil_stocks.Total / restBetrag;
+                    decimal factorStocksDyn = restAnteil_stocks.Total / restBetrag; //hier müssten die taxes eingerechnet werden!
                     decimal factorMetalsDyn = restAnteil_metals / restBetrag;
 
                     // cash rate muss dynamisch sein, da wegen der unterschiedlichen zinsen auch die assetzusammensetzung schwankt
                     decimal rate_cash = factorCashDyn * input.TotalRateNeeded_PerYear;
                     decimal rate_stocks = factorStocksDyn * input.TotalRateNeeded_PerYear;
                     decimal rate_metals = factorMetalsDyn * input.TotalRateNeeded_PerYear;
+
+                    decimal rate_stocks1 = (-(factorStocksDyn * input.TotalRateNeeded_PerYear) + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR - 1);
+                    decimal rate_stocks2 = ((factorStocksDyn * input.TotalRateNeeded_PerYear) + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR + 1);
+
+                    decimal rate_stocks_with_taxes = rate_stocks1 > rate_stocks2 ? rate_stocks2 : rate_stocks1;
 
                     restAnteil_cash += rate_cash;
                     restAnteil_stocks.DistributeEqually(rate_stocks);
@@ -267,6 +284,8 @@ namespace FinanceMathService
                         taxes_stocks = taxRelevantInterests * CAPITAL_YIELDS_TAX_FACTOR;
                         taxes_stocks = -taxes_stocks;
                     }
+
+
 
                     // Step 3) We substract this from restBetrag (taxes are negative)
                     restAnteil_stocks.DistributeEqually(taxes_stocks);
@@ -287,7 +306,13 @@ namespace FinanceMathService
 
                     restBetrag = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
 
+                    restAnteil_cash_last = restAnteil_cash;
+                    restAnteil_stocks_last = restAnteil_stocks.Total;
+                    restAnteil_metals_last = restAnteil_metals;
 
+                    if (numIterations == 27 && Math.Abs(restBetrag - endbetrag) < Precision)
+                    {
+                    }
 
                     result.Entities.Add(
                         new SimulationResultDTO.Entity
@@ -316,7 +341,7 @@ namespace FinanceMathService
                     );
                 }
 
-                if (restBetrag < 0)
+                if (restBetrag < endbetrag)
                 {
                     angenommenesStartKapital_min = angenommenesStartKapital;
                 }
@@ -332,6 +357,7 @@ namespace FinanceMathService
             } while (Math.Abs(restBetrag - endbetrag) > Precision);
 
             Console.WriteLine("NumIterations: " + numIterations);
+            Console.WriteLine($"SH: {restAnteil_cash_last} / {restAnteil_stocks_last} / {restAnteil_metals_last}.");
 
             return result;
         }
@@ -350,6 +376,28 @@ namespace FinanceMathService
             decimal result = amount * (decimal)finalInflationFactor;
 
             return result;
+        }
+
+        internal decimal CalculateStocksTaxes(decimal withdrawalAmount, CAmount totalAmount)
+        {
+            // Step 1) calculate CAmount out of rate_stocks, based on input.
+            //         We assume that we dispose the same fraction of deposits and interests as in the input
+            CAmount rateStocksCAmount = CAmount.From(withdrawalAmount, totalAmount);
+            // Step 2) From this CAmount, we can calculate the amount of tax that has to be payed
+            decimal taxes_stocks = Math.Max(Math.Abs(rateStocksCAmount.FromInterests) - TAX_FREE_AMOUNT_PER_YEAR, 0) * CAPITAL_YIELDS_TAX_FACTOR;
+
+            return -taxes_stocks;
+        }
+
+        internal decimal CalculateStocksWithdrawalAmountIncludingTaxes1(decimal withdrawalAmountExcludingTaxes) 
+        {
+            if (withdrawalAmountExcludingTaxes <= TAX_FREE_AMOUNT_PER_YEAR)
+                return withdrawalAmountExcludingTaxes;
+
+            decimal rate_stocks1 = (-withdrawalAmountExcludingTaxes + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR - 1);
+           // decimal rate_stocks2 = (withdrawalAmountExcludingTaxes + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR + 1);
+
+            return rate_stocks1;
         }
     }
 }
