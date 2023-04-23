@@ -10,15 +10,15 @@
         public int ageRentStart = 67;
         public int ageEnd = 80;
 
-        public CAmount stocks = new CAmount { FromDeposits = 118033 };
+        public CAmount stocks = new CAmount { FromDeposits = 130000 };
         public int stocksGrowthRate = 5;
         public int stocksSaveAmountPerMonth = 1171;
 
-        public CAmount cash = new CAmount { FromDeposits = 44000 };
+        public CAmount cash = new CAmount { FromDeposits = 40000 };
         public int cashGrowthRate = 0;
         public int cashSaveAmountPerMonth = 0;
 
-        public CAmount metals = new CAmount { FromDeposits = 21200 };
+        public CAmount metals = new CAmount { FromDeposits = 21600 };
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 

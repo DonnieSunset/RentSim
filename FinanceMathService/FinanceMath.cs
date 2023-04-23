@@ -204,19 +204,16 @@ namespace FinanceMathService
 
         public SimulationResultDTO StartCapitalByNumericalSparkassenformel(StartCapitalByNumericalSparkassenformelInputDTO input)
         {
+            const decimal endbetrag = 0;
             input.Validate();
-
-            int numIterations = 0;
-            decimal endbetrag = 0;
 
             decimal angenommenesStartKapital_min = 0;
             decimal angenommenesStartKapital_max = - input.TotalRateNeeded_PerYear * (input.AgeTo - input.AgeFrom) * 2 + endbetrag; // simple heuristic
+            decimal angenommenesStartKapital;
             decimal restBetrag;
             
-            decimal angenommenesStartKapital;
 
-            decimal restAnteil_cash_last = 0, restAnteil_stocks_last = 0, restAnteil_metals_last = 0;
-
+            int numIterations = 0;
             SimulationResultDTO result;
             do
             {
@@ -235,23 +232,8 @@ namespace FinanceMathService
                     Metals = restAnteil_metals,
                 };
 
-                
-                //decimal factorCashDyn = input.FractionCash;
-                //decimal factorStocksDyn = input.FractionStocks;
-                //decimal factorMetalsDyn = input.FractionMetals;
-
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {
-                    //decimal lastrestAnteil_cash = restAnteil_cash;
-                    //decimal lastrestAnteil_stocks = restAnteil_stocks.Total;
-                    //decimal lastrestAnteil_metals = restAnteil_metals;
-                    //decimal lastrestAnteil_total = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
-
-                    //if (restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals - restBetrag > Precision)
-                    //{
-                    //    throw new Exception("Something is wrong here.");
-                    //}
-
                     // Faktoren müssen dynamisch sein, da sich wegen der unterschiedlichen zinsen auch die assetzusammensetzung ändert
                     decimal factorCashDyn = restAnteil_cash / restBetrag;
                     decimal factorStocksDyn = restAnteil_stocks.Total / restBetrag; //hier müssten die taxes eingerechnet werden!
@@ -262,14 +244,32 @@ namespace FinanceMathService
                     decimal rate_stocks = factorStocksDyn * input.TotalRateNeeded_PerYear;
                     decimal rate_metals = factorMetalsDyn * input.TotalRateNeeded_PerYear;
 
-                    decimal rate_stocks1 = (-(factorStocksDyn * input.TotalRateNeeded_PerYear) + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR - 1);
-                    decimal rate_stocks2 = ((factorStocksDyn * input.TotalRateNeeded_PerYear) + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR + 1);
-
-                    decimal rate_stocks_with_taxes = rate_stocks1 > rate_stocks2 ? rate_stocks2 : rate_stocks1;
-
                     restAnteil_cash += rate_cash;
                     restAnteil_stocks.DistributeEqually(rate_stocks);
                     restAnteil_metals += rate_metals;
+
+                    // for the last iteration, we have to rebalance the withdrawal fraction, 
+                    // since the tax calculation disturbs the balance at the end of one iteration.
+                    if (i == input.AgeTo - 1)
+                    {
+                        if (Math.Abs(restAnteil_cash) > Precision)
+                        {
+                            restAnteil_stocks.DistributeEqually(restAnteil_cash);
+                            rate_cash -= restAnteil_cash;
+                            rate_stocks += restAnteil_cash;
+
+                            restAnteil_cash = 0;
+
+                        }
+                        if (Math.Abs(restAnteil_metals) > Precision)
+                        {
+                            restAnteil_stocks.DistributeEqually(restAnteil_metals);
+                            rate_metals -= restAnteil_metals;
+                            rate_stocks += restAnteil_metals;
+
+                            restAnteil_metals = 0;
+                        }
+                    }
 
                     // todo: duplicate code
                     // pay taxes
@@ -285,8 +285,6 @@ namespace FinanceMathService
                         taxes_stocks = -taxes_stocks;
                     }
 
-
-
                     // Step 3) We substract this from restBetrag (taxes are negative)
                     restAnteil_stocks.DistributeEqually(taxes_stocks);
 
@@ -295,24 +293,11 @@ namespace FinanceMathService
                     decimal zinsen_stocks = restAnteil_stocks.Total * (input.GrowthRateStocks / 100m);
                     decimal zinsen_metals = restAnteil_metals * (input.GrowthRateMetals / 100m);
 
-                    //if (zinsen_cash < 0 || zinsen_stocks < 0 || zinsen_metals < 0)
-                    //{
-                    //    Console.WriteLine();
-                    //}
-
                     restAnteil_cash += zinsen_cash;
                     restAnteil_stocks.FromInterests += zinsen_stocks;
                     restAnteil_metals += zinsen_metals;
 
                     restBetrag = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
-
-                    restAnteil_cash_last = restAnteil_cash;
-                    restAnteil_stocks_last = restAnteil_stocks.Total;
-                    restAnteil_metals_last = restAnteil_metals;
-
-                    if (numIterations == 27 && Math.Abs(restBetrag - endbetrag) < Precision)
-                    {
-                    }
 
                     result.Entities.Add(
                         new SimulationResultDTO.Entity
@@ -354,11 +339,10 @@ namespace FinanceMathService
                 {
                     throw new Exception($"Too many iterations: {numIterations}");
                 }
-            } while (Math.Abs(restBetrag - endbetrag) > Precision);
+            } 
+            while (Math.Abs(restBetrag - endbetrag) > Precision);
 
             Console.WriteLine("NumIterations: " + numIterations);
-            Console.WriteLine($"SH: {restAnteil_cash_last} / {restAnteil_stocks_last} / {restAnteil_metals_last}.");
-
             return result;
         }
 
