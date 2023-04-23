@@ -372,16 +372,5 @@ namespace FinanceMathService
 
             return -taxes_stocks;
         }
-
-        internal decimal CalculateStocksWithdrawalAmountIncludingTaxes1(decimal withdrawalAmountExcludingTaxes) 
-        {
-            if (withdrawalAmountExcludingTaxes <= TAX_FREE_AMOUNT_PER_YEAR)
-                return withdrawalAmountExcludingTaxes;
-
-            decimal rate_stocks1 = (-withdrawalAmountExcludingTaxes + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR - 1);
-           // decimal rate_stocks2 = (withdrawalAmountExcludingTaxes + TAX_FREE_AMOUNT_PER_YEAR * CAPITAL_YIELDS_TAX_FACTOR) / (CAPITAL_YIELDS_TAX_FACTOR + 1);
-
-            return rate_stocks1;
-        }
     }
 }
