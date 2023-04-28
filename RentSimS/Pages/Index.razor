@@ -60,11 +60,11 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_totalSavings"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_totalSavings" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @ageStopWork:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_MonthlyRateStopWorkPhase" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_MonthlyRateStopWorkPhase" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @lifeAssumptions.ageRentStart:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@result_MonthlyRateRentPhase" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_MonthlyRateRentPhase" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Monthly Needs"></Divider>
@@ -80,17 +80,17 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.inflationRate" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Comfort:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="State Rent"></Divider>
@@ -105,14 +105,14 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Gross:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.grossStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true" @bind-Value="@rentAtStopWork_gross" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericPicker ReadOnly="true" @bind-Value="@rentAtStopWork_gross" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.grossStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true" @bind-Value="@rentAtStopWork_net" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericPicker ReadOnly="true" @bind-Value="@rentAtStopWork_net" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
