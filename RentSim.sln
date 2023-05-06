@@ -28,6 +28,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentPhaseService_Tests", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StopWorkPhaseService", "StopWorkPhaseService\StopWorkPhaseService.csproj", "{93727B89-6111-4EDC-8BE6-61A7E73D7B33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseIntegratorService", "PhaseIntegratorService\PhaseIntegratorService.csproj", "{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseIntegratorService_Tests", "PhaseIntegratorService_Tests\PhaseIntegratorService_Tests.csproj", "{C707513C-89DD-4C7F-9489-4E97F36DCC15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,14 @@ Global
 		{93727B89-6111-4EDC-8BE6-61A7E73D7B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93727B89-6111-4EDC-8BE6-61A7E73D7B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93727B89-6111-4EDC-8BE6-61A7E73D7B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C707513C-89DD-4C7F-9489-4E97F36DCC15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C707513C-89DD-4C7F-9489-4E97F36DCC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C707513C-89DD-4C7F-9489-4E97F36DCC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C707513C-89DD-4C7F-9489-4E97F36DCC15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
