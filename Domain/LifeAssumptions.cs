@@ -10,15 +10,15 @@
         public int ageRentStart = 67;
         public int ageEnd = 80;
 
-        public CAmount stocks = new CAmount { FromDeposits = 130000 };
-        public int stocksGrowthRate = 5;
-        public int stocksSaveAmountPerMonth = 1171;
+        public CAmount stocks = new CAmount { FromDeposits = 140000 };
+        public int stocksGrowthRate = 4;
+        public int stocksSaveAmountPerMonth = 1071;
 
         public CAmount cash = new CAmount { FromDeposits = 40000 };
         public int cashGrowthRate = 0;
         public int cashSaveAmountPerMonth = 0;
 
-        public CAmount metals = new CAmount { FromDeposits = 21600 };
+        public CAmount metals = new CAmount { FromDeposits = 21000 };
         public int metalsGrowthRate = 1;
         public int metalsSaveAmountPerMonth = 0;
 
@@ -28,10 +28,10 @@
         public double inflationRate = 0.03d;
 
         //https://www.finanzrechner.org/sonstige-rechner/rentenbesteuerungsrechner/
-        public decimal netStateRentFromCurrentAge_perMonth = 827;
-        public decimal netStateRentFromRentStartAge_perMonth = 2025;
-        public decimal grossStateRentFromCurrentAge_perMonth = 924;
-        public decimal grossStateRentFromRentStartAge_perMonth = 2703;
+        public decimal netStateRentFromCurrentAge_perMonth = 933;
+        public decimal netStateRentFromRentStartAge_perMonth = 2156;
+        public decimal grossStateRentFromCurrentAge_perMonth = 1053;
+        public decimal grossStateRentFromRentStartAge_perMonth = 2885;
 
 
         //TODO: This is also valid for stop work age: rename it accordingly
