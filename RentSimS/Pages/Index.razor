@@ -36,24 +36,24 @@
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Cash:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash.FromDeposits" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cash.FromInterests" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashGrowthRate" Step="1" Min=0 onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.cashSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Cash.FromDeposits" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Cash.FromInterests" Step="1000" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.CashGrowthRate" Step="1" Min=0 onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.CashSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Metals:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metals.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.metalsSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Metals.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Metals.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.MetalsGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.MetalsSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Stocks:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocks.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.stocksSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Stocks.FromDeposits" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.Stocks.FromInterests" Step="1000" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.StocksGrowthRate" Step="1" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.StocksSaveAmountPerMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
@@ -80,15 +80,15 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Minimum:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc"/> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.NeedsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc"/> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsMinimum_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.inflationRate" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.InflationRate" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Comfort:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.NeedsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
 </Field>
@@ -104,16 +104,16 @@
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Gross:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.grossStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.GrossStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericPicker ReadOnly="true" @bind-Value="@rentAtStopWork_gross" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.grossStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.GrossStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Net:</FieldLabel>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.netStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.NetStateRentFromCurrentAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericPicker ReadOnly="true" @bind-Value="@rentAtStopWork_net" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.netStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.NetStateRentFromRentStartAge_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
 </Field>
 
 

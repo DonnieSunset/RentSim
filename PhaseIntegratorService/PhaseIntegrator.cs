@@ -28,17 +28,17 @@ namespace PhaseIntegratorService
                 AgeFrom = lifeAssumptions.ageCurrent,
                 AgeTo = ageStopWork,
 
-                StartCapitalCash = new CAmount(lifeAssumptions.cash),
-                StartCapitalStocks = new CAmount(lifeAssumptions.stocks),
-                StartCapitalMetals = new CAmount(lifeAssumptions.metals),
+                StartCapitalCash = new CAmount(lifeAssumptions.Cash),
+                StartCapitalStocks = new CAmount(lifeAssumptions.Stocks),
+                StartCapitalMetals = new CAmount(lifeAssumptions.Metals),
 
-                GrowthRateCash = lifeAssumptions.cashGrowthRate,
-                GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-                GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+                GrowthRateCash = lifeAssumptions.CashGrowthRate,
+                GrowthRateStocks = lifeAssumptions.StocksGrowthRate,
+                GrowthRateMetals = lifeAssumptions.MetalsGrowthRate,
 
-                SaveAmountPerMonthCash = lifeAssumptions.cashSaveAmountPerMonth,
-                SaveAmountPerMonthStocks = lifeAssumptions.stocksSaveAmountPerMonth,
-                SaveAmountPerMonthMetals = lifeAssumptions.metalsSaveAmountPerMonth,
+                SaveAmountPerMonthCash = lifeAssumptions.CashSaveAmountPerMonth,
+                SaveAmountPerMonthStocks = lifeAssumptions.StocksSaveAmountPerMonth,
+                SaveAmountPerMonthMetals = lifeAssumptions.MetalsSaveAmountPerMonth,
             };
 
             var savingPhaseResult = await savingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
@@ -49,18 +49,18 @@ namespace PhaseIntegratorService
             // Later Needs
             var laterNeedsResult = new LaterNeedsResultDTO
             {
-                NeedsMinimum_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate),
-                NeedsComfort_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate),
-                NeedsMinimum_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate),
-                NeedsComfort_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate)
+                NeedsMinimum_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.NeedsCurrentAgeMinimal_perMonth, lifeAssumptions.InflationRate),
+                NeedsComfort_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.NeedsCurrentAgeComfort_perMonth, lifeAssumptions.InflationRate),
+                NeedsMinimum_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.NeedsCurrentAgeMinimal_perMonth, lifeAssumptions.InflationRate),
+                NeedsComfort_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.NeedsCurrentAgeComfort_perMonth, lifeAssumptions.InflationRate)
             };
             result.LaterNeedsResult = laterNeedsResult;
 
             // State Rent
             var stateRentResult = new StateRentResultDTO
             {
-                AssumedStateRent_Net_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
-                AssumedStateRent_Gross_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork),
+                AssumedStateRent_Net_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.NetStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.NetStateRentFromRentStartAge_perMonth, ageStopWork),
+                AssumedStateRent_Gross_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.GrossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.GrossStateRentFromRentStartAge_perMonth, ageStopWork),
             };
             result.StateRentResult = stateRentResult;
 
@@ -74,9 +74,9 @@ namespace PhaseIntegratorService
                 StartCapitalStocks = new CAmount(savingPhaseResult.FinalSavingsStocks),
                 StartCapitalMetals = new CAmount(savingPhaseResult.FinalSavingsMetals),
 
-                GrowthRateCash = lifeAssumptions.cashGrowthRate,
-                GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-                GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+                GrowthRateCash = lifeAssumptions.CashGrowthRate,
+                GrowthRateStocks = lifeAssumptions.StocksGrowthRate,
+                GrowthRateMetals = lifeAssumptions.MetalsGrowthRate,
 
                 TotalRateNeeded_PerYear = -(laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerMonth - stateRentResult.AssumedStateRent_Net_PerMonth) * 12
             };
@@ -98,9 +98,9 @@ namespace PhaseIntegratorService
                 StartCapitalStocks = new CAmount(savingPhaseResult.FinalSavingsStocks),
                 StartCapitalMetals = new CAmount(savingPhaseResult.FinalSavingsMetals),
 
-                GrowthRateCash = lifeAssumptions.cashGrowthRate,
-                GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-                GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
+                GrowthRateCash = lifeAssumptions.CashGrowthRate,
+                GrowthRateStocks = lifeAssumptions.StocksGrowthRate,
+                GrowthRateMetals = lifeAssumptions.MetalsGrowthRate,
 
                 EndCapitalTotal = rentStartAmount
             };
