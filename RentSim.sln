@@ -31,6 +31,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseIntegratorService", "PhaseIntegratorService\PhaseIntegratorService.csproj", "{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhaseIntegratorService_Tests", "PhaseIntegratorService_Tests\PhaseIntegratorService_Tests.csproj", "{C707513C-89DD-4C7F-9489-4E97F36DCC15}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B} = {B5A4A68E-B7BE-4AA0-845A-6E3331B3D90B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

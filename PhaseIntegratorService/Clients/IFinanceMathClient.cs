@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RentSimS.DTOs;
+using PhaseIntegratorService.DTOs;
 
-namespace RentSimS.Clients
+namespace PhaseIntegratorService.Clients
 {
     public interface IFinanceMathClient
     {

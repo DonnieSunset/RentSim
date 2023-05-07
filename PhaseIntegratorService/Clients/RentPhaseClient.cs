@@ -1,8 +1,8 @@
 ﻿using Protocol;
-using RentSimS.DTOs;
+using PhaseIntegratorService.DTOs;
 using System.Globalization;
 
-namespace RentSimS.Clients
+namespace PhaseIntegratorService.Clients
 {
     public class RentPhaseClient : IRentPhaseClient
     {

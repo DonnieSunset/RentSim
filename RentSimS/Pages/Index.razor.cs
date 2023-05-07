@@ -33,8 +33,8 @@ namespace RentSimS.Pages
                 BackgroundColor = Enumerable.Repeat<string>(chartColorCash, resultRows.Count()).ToList<string>(),
                 BorderColor = Enumerable.Repeat<string>(chartBorderColorCash, resultRows.Count()).ToList<string>(),
                 Data = resultRows
-                                .Select(x => x.cash.YearBegin)
-                                    .Append(resultRows.Last().cash.YearEnd)
+                                .Select(x => x.Cash.YearBegin)
+                                    .Append(resultRows.Last().Cash.YearEnd)
                                 .ToList(),
             };
 
@@ -43,8 +43,8 @@ namespace RentSimS.Pages
                 Label = "Stocks",
                 BackgroundColor = Enumerable.Repeat<string>(chartColorStocks, resultRows.Count()).ToList<string>(),
                 BorderColor = Enumerable.Repeat<string>(chartBorderColorStocks, resultRows.Count()).ToList<string>(),
-                Data = resultRows.Select(x => x.stocks.YearBegin)
-                                    .Append(resultRows.Last().stocks.YearEnd)
+                Data = resultRows.Select(x => x.Stocks.YearBegin)
+                                    .Append(resultRows.Last().Stocks.YearEnd)
                                 .ToList(),
             };
 
@@ -53,8 +53,8 @@ namespace RentSimS.Pages
                 Label = "Metals",
                 BackgroundColor = Enumerable.Repeat<string>(chartColorMetals, resultRows.Count()).ToList<string>(),
                 BorderColor = Enumerable.Repeat<string>(chartBorderColorMetals, resultRows.Count()).ToList<string>(),
-                Data = resultRows.Select(x => x.metals.YearBegin)
-                                    .Append(resultRows.Last().metals.YearEnd)
+                Data = resultRows.Select(x => x.Metals.YearBegin)
+                                    .Append(resultRows.Last().Metals.YearEnd)
                                 .ToList(),
             };
 
@@ -90,8 +90,8 @@ namespace RentSimS.Pages
                 PointRadius = 2,
                 BorderDash = new List<int> { },
                 Data = resultRows
-                                .Select(x => x.cash.YearBegin)
-                                    .Append(resultRows.Last().cash.YearEnd)
+                                .Select(x => x.Cash.YearBegin)
+                                    .Append(resultRows.Last().Cash.YearEnd)
                                 .ToList(),
             };
 
@@ -104,8 +104,8 @@ namespace RentSimS.Pages
                 PointRadius = 2,
                 BorderDash = new List<int> { },
                 Data = resultRows
-                    .Select(x => x.stocks.YearBegin)
-                        .Append(resultRows.Last().stocks.YearEnd)
+                    .Select(x => x.Stocks.YearBegin)
+                        .Append(resultRows.Last().Stocks.YearEnd)
                     .ToList(),
             };
 
@@ -118,8 +118,8 @@ namespace RentSimS.Pages
                 PointRadius = 2,
                 BorderDash = new List<int> { },
                 Data = resultRows
-                    .Select(x => x.metals.YearBegin)
-                        .Append(resultRows.Last().metals.YearEnd)
+                    .Select(x => x.Metals.YearBegin)
+                        .Append(resultRows.Last().Metals.YearEnd)
                     .ToList(),
             };
 

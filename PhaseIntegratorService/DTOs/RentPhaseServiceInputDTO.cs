@@ -1,6 +1,6 @@
 ﻿using Domain;
 
-namespace RentSimS.DTOs
+namespace PhaseIntegratorService.DTOs
 {
     public class RentPhaseServiceInputDTO
     {

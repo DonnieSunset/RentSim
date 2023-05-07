@@ -5,37 +5,44 @@ namespace Protocol
 {
     public class MemoryProtocolWriter : IProtocolWriter
     {
-        private readonly List<ResultRow> myProtocol = new();
+        //private readonly List<ResultRow> myProtocol = new();
 
-        public ReadOnlyCollection<ResultRow> Protocol
-        { 
-            get { return myProtocol.AsReadOnly(); }
-        }
+        //public ReadOnlyCollection<ResultRow> Protocol
+        //{ 
+        //    get { return myProtocol.AsReadOnly(); }
+        //}
+
+        //public MemoryProtocolWriter()
+        //{ 
+        //    Protocol = new List<ResultRow> ();
+        //}
+
+        public List<ResultRow> Protocol { get; set; } = new List<ResultRow>();
 
         public void LogBalanceYearBegin(int age, decimal amountCash, decimal amountStocks, decimal amountMetals)
         {
             var affectedResultRow = GetOrCreateRow(age);
 
-            affectedResultRow.cash.YearBegin = amountCash;
-            affectedResultRow.stocks.YearBegin = amountStocks;
-            affectedResultRow.metals.YearBegin = amountMetals;
+            affectedResultRow.Cash.YearBegin = amountCash;
+            affectedResultRow.Stocks.YearBegin = amountStocks;
+            affectedResultRow.Metals.YearBegin = amountMetals;
         }
 
         public void Log(int age, TransactionDetails transactionDetails)
         {
             var affectedResultRow = GetOrCreateRow(age);
 
-            affectedResultRow.cash.Deposits += transactionDetails.cashDeposit;
-            affectedResultRow.stocks.Deposits += transactionDetails.stockDeposit;
-            affectedResultRow.metals.Deposits += transactionDetails.metalDeposit;
+            affectedResultRow.Cash.Deposits += transactionDetails.cashDeposit;
+            affectedResultRow.Stocks.Deposits += transactionDetails.stockDeposit;
+            affectedResultRow.Metals.Deposits += transactionDetails.metalDeposit;
 
-            affectedResultRow.cash.Taxes += transactionDetails.cashTaxes;
-            affectedResultRow.stocks.Taxes += transactionDetails.stockTaxes;
-            affectedResultRow.metals.Taxes += transactionDetails.metalTaxes;
+            affectedResultRow.Cash.Taxes += transactionDetails.cashTaxes;
+            affectedResultRow.Stocks.Taxes += transactionDetails.stockTaxes;
+            affectedResultRow.Metals.Taxes += transactionDetails.metalTaxes;
 
-            affectedResultRow.cash.Interests += transactionDetails.cashInterests;
-            affectedResultRow.stocks.Interests += transactionDetails.stockInterests;
-            affectedResultRow.metals.Interests += transactionDetails.metalInterests;
+            affectedResultRow.Cash.Interests += transactionDetails.cashInterests;
+            affectedResultRow.Stocks.Interests += transactionDetails.stockInterests;
+            affectedResultRow.Metals.Interests += transactionDetails.metalInterests;
         }
 
         //public void RecalcYearBeginEntries()
@@ -53,7 +60,7 @@ namespace Protocol
 
         private ResultRow GetOrCreateRow(int age)
         {
-            var row = myProtocol.SingleOrDefault(x => x.Age == age);
+            var row = Protocol.SingleOrDefault(x => x.Age == age);
 
             if (row == null)
             {
@@ -62,16 +69,16 @@ namespace Protocol
                     Age = age,
                 };
 
-                var prevRow = myProtocol.SingleOrDefault(x => x.Age == age - 1);
+                var prevRow = Protocol.SingleOrDefault(x => x.Age == age - 1);
                 if (prevRow != null)
                 { 
-                    row.cash.YearBegin = prevRow.cash.YearEnd;
-                    row.stocks.YearBegin = prevRow.stocks.YearEnd;
-                    row.metals.YearBegin = prevRow.metals.YearEnd;
+                    row.Cash.YearBegin = prevRow.Cash.YearEnd;
+                    row.Stocks.YearBegin = prevRow.Stocks.YearEnd;
+                    row.Metals.YearBegin = prevRow.Metals.YearEnd;
                 }
 
-                myProtocol.Add(row);
-                myProtocol.Sort();
+                Protocol.Add(row);
+                Protocol.Sort();
             }
 
             return row;

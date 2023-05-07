@@ -1,27 +1,27 @@
 ﻿using Protocol;
-using RentSimS.DTOs;
+using PhaseIntegratorService.DTOs;
 
-namespace RentSimS.Clients
+namespace PhaseIntegratorService.Clients
 {
-    public class StopWorkPhaseClient : IStopWorkPhaseClient
+    public class SavingPhaseClient : ISavingPhaseClient
     {
-        public string myUrl { get; set; }
+        private string myUrl;
         private readonly IHttpClientFactory myClientFactory;
         private readonly IConfiguration myConfiguration;
 
-        public StopWorkPhaseClient(IHttpClientFactory clientFactory, IConfiguration configuration)
+        public SavingPhaseClient(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             myClientFactory = clientFactory;
             myConfiguration = configuration;
 
-            myUrl = myConfiguration.GetValue<string>("StopWorkPhaseService:url");
+            myUrl = myConfiguration.GetValue<string>("SavingPhaseService:url");
         }
 
-        public async Task<StopWorkPhaseServiceResultDTO> GetStopWorkPhaseSimulationAsync(StopWorkPhaseServiceInputDTO input)
+        public async Task<SavingPhaseServiceResultDTO> GetSavingPhaseSimulationAsync(SavingPhaseServiceInputDTO input)
         {
             var ub = new UriBuilder(myUrl);
-            ub.Path = "StopWorkPhase/Simulate";
-            
+            ub.Path = "SavingPhase/Simulate";
+
             var httpClient = myClientFactory.CreateClient();
             HttpResponseMessage response = await httpClient.PostAsJsonAsync(ub.ToString(), input);
 
@@ -30,16 +30,16 @@ namespace RentSimS.Clients
                 throw new Exception($"Http response error: {response.Content}.");
             }
 
-            var jsonResponse = await response.Content.ReadFromJsonAsync<StopWorkPhaseServiceResultDTO>();
+            var jsonResponse = await response.Content.ReadFromJsonAsync<SavingPhaseServiceResultDTO>();
             if (jsonResponse == null)
             {
                 throw new Exception($"{nameof(jsonResponse)} is null.");
             }
 
-            return jsonResponse; ;
+            return jsonResponse;
         }
 
-        public void LogStopWorkPhaseResult(StopWorkPhaseServiceResultDTO result, IProtocolWriter protocolWriter)
+        public void LogSavingPhaseResult(SavingPhaseServiceResultDTO result, IProtocolWriter protocolWriter)
         {
             var firstEntry = result.Entities.First();
             protocolWriter.LogBalanceYearBegin(firstEntry.Age, result.FirstYearBeginValues.Cash, result.FirstYearBeginValues.Stocks, result.FirstYearBeginValues.Metals);

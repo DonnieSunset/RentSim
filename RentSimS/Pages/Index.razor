@@ -81,16 +81,16 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Minimum:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeMinimal_perMonth" Step="100" onchange="@Recalc"/> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsMinimum_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsMinimum_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsMinimum_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit TValue="System.Double" ReadOnly="false" @bind-Value="@lifeAssumptions.inflationRate" onchange="@Recalc" /> </FieldBody>
 </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2">Comfort:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.needsCurrentAgeComfort_perMonth" Step="100" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_laterNeedsResult.NeedsComfort_AgeRentStart_WithInflation_PerMonth" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
 </Field>
 
 <Divider DividerType="DividerType.TextContent" Text="State Rent"></Divider>
@@ -139,37 +139,38 @@
             <DataGridCommandColumn TItem="ResultRow" />
             <DataGridColumn TItem="ResultRow" Field="Age" Caption="Age" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End />
             <DataGridColumn TItem="ResultRow" Field="TotalYearBegin" Caption="Total YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="cash.YearBegin" Caption="Cash YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="stocks.YearBegin" Caption="Stocks YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="metals.YearBegin" Caption="Metals YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="cash.Deposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="stocks.Deposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="metals.Deposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Cash.YearBegin" Caption="Cash YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Stocks.YearBegin" Caption="Stocks YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Metals.YearBegin" Caption="Metals YearBegin" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Cash.Deposits" Caption="Cash Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Stocks.Deposits" Caption="Stocks Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Metals.Deposits" Caption="Metals Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="TotalDeposits" Caption="Total Deposits" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
 
-            <DataGridColumn TItem="ResultRow" Field="cash.Interests" Caption="Cash Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="stocks.Interests" Caption="Stocks Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="metals.Interests" Caption="Metals Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Cash.Interests" Caption="Cash Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Stocks.Interests" Caption="Stocks Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Metals.Interests" Caption="Metals Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="TotalInterests" Caption="Total Interests" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
 
-            <DataGridColumn TItem="ResultRow" Field="cash.Taxes" Caption="Cash Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="stocks.Taxes" Caption="Stocks Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="metals.Taxes" Caption="Metals Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Cash.Taxes" Caption="Cash Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Stocks.Taxes" Caption="Stocks Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Metals.Taxes" Caption="Metals Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             <DataGridColumn TItem="ResultRow" Field="TotalTaxes" Caption="Total Taxes" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
             
             <DataGridColumn TItem="ResultRow" Field="TotalYearEnd" Caption="Total YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="cash.YearEnd" Caption="Cash YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="stocks.YearEnd" Caption="Stocks YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
-            <DataGridColumn TItem="ResultRow" Field="metals.YearEnd" Caption="Metals YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Cash.YearEnd" Caption="Cash YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Stocks.YearEnd" Caption="Stocks YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
+            <DataGridColumn TItem="ResultRow" Field="Metals.YearEnd" Caption="Metals YearEnd" Sortable="false" TextAlignment=TextAlignment.End HeaderTextAlignment=TextAlignment.End DisplayFormat="{0,12:C0}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("de-DE")" />
         </DataGrid>
     </Column>
 </Row>
 
 @code{
-    IFinanceMathClient myFinanceMathClient;
-    ISavingPhaseClient mySavingPhaseClient;
-    IRentPhaseClient myRentPhaseClient;
-    IStopWorkPhaseClient myStopWorkPhaseClient;
+    //IFinanceMathClient myFinanceMathClient;
+    //ISavingPhaseClient mySavingPhaseClient;
+    //IRentPhaseClient myRentPhaseClient;
+    //IStopWorkPhaseClient myStopWorkPhaseClient;
+    IPhaseIntegratorClient myPhaseIntegratorClient;
 
     LifeAssumptions lifeAssumptions = new();
     int ageStopWork = 63;
@@ -180,6 +181,8 @@
 
     decimal result_MonthlyRateStopWorkPhase;
     decimal result_MonthlyRateRentPhase;
+
+    LaterNeedsResultDTO result_laterNeedsResult = new();
 
     //private string Result_MonthlyRateStopWorkPhase
     //{
@@ -204,16 +207,17 @@
     LineChart<decimal>? lineChart;
 
     IEnumerable<ResultRow> resultRows;
-    LaterNeedsResult laterNeedsResult = new ();
+
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
-            mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
-            myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
-            myStopWorkPhaseClient = serviceProvider.GetService<IStopWorkPhaseClient>();
+            //myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
+            //mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
+            //myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
+            //myStopWorkPhaseClient = serviceProvider.GetService<IStopWorkPhaseClient>();
+            myPhaseIntegratorClient = serviceProvider.GetService<IPhaseIntegratorClient>();
 
             Recalc();         
         }
@@ -232,127 +236,23 @@
 
     private async Task Recalc()
     {
-        var protocolWriter = new MemoryProtocolWriter();
+        PhaseIntegratorServiceResultDTO result = await myPhaseIntegratorClient.GetPhaseIntegratorGoodCaseAsync(lifeAssumptions);
 
-        // Saving Phase
-        var savingPhaseInput = new SavingPhaseServiceInputDTO
-        {
-            AgeFrom = lifeAssumptions.ageCurrent,
-            AgeTo = ageStopWork,
+        result_totalSavings = result.SavingPhaseServiceResult.FinalSavings;
+        rentAtStopWork_gross = result.StateRentResult.AssumedStateRent_Gross_PerMonth;
+        rentAtStopWork_net = result.StateRentResult.AssumedStateRent_Net_PerMonth;
+        result_laterNeedsResult = result.LaterNeedsResult;
 
-            StartCapitalCash = new CAmount(lifeAssumptions.cash),
-            StartCapitalStocks = new CAmount(lifeAssumptions.stocks),
-            StartCapitalMetals = new CAmount(lifeAssumptions.metals),
+        result_MonthlyRateStopWorkPhase = result.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
+        result_MonthlyRateRentPhase = result.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
 
-            GrowthRateCash = lifeAssumptions.cashGrowthRate,
-            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
-
-            SaveAmountPerMonthCash = lifeAssumptions.cashSaveAmountPerMonth,
-            SaveAmountPerMonthStocks = lifeAssumptions.stocksSaveAmountPerMonth,
-            SaveAmountPerMonthMetals = lifeAssumptions.metalsSaveAmountPerMonth,
-        };
-
-        var savingPhaseResult = await mySavingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
-        mySavingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
-        result_totalSavings = savingPhaseResult.FinalSavings;
-
-        // Later Needs
-
-        decimal blubb1 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
-        decimal blubb2 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
-        decimal blubb3 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeMinimal_perMonth, lifeAssumptions.inflationRate);
-        decimal blubb4 = await myFinanceMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.needsCurrentAgeComfort_perMonth, lifeAssumptions.inflationRate);
-        laterNeedsResult = new LaterNeedsResult
-        {
-            needsMinimum_AgeStopWork_WithInflation_PerMonth = blubb1,
-            needsComfort_AgeStopWork_WithInflation_PerMonth = blubb2,
-            needsMinimum_AgeRentStart_WithInflation_PerMonth = blubb3,
-            needsComfort_AgeRentStart_WithInflation_PerMonth = blubb4,
-        };
-
-        // State Rent
-        StateRentResult stateRentResult = new()
-        {
-            assumedStateRent_Net_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
-            assumedStateRent_Gross_PerMonth = await myRentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork),
-        };
-        rentAtStopWork_gross = stateRentResult.assumedStateRent_Gross_PerMonth;
-        rentAtStopWork_net = stateRentResult.assumedStateRent_Net_PerMonth;
-
-        // Rent Phase
-        var rentPhaseInput = new RentPhaseServiceInputDTO()
-        {
-            AgeFrom = lifeAssumptions.ageRentStart,
-            AgeTo = lifeAssumptions.ageEnd,
-
-            StartCapitalCash = new CAmount(savingPhaseResult.FinalSavingsCash),
-            StartCapitalStocks = new CAmount(savingPhaseResult.FinalSavingsStocks),
-            StartCapitalMetals = new CAmount(savingPhaseResult.FinalSavingsMetals),
-
-            GrowthRateCash = lifeAssumptions.cashGrowthRate,
-            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
-
-            TotalRateNeeded_PerYear = -(laterNeedsResult.needsComfort_AgeRentStart_WithInflation_PerMonth - stateRentResult.assumedStateRent_Net_PerMonth) * 12
-        };
-
-        var rentPhaseResult = await myRentPhaseClient.GetRentPhaseSimulationAsync(rentPhaseInput);
-        myRentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
-
-        // Stop Work Phase
-        decimal rentStartAmount = protocolWriter.Protocol
-            .Single(x => x.Age == lifeAssumptions.ageRentStart)
-            .TotalYearBegin;
-
-        var stopWorkPhaseInput = new StopWorkPhaseServiceInputDTO
-        {
-            AgeFrom = ageStopWork,
-            AgeTo = lifeAssumptions.ageRentStart,
-
-            StartCapitalCash = new CAmount (savingPhaseResult.FinalSavingsCash),
-            StartCapitalStocks = new CAmount (savingPhaseResult.FinalSavingsStocks),
-            StartCapitalMetals = new CAmount (savingPhaseResult.FinalSavingsMetals),
-
-            GrowthRateCash = lifeAssumptions.cashGrowthRate,
-            GrowthRateStocks = lifeAssumptions.stocksGrowthRate,
-            GrowthRateMetals = lifeAssumptions.metalsGrowthRate,
-
-            EndCapitalTotal = rentStartAmount
-        };
-
-        var stopWorkPhaseResult = await myStopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
-        myStopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
-
-        result_MonthlyRateStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
-        result_MonthlyRateRentPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
-
-        // Re-balancing after Stop-Work phase
-
-        var lastStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart - 1);
-        var firstRentPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart);
-
-        var cashDiff = lastStopWorkPhase.cash.YearEnd - firstRentPhase.cash.YearBegin;
-        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { cashDeposit = -cashDiff });
-
-        var stocksDiff = lastStopWorkPhase.stocks.YearEnd - firstRentPhase.stocks.YearBegin;
-        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { stockDeposit = -stocksDiff });
-
-        var metalsDiff = lastStopWorkPhase.metals.YearEnd - firstRentPhase.metals.YearBegin;
-        protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { metalDeposit = -metalsDiff });
-
-        //protocolWriter.RecalcYearBeginEntries();
-
-        // validation
-
-        resultRows = protocolWriter.Protocol;
-
-        ResultRowValidator.ValidateAll(resultRows, lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.ageEnd);
+        resultRows = result.Protocol;
+        
 
         // UI updates
 
-        await DrawBarChart(barChart, protocolWriter.Protocol, lifeAssumptions);
-        await DrawLineChart(lineChart, protocolWriter.Protocol, lifeAssumptions);
+        await DrawBarChart(barChart, result.Protocol, lifeAssumptions);
+        await DrawLineChart(lineChart, result.Protocol, lifeAssumptions);
 
         await InvokeAsync(async () =>
         {

@@ -34,19 +34,19 @@
                 var current = resultRows.Single(x => x.Age == i);
                 var next = resultRows.Single(x => x.Age == i + 1);
 
-                if (Decimal.Round(current.cash.YearEnd, roundingAccuracy) != Decimal.Round(next.cash.YearBegin, roundingAccuracy))
+                if (Decimal.Round(current.Cash.YearEnd, roundingAccuracy) != Decimal.Round(next.Cash.YearBegin, roundingAccuracy))
                 {
-                    throw new Exception($"ResultRowValidator: Cash YearEnd and YearBegin mismatch at index {i} ({current.cash.YearEnd}) and {i + 1} ({next.cash.YearBegin}).");
+                    throw new Exception($"ResultRowValidator: Cash YearEnd and YearBegin mismatch at index {i} ({current.Cash.YearEnd}) and {i + 1} ({next.Cash.YearBegin}).");
                 }
 
-                if (Decimal.Round(current.stocks.YearEnd, roundingAccuracy) != Decimal.Round(next.stocks.YearBegin, roundingAccuracy))
+                if (Decimal.Round(current.Stocks.YearEnd, roundingAccuracy) != Decimal.Round(next.Stocks.YearBegin, roundingAccuracy))
                 {
-                    throw new Exception($"ResultRowValidator: Stocks YearEnd and YearBegin mismatch at index {i} ({current.stocks.YearEnd}) and {i + 1} ({next.stocks.YearBegin}).");
+                    throw new Exception($"ResultRowValidator: Stocks YearEnd and YearBegin mismatch at index {i} ({current.Stocks.YearEnd}) and {i + 1} ({next.Stocks.YearBegin}).");
                 }
 
-                if (Decimal.Round(current.metals.YearEnd, roundingAccuracy) != Decimal.Round(next.metals.YearBegin, roundingAccuracy))
+                if (Decimal.Round(current.Metals.YearEnd, roundingAccuracy) != Decimal.Round(next.Metals.YearBegin, roundingAccuracy))
                 {
-                    throw new Exception($"ResultRowValidator: Metals YearEnd and YearBegin mismatch at index {i} ({current.metals.YearEnd}) and {i + 1} ({next.metals.YearBegin}).");
+                    throw new Exception($"ResultRowValidator: Metals YearEnd and YearBegin mismatch at index {i} ({current.Metals.YearEnd}) and {i + 1} ({next.Metals.YearBegin}).");
                 }
 
                 if (Decimal.Round(current.TotalYearEnd, roundingAccuracy) != Decimal.Round(next.TotalYearBegin, roundingAccuracy))
@@ -71,21 +71,21 @@
             foreach (var resultRow in resultRows)
             {
                 if (resultRow.Age < 0 ||
-                    Decimal.Round(resultRow.cash.Interests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.stocks.Interests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.metals.Interests, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Cash.Interests, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Stocks.Interests, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Metals.Interests, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalInterests, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.cash.Taxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.stocks.Taxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.metals.Taxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.Cash.Taxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.Stocks.Taxes, roundingAccuracy) > 0 ||
+                    Decimal.Round(resultRow.Metals.Taxes, roundingAccuracy) > 0 ||
                     Decimal.Round(resultRow.TotalTaxes, roundingAccuracy) > 0 ||
-                    Decimal.Round(resultRow.cash.YearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.stocks.YearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.metals.YearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Cash.YearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Stocks.YearBegin, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Metals.YearBegin, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalYearBegin, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.cash.YearEnd, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.stocks.YearEnd, roundingAccuracy) < 0 ||
-                    Decimal.Round(resultRow.metals.YearEnd, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Cash.YearEnd, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Stocks.YearEnd, roundingAccuracy) < 0 ||
+                    Decimal.Round(resultRow.Metals.YearEnd, roundingAccuracy) < 0 ||
                     Decimal.Round(resultRow.TotalYearEnd, roundingAccuracy) < 0)
                 {
                     throw new Exception($"ResultRowValidator: row of age {resultRow.Age} contains an entry with wrong sign.");
@@ -97,9 +97,9 @@
         {
             foreach (var resultRow in resultRows)
             {
-                bool eqCash = Decimal.Round(resultRow.cash.YearBegin + resultRow.cash.Deposits + resultRow.cash.Interests + resultRow.cash.Taxes, roundingAccuracy) == Decimal.Round(resultRow.cash.YearEnd, roundingAccuracy);
-                bool eqStocks = Decimal.Round(resultRow.stocks.YearBegin + resultRow.stocks.Deposits + resultRow.stocks.Interests + resultRow.stocks.Taxes, roundingAccuracy) == Decimal.Round(resultRow.stocks.YearEnd, roundingAccuracy);
-                bool eqMetals = Decimal.Round(resultRow.metals.YearBegin + resultRow.metals.Deposits + resultRow.metals.Interests + resultRow.metals.Taxes, roundingAccuracy) == Decimal.Round(resultRow.metals.YearEnd, roundingAccuracy);
+                bool eqCash = Decimal.Round(resultRow.Cash.YearBegin + resultRow.Cash.Deposits + resultRow.Cash.Interests + resultRow.Cash.Taxes, roundingAccuracy) == Decimal.Round(resultRow.Cash.YearEnd, roundingAccuracy);
+                bool eqStocks = Decimal.Round(resultRow.Stocks.YearBegin + resultRow.Stocks.Deposits + resultRow.Stocks.Interests + resultRow.Stocks.Taxes, roundingAccuracy) == Decimal.Round(resultRow.Stocks.YearEnd, roundingAccuracy);
+                bool eqMetals = Decimal.Round(resultRow.Metals.YearBegin + resultRow.Metals.Deposits + resultRow.Metals.Interests + resultRow.Metals.Taxes, roundingAccuracy) == Decimal.Round(resultRow.Metals.YearEnd, roundingAccuracy);
                 bool eqTotals = Decimal.Round(resultRow.TotalYearBegin + resultRow.TotalDeposits + resultRow.TotalInterests + resultRow.TotalTaxes, roundingAccuracy) == Decimal.Round(resultRow.TotalYearEnd, roundingAccuracy);
 
                 if (!eqCash || !eqStocks || !eqMetals || !eqTotals)

@@ -1,7 +1,7 @@
 ﻿using Protocol;
-using RentSimS.DTOs;
+using PhaseIntegratorService.DTOs;
 
-namespace RentSimS.Clients
+namespace PhaseIntegratorService.Clients
 {
     public interface IStopWorkPhaseClient
     {

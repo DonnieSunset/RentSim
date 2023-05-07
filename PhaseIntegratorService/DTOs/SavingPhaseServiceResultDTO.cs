@@ -1,7 +1,14 @@
-﻿namespace RentSimS.DTOs
+﻿using Domain;
+
+namespace PhaseIntegratorService.DTOs
 {
-    public class StopWorkPhaseServiceResultDTO
+    public class SavingPhaseServiceResultDTO
     {
+        public CAmount FinalSavingsCash { get; set; }
+        public CAmount FinalSavingsStocks { get; set; }
+        public CAmount FinalSavingsMetals { get; set; }
+        public decimal FinalSavings { get { return FinalSavingsCash.Total + FinalSavingsStocks.Total + FinalSavingsMetals.Total; } }
+
         public record AssetsDTO
         {
             public decimal Cash { get; init; }
@@ -20,10 +27,14 @@
         public List<Entity> Entities { get; init; }
         public AssetsDTO FirstYearBeginValues { get; set; }
 
-        public StopWorkPhaseServiceResultDTO()
+        public SavingPhaseServiceResultDTO()
         {
             Entities = new List<Entity>();
             FirstYearBeginValues = new AssetsDTO();
+
+            FinalSavingsCash = new CAmount();
+            FinalSavingsStocks = new CAmount();
+            FinalSavingsMetals = new CAmount();
         }
     }
 }

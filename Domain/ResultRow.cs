@@ -19,15 +19,15 @@
 
         public int Age { get; set; }
 
-        public AssetInfo cash = new AssetInfo();
-        public AssetInfo stocks = new AssetInfo();
-        public AssetInfo metals = new AssetInfo();
+        public AssetInfo Cash { get; set; } = new AssetInfo();
+        public AssetInfo Stocks { get; set; } = new AssetInfo();
+        public AssetInfo Metals { get; set; } = new AssetInfo();
         
-        public decimal TotalYearBegin => stocks.YearBegin + cash.YearBegin + metals.YearBegin;
-        public decimal TotalDeposits => stocks.Deposits + cash.Deposits + metals.Deposits;
-        public decimal TotalInterests => stocks.Interests + cash.Interests + metals.Interests;
-        public decimal TotalTaxes => stocks.Taxes + cash.Taxes + metals.Taxes;
-        public decimal TotalYearEnd => stocks.YearEnd + cash.YearEnd + metals.YearEnd;
+        public decimal TotalYearBegin => Stocks.YearBegin + Cash.YearBegin + Metals.YearBegin;
+        public decimal TotalDeposits => Stocks.Deposits + Cash.Deposits + Metals.Deposits;
+        public decimal TotalInterests => Stocks.Interests + Cash.Interests + Metals.Interests;
+        public decimal TotalTaxes => Stocks.Taxes + Cash.Taxes + Metals.Taxes;
+        public decimal TotalYearEnd => Stocks.YearEnd + Cash.YearEnd + Metals.YearEnd;
 
         public int CompareTo(ResultRow? other)
         {

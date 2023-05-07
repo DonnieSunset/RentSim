@@ -1,7 +1,7 @@
-﻿using RentSimS.DTOs;
+﻿using PhaseIntegratorService.DTOs;
 using System.Globalization;
 
-namespace RentSimS.Clients
+namespace PhaseIntegratorService.Clients
 {
     public class FinanceMathClient : IFinanceMathClient
     {

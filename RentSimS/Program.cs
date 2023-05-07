@@ -14,14 +14,16 @@ var configBuidler = new ConfigurationBuilder()
             //.SetBasePath(app.Environment.ContentRootPath)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 var config = configBuidler.Build();
-var financeMathServiceURL = config.GetValue<string>("FinanceMathService:url");
-var savingPhaseServiceURL = config.GetValue<string>("SavingPhaseService:url");
-var rentPhaseServiceURL = config.GetValue<string>("RentPhaseService:url");
+//var financeMathServiceURL = config.GetValue<string>("FinanceMathService:url");
+//var savingPhaseServiceURL = config.GetValue<string>("SavingPhaseService:url");
+//var rentPhaseServiceURL = config.GetValue<string>("RentPhaseService:url");
+var PhaseIntegratorServiceURL = config.GetValue<string>("PhaseIntegratorService:url");
 
-builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
-builder.Services.AddScoped<ISavingPhaseClient, SavingPhaseClient>();
-builder.Services.AddScoped<IRentPhaseClient, RentPhaseClient>();
-builder.Services.AddScoped<IStopWorkPhaseClient, StopWorkPhaseClient>();
+//builder.Services.AddSingleton<IFinanceMathClient>(new FinanceMathClient(financeMathServiceURL));
+//builder.Services.AddScoped<ISavingPhaseClient, SavingPhaseClient>();
+//builder.Services.AddScoped<IRentPhaseClient, RentPhaseClient>();
+//builder.Services.AddScoped<IStopWorkPhaseClient, StopWorkPhaseClient>();
+builder.Services.AddScoped<IPhaseIntegratorClient, PhaseIntegratorClient>();
 
 
 

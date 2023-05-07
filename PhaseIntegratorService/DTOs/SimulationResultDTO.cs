@@ -1,6 +1,6 @@
-﻿namespace RentSimS.DTOs
+﻿namespace PhaseIntegratorService.DTOs
 {
-    public class RentPhaseServiceResultDTO
+    public class SimulationResultDTO
     {
         public record AssetsDTO
         {
@@ -12,15 +12,16 @@
         public record Entity
         {
             public int Age { get; init; }
+
             public AssetsDTO Deposits { get; init; }
             public AssetsDTO Interests { get; init; }
             public AssetsDTO Taxes { get; init; }
         }
 
         public List<Entity> Entities { get; init; }
-        public AssetsDTO FirstYearBeginValues { get; set; }
+        public AssetsDTO FirstYearBeginValues { get; init; }
 
-        public RentPhaseServiceResultDTO()
+        public SimulationResultDTO()
         {
             Entities = new List<Entity>();
             FirstYearBeginValues = new AssetsDTO();

@@ -1,4 +1,12 @@
 {
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:31293",
+      "sslPort": 44388
+    }
+  },
   "profiles": {
     "PhaseIntegratorService": {
       "commandName": "Project",
@@ -26,13 +34,5 @@
       "useSSL": true
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:31293",
-      "sslPort": 44388
-    }
-  }
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }

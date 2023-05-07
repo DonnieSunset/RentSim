@@ -38,9 +38,9 @@ namespace FinanceMathService_Tests
             Assert.That(proto.Protocol.Last().Age, Is.EqualTo(input.AgeTo-1));
             Assert.Multiple(() =>
             {
-                Assert.That(proto.Protocol.Last().cash.YearEnd, Is.EqualTo(0).Within(Tolerance), "Cash YearEnd.");
-                Assert.That(proto.Protocol.Last().stocks.YearEnd, Is.EqualTo(0).Within(Tolerance), "Stocks YearEnd.");
-                Assert.That(proto.Protocol.Last().metals.YearEnd, Is.EqualTo(0).Within(Tolerance), "Metals YearEnd.");
+                Assert.That(proto.Protocol.Last().Cash.YearEnd, Is.EqualTo(0).Within(Tolerance), "Cash YearEnd.");
+                Assert.That(proto.Protocol.Last().Stocks.YearEnd, Is.EqualTo(0).Within(Tolerance), "Stocks YearEnd.");
+                Assert.That(proto.Protocol.Last().Metals.YearEnd, Is.EqualTo(0).Within(Tolerance), "Metals YearEnd.");
             });
         }
 
