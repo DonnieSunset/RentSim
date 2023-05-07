@@ -166,10 +166,6 @@
 </Row>
 
 @code{
-    //IFinanceMathClient myFinanceMathClient;
-    //ISavingPhaseClient mySavingPhaseClient;
-    //IRentPhaseClient myRentPhaseClient;
-    //IStopWorkPhaseClient myStopWorkPhaseClient;
     IPhaseIntegratorClient myPhaseIntegratorClient;
 
     LifeAssumptions lifeAssumptions = new();
@@ -184,25 +180,6 @@
 
     LaterNeedsResultDTO result_laterNeedsResult = new();
 
-    //private string Result_MonthlyRateStopWorkPhase
-    //{
-    //    get
-    //    {
-    //        //return result_MonthlyRateStopWorkPhase.ToString("0:2C") + " €";
-    //        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateStopWorkPhase);
-    //    }
-    //    set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
-    //}
-    //private string Result_MonthlyRateRentPhase
-    //{
-    //    get
-    //    {
-    //        //return result_MonthlyRateRentPhase.ToString("0:2C") + " €";
-    //        return string.Format(CultureInfo.CreateSpecificCulture("de-DE"), "{0,12:C2}", result_MonthlyRateRentPhase);
-    //    }
-    //    set { result_MonthlyRateRentPhase = Decimal.Parse(value); }
-    //}
-
     BarChart<decimal>? barChart;
     LineChart<decimal>? lineChart;
 
@@ -213,12 +190,7 @@
     {
         if (firstRender)
         {
-            //myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
-            //mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
-            //myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
-            //myStopWorkPhaseClient = serviceProvider.GetService<IStopWorkPhaseClient>();
             myPhaseIntegratorClient = serviceProvider.GetService<IPhaseIntegratorClient>();
-
             Recalc();         
         }
     }
@@ -248,9 +220,7 @@
 
         resultRows = result.Protocol;
         
-
         // UI updates
-
         await DrawBarChart(barChart, result.Protocol, lifeAssumptions);
         await DrawLineChart(lineChart, result.Protocol, lifeAssumptions);
 

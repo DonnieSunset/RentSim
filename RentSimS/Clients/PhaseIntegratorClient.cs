@@ -36,7 +36,7 @@ namespace RentSimS.Clients
                 throw new Exception($"{nameof(jsonResponse)} is null.");
             }
 
-            return jsonResponse; ;
+            return jsonResponse;
         }
     }
 }

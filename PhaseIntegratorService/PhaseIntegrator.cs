@@ -8,23 +8,6 @@ namespace PhaseIntegratorService
 {
     public class PhaseIntegrator : IPhaseIntegrator
     {
-        //LifeAssumptions lifeAssumptions;
-
-        //IFinanceMathClient myFinanceMathClient;
-        //ISavingPhaseClient mySavingPhaseClient;
-        //IRentPhaseClient myRentPhaseClient;
-        //IStopWorkPhaseClient myStopWorkPhaseClient;
-
-        public PhaseIntegrator(/*LifeAssumptions lifeAssumptions*/)
-        {
-            //lifeAssumptions = lifeAssumptions;
-
-            //myFinanceMathClient = serviceProvider.GetService<IFinanceMathClient>();
-            //mySavingPhaseClient = serviceProvider.GetService<ISavingPhaseClient>();
-            //myRentPhaseClient = serviceProvider.GetService<IRentPhaseClient>();
-            //myStopWorkPhaseClient = serviceProvider.GetService<IStopWorkPhaseClient>();
-        }
-
         public async Task<PhaseIntegratorServiceResultDTO> SimulateGoodCase(
             LifeAssumptions lifeAssumptions,
             IFinanceMathClient financeMathClient,
@@ -60,7 +43,7 @@ namespace PhaseIntegratorService
 
             var savingPhaseResult = await savingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
             savingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
-            //result_totalSavings = savingPhaseResult.FinalSavings;
+
             result.SavingPhaseServiceResult = savingPhaseResult;
 
             // Later Needs
@@ -79,8 +62,6 @@ namespace PhaseIntegratorService
                 AssumedStateRent_Net_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.netStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.netStateRentFromRentStartAge_perMonth, ageStopWork),
                 AssumedStateRent_Gross_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.grossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.grossStateRentFromRentStartAge_perMonth, ageStopWork),
             };
-            //rentAtStopWork_gross = stateRentResult.assumedStateRent_Gross_PerMonth;
-            //rentAtStopWork_net = stateRentResult.assumedStateRent_Net_PerMonth;
             result.StateRentResult = stateRentResult;
 
             // Rent Phase
@@ -127,9 +108,6 @@ namespace PhaseIntegratorService
             var stopWorkPhaseResult = await stopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
             stopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
 
-            //result_MonthlyRateStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
-            //result_MonthlyRateRentPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
-
             // Re-balancing after Stop-Work phase
 
             var lastStopWorkPhase = protocolWriter.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart - 1);
@@ -144,16 +122,10 @@ namespace PhaseIntegratorService
             var metalsDiff = lastStopWorkPhase.Metals.YearEnd - firstRentPhase.Metals.YearBegin;
             protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { metalDeposit = -metalsDiff });
 
-            //protocolWriter.RecalcYearBeginEntries();
-
             // validation
-
-            //resultRows = protocolWriter.Protocol;
-
             ResultRowValidator.ValidateAll(protocolWriter.Protocol, lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.ageEnd);
 
             result.Protocol = protocolWriter.Protocol;
-
             return result;
         }
     }
