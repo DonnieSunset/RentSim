@@ -27,17 +27,25 @@ namespace PhaseIntegratorService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            var result = await myServiceProvider.GetService<IPhaseIntegrator>().SimulateGoodCase(
-                input,
-                myServiceProvider.GetService<IFinanceMathClient>(),
-                myServiceProvider.GetService<ISavingPhaseClient>(),
-                myServiceProvider.GetService<IStopWorkPhaseClient>(),
-                myServiceProvider.GetService<IRentPhaseClient>()
-                );
+            PhaseIntegratorServiceResultDTO result;
+            try
+            {
+                result = await myServiceProvider.GetService<IPhaseIntegrator>().SimulateGoodCase(
+                    input,
+                    myServiceProvider.GetService<IFinanceMathClient>(),
+                    myServiceProvider.GetService<ISavingPhaseClient>(),
+                    myServiceProvider.GetService<IStopWorkPhaseClient>(),
+                    myServiceProvider.GetService<IRentPhaseClient>()
+                    );
+            }
+            catch (Exception ex)
+            {
+                result = new PhaseIntegratorServiceResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
 
-            return new JsonResult(
-                result,
-                new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

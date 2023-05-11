@@ -31,7 +31,17 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            SimulationResultDTO result = myFinanceMath.RateByNumericalSparkassenformel(input);
+            SimulationResultDTO result;
+            try
+            {
+                result = myFinanceMath.RateByNumericalSparkassenformel(input);
+            }
+            catch (Exception ex)
+            {
+                result = new SimulationResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
@@ -42,21 +52,20 @@ namespace FinanceMathService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            SimulationResultDTO result = myFinanceMath.StartCapitalByNumericalSparkassenformel(input);
+            SimulationResultDTO result;
+            try
+            {
+                result = myFinanceMath.StartCapitalByNumericalSparkassenformel(input);
+            }
+            catch (Exception ex)
+            {
+                result = new SimulationResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
-
-        //[HttpGet("Sparkassenformel")]
-        //[Produces("application/json")]
-        //public JsonResult SparkassenFormel(decimal anfangskapital, decimal rateProJahr, double zinsFaktor, int anzahlJahre)
-        //{
-        //    HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-        //    decimal result = myFinanceMath.SparkassenFormel(anfangskapital, rateProJahr, zinsFaktor, anzahlJahre);
-
-        //    return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
-        //}
 
         [HttpGet("AmountWithInflation")]
         [Produces("application/json")]

@@ -126,6 +126,7 @@ namespace PhaseIntegratorService
             ResultRowValidator.ValidateAll(protocolWriter.Protocol, lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.ageEnd);
 
             result.Protocol = protocolWriter.Protocol;
+            result.Result.Type = ResultDTO.ResultType.Success;
             return result;
         }
     }

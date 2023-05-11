@@ -1,6 +1,4 @@
 ﻿using Domain;
-using Protocol;
-using System.Collections.ObjectModel;
 
 namespace PhaseIntegratorService.DTOs
 {
@@ -9,8 +7,7 @@ namespace PhaseIntegratorService.DTOs
         public SavingPhaseServiceResultDTO SavingPhaseServiceResult { get; set; }
         public StateRentResultDTO StateRentResult { get; set; }
         public LaterNeedsResultDTO LaterNeedsResult { get; set; }
-
-        //public MemoryProtocolWriter ProtocolWriter { get; set; }
         public List<ResultRow> Protocol { get; set; }
+        public ResultDTO Result { get; set; } = new ResultDTO();
     }
 }

@@ -26,13 +26,21 @@ namespace StopWorkPhaseService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            var result = await myServiceProvider.GetService<IStopWorkPhase>().Simulate(
-                input,
-                myServiceProvider.GetService<IFinanceMathClient>());
+            StopWorkPhaseServiceResultDTO result;
+            try
+            {
+                result = await myServiceProvider.GetService<IStopWorkPhase>().Simulate(
+                               input,
+                               myServiceProvider.GetService<IFinanceMathClient>());
+            }
+            catch (Exception ex)
+            {
+                result = new StopWorkPhaseServiceResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
 
-            return new JsonResult(
-                result, 
-                new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

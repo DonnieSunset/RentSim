@@ -27,9 +27,19 @@ namespace SavingPhaseService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            return new JsonResult(
-                myServiceProvider.GetService<ISavingPhase>().Simulate(input), 
-                new JsonSerializerOptions { WriteIndented = true });
+            SavingPhaseServiceResultDTO result;
+            try
+            {
+                result = myServiceProvider.GetService<ISavingPhase>().Simulate(input);
+            }
+            catch (Exception ex)
+            {
+                result = new SavingPhaseServiceResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
+
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

@@ -34,14 +34,15 @@ namespace RentPhaseService
             decimal numYearsToAgeInQuestion = ageInQuestion - ageCurrent;
 
             decimal result = linearRentPerYear * numYearsToAgeInQuestion + netRentAgeCurrent;
+
             return result;
         }
 
         public async Task<RentPhaseServiceResultDTO> Simulate(RentPhaseServiceInputDTO input, IFinanceMathClient financeMathClient)
         {
-            var rentPhaseResultString = await financeMathClient.StartCapitalByNumericalSparkassenformel(input);
+            var rentPhaseResult = await financeMathClient.StartCapitalByNumericalSparkassenformel(input);
 
-            return rentPhaseResultString;
+            return rentPhaseResult;
         }
     }
 }

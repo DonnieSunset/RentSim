@@ -149,8 +149,6 @@ namespace FinanceMathService
 
                     restBetrag = restAnteil_cash + restAnteil_stocks.Total + restAnteil_metals;
 
-
-
                     result.Entities.Add(
                         new SimulationResultDTO.Entity
                         {
@@ -199,6 +197,7 @@ namespace FinanceMathService
 
             //todo: log
             Console.WriteLine("NumIterations: " + numIterations);
+            result.Result.Type = ResultDTO.ResultType.Success;
             return result;
         }
 
@@ -343,6 +342,7 @@ namespace FinanceMathService
             while (Math.Abs(restBetrag - endbetrag) > Precision);
 
             Console.WriteLine("NumIterations: " + numIterations);
+            result.Result.Type = ResultDTO.ResultType.Success;
             return result;
         }
 

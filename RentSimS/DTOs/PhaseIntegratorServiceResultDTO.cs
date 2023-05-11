@@ -8,5 +8,6 @@ namespace RentSimS.DTOs
         public StateRentResultDTO StateRentResult { get; set; }
         public LaterNeedsResultDTO LaterNeedsResult { get; set; }
         public List<ResultRow> Protocol { get; set; }
+        public ResultDTO Result { get; set; } = new ResultDTO();
     }
 }

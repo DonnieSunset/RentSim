@@ -48,13 +48,21 @@ namespace RentPhaseService.Controllers
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            var result = await myServiceProvider.GetService<IRentPhase>().Simulate(
-                input,
-                myServiceProvider.GetService<IFinanceMathClient>());
+            RentPhaseServiceResultDTO result;
+            try
+            {
+                result = await myServiceProvider.GetService<IRentPhase>().Simulate(
+                    input,
+                    myServiceProvider.GetService<IFinanceMathClient>());
+            }
+            catch (Exception ex)
+            {
+                result = new RentPhaseServiceResultDTO();
+                result.Result.Type = ResultDTO.ResultType.Failure;
+                result.Result.Message = ex.Message;
+            }
 
-            return new JsonResult(
-                result, 
-                new JsonSerializerOptions { WriteIndented = true });
+            return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
         }
     }
 }

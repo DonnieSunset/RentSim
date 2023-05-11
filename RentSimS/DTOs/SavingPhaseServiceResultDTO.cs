@@ -26,6 +26,7 @@ namespace RentSimS.DTOs
 
         public List<Entity> Entities { get; init; }
         public AssetsDTO FirstYearBeginValues { get; set; }
+        public ResultDTO Result { get; set; } = new ResultDTO();
 
         public SavingPhaseServiceResultDTO()
         {
