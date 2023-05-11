@@ -8,6 +8,10 @@
 @inject IHttpClientFactory ClientFactory;
 @inject IServiceProvider serviceProvider;
 
+<Alert @ref="myAlert" Color="Color.Warning">
+    <AlertMessage>@myAlertMessage</AlertMessage>
+    <AlertDescription>>@myAlertDetails</AlertDescription>
+</Alert>
 
 <Divider DividerType="DividerType.TextContent" Text="Ages" />
 
@@ -165,6 +169,8 @@
     </Column>
 </Row>
 
+
+
 @code{
     IPhaseIntegratorClient myPhaseIntegratorClient;
 
@@ -185,6 +191,9 @@
 
     IEnumerable<ResultRow> resultRows;
 
+    Alert myAlert;
+    string myAlertMessage;
+    string myAlertDetails;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -210,19 +219,30 @@
     {
         PhaseIntegratorServiceResultDTO result = await myPhaseIntegratorClient.GetPhaseIntegratorGoodCaseAsync(lifeAssumptions);
 
-        result_totalSavings = result.SavingPhaseServiceResult.FinalSavings;
-        rentAtStopWork_gross = result.StateRentResult.AssumedStateRent_Gross_PerMonth;
-        rentAtStopWork_net = result.StateRentResult.AssumedStateRent_Net_PerMonth;
-        result_laterNeedsResult = result.LaterNeedsResult;
+        if (result.Result.Type != ResultDTO.ResultType.Success)
+        {
+            myAlertMessage = result.Result.Message;
+            myAlertDetails = result.Result.Details;
+            await myAlert.Show();
+        }
+        else
+        {
+            await myAlert.Hide();
 
-        result_MonthlyRateStopWorkPhase = result.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
-        result_MonthlyRateRentPhase = result.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
+            result_totalSavings = result.SavingPhaseServiceResult.FinalSavings;
+            rentAtStopWork_gross = result.StateRentResult.AssumedStateRent_Gross_PerMonth;
+            rentAtStopWork_net = result.StateRentResult.AssumedStateRent_Net_PerMonth;
+            result_laterNeedsResult = result.LaterNeedsResult;
 
-        resultRows = result.Protocol;
+            result_MonthlyRateStopWorkPhase = result.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
+            result_MonthlyRateRentPhase = result.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
+
+            resultRows = result.Protocol;
         
-        // UI updates
-        await DrawBarChart(barChart, result.Protocol, lifeAssumptions);
-        await DrawLineChart(lineChart, result.Protocol, lifeAssumptions);
+            // UI updates
+            await DrawBarChart(barChart, result.Protocol, lifeAssumptions);
+            await DrawLineChart(lineChart, result.Protocol, lifeAssumptions);
+        }
 
         await InvokeAsync(async () =>
         {

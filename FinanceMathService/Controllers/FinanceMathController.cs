@@ -41,6 +41,7 @@ namespace FinanceMathService.Controllers
                 result = new SimulationResultDTO();
                 result.Result.Type = ResultDTO.ResultType.Failure;
                 result.Result.Message = ex.Message;
+                result.Result.Details = ex.StackTrace;
             }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
@@ -62,6 +63,7 @@ namespace FinanceMathService.Controllers
                 result = new SimulationResultDTO();
                 result.Result.Type = ResultDTO.ResultType.Failure;
                 result.Result.Message = ex.Message;
+                result.Result.Details = ex.StackTrace;
             }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });

@@ -38,6 +38,7 @@ namespace StopWorkPhaseService.Controllers
                 result = new StopWorkPhaseServiceResultDTO();
                 result.Result.Type = ResultDTO.ResultType.Failure;
                 result.Result.Message = ex.Message;
+                result.Result.Details = ex.StackTrace;
             }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });

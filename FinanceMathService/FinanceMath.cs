@@ -210,7 +210,6 @@ namespace FinanceMathService
             decimal angenommenesStartKapital_max = - input.TotalRateNeeded_PerYear * (input.AgeTo - input.AgeFrom) * 2 + endbetrag; // simple heuristic
             decimal angenommenesStartKapital;
             decimal restBetrag;
-            
 
             int numIterations = 0;
             SimulationResultDTO result;

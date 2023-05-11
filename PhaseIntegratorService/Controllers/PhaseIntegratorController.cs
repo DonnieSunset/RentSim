@@ -43,6 +43,7 @@ namespace PhaseIntegratorService.Controllers
                 result = new PhaseIntegratorServiceResultDTO();
                 result.Result.Type = ResultDTO.ResultType.Failure;
                 result.Result.Message = ex.Message;
+                result.Result.Details = ex.StackTrace;
             }
 
             return new JsonResult(result, new JsonSerializerOptions { WriteIndented = true });
