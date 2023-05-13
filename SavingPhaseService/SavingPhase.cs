@@ -81,6 +81,7 @@ namespace SavingPhaseService
             result.FinalSavingsStocks = currentCapitalStocks;
             result.FinalSavingsMetals = currentCapitalMetals;
 
+            result.Result.Type = ResultDTO.ResultType.Success;
             return result;
         }
     }

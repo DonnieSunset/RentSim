@@ -1,8 +1,7 @@
-﻿using Protocol;
-using PhaseIntegratorService.DTOs;
+﻿using Domain;
 using PhaseIntegratorService.Clients;
-using Domain;
-using Microsoft.Extensions.DependencyInjection;
+using PhaseIntegratorService.DTOs;
+using Protocol;
 
 namespace PhaseIntegratorService
 {
@@ -20,6 +19,8 @@ namespace PhaseIntegratorService
             int ageStopWork = 63;
 
             var result = new PhaseIntegratorServiceResultDTO();
+            PhaseIntegratorServiceResultDTO errorResult;
+
             var protocolWriter = new MemoryProtocolWriter();
 
             // Saving Phase
@@ -42,6 +43,8 @@ namespace PhaseIntegratorService
             };
 
             var savingPhaseResult = await savingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
+            ThrowIfNotSuccess(savingPhaseResult.Result, "Error in SavingPhase: ");
+
             savingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
 
             result.SavingPhaseServiceResult = savingPhaseResult;
@@ -82,6 +85,7 @@ namespace PhaseIntegratorService
             };
 
             var rentPhaseResult = await rentPhaseClient.GetRentPhaseSimulationAsync(rentPhaseInput);
+            ThrowIfNotSuccess(savingPhaseResult.Result, "Error in RentPhase: ");
             rentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
 
             // Stop Work Phase
@@ -106,6 +110,7 @@ namespace PhaseIntegratorService
             };
 
             var stopWorkPhaseResult = await stopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
+            ThrowIfNotSuccess(savingPhaseResult.Result, "Error in StopWorkPhase: ");
             stopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
 
             // Re-balancing after Stop-Work phase
@@ -128,6 +133,14 @@ namespace PhaseIntegratorService
             result.Protocol = protocolWriter.Protocol;
             result.Result.Type = ResultDTO.ResultType.Success;
             return result;
+        }
+
+        public void ThrowIfNotSuccess(ResultDTO result, string errorMsg)
+        { 
+            if (result.Type != ResultDTO.ResultType.Success) 
+            {
+                throw new Exception(String.Join(", ", errorMsg, result.Message, result.Details));
+            }
         }
     }
 }
