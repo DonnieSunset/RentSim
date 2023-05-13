@@ -25,8 +25,8 @@ namespace StopWorkPhaseService.Clients
                     throw new Exception($"Http response error: {response.Content}.");
                 }
 
-                var objResponse = await response.Content.ReadFromJsonAsync<StopWorkPhaseServiceResultDTO>();
-                return objResponse;
+                var stopWorkPhaseResult = await response.Content.ReadFromJsonAsync<StopWorkPhaseServiceResultDTO>();
+                return stopWorkPhaseResult;
             }
         }
     }

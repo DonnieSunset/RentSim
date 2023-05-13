@@ -7,9 +7,9 @@ namespace StopWorkPhaseService
     {
         public async Task<StopWorkPhaseServiceResultDTO> Simulate(StopWorkPhaseServiceInputDTO input, IFinanceMathClient financeMathClient)
         {
-            var stopWorkPhaseResultString = await financeMathClient.RateByNumericalSparkassenformel(input);
+            var stopWorkPhaseResult = await financeMathClient.RateByNumericalSparkassenformel(input);
 
-            return stopWorkPhaseResultString;
+            return stopWorkPhaseResult;
         }
     }
 }

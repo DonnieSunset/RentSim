@@ -85,7 +85,7 @@ namespace PhaseIntegratorService
             };
 
             var rentPhaseResult = await rentPhaseClient.GetRentPhaseSimulationAsync(rentPhaseInput);
-            ThrowIfNotSuccess(savingPhaseResult.Result, "Error in RentPhase: ");
+            ThrowIfNotSuccess(rentPhaseResult.Result, "Error in RentPhase: ");
             rentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
 
             // Stop Work Phase
@@ -110,7 +110,7 @@ namespace PhaseIntegratorService
             };
 
             var stopWorkPhaseResult = await stopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
-            ThrowIfNotSuccess(savingPhaseResult.Result, "Error in StopWorkPhase: ");
+            ThrowIfNotSuccess(stopWorkPhaseResult.Result, "Error in StopWorkPhase: ");
             stopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
 
             // Re-balancing after Stop-Work phase
