@@ -234,8 +234,8 @@
             rentAtStopWork_net = result.StateRentResult.AssumedStateRent_Net_PerMonth;
             result_laterNeedsResult = result.LaterNeedsResult;
 
-            result_MonthlyRateStopWorkPhase = result.Protocol.Single(x => x.Age == ageStopWork).TotalDeposits / 12m;
-            result_MonthlyRateRentPhase = result.Protocol.Single(x => x.Age == lifeAssumptions.ageRentStart).TotalDeposits / 12m;
+            result_MonthlyRateStopWorkPhase = result.StopWorkPhaseServiceResult.MonthlyDepositRate;
+            result_MonthlyRateRentPhase = result.RentPhaseServiceResult.MonthlyDepositRate;
 
             resultRows = result.Protocol;
         

@@ -73,16 +73,19 @@ namespace FinanceMathService
 
             do
             {
-                result = new ()
+                angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
+
+                result = new()
                 {
                     FirstYearBeginValues = new SimulationResultDTO.AssetsDTO()
                     {
                         Cash = input.StartCapitalCash.Total,
                         Stocks = input.StartCapitalStocks.Total,
                         Metals = input.StartCapitalMetals.Total,
-                    }
+                    },
+
+                    MonthlyDepositRate = angenommeneRate
                 };
-                angenommeneRate = (angenommeneRate_min + angenommeneRate_max) / 2m;
 
                 restBetrag = gesamtBetrag;
                 //decimal factorCashDyn = input.FractionCash;
@@ -229,6 +232,7 @@ namespace FinanceMathService
                     Stocks = restAnteil_stocks.Total,
                     Metals = restAnteil_metals,
                 };
+                result.MonthlyDepositRate = input.TotalRateNeeded_PerYear / 12m;
 
                 for (int i = input.AgeFrom; i < input.AgeTo; i++)
                 {

@@ -4,13 +4,14 @@
     {
         private static int roundingAccuracy = 2;
 
-        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageEnd)
+        public static void ValidateAll(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageRentStart, int ageEnd)
         {
             AllAgesAvailable(resultRows, ageCurrent, ageEnd);
             TransitionBetweenRows(resultRows, ageCurrent, ageEnd);
             AllNumbersHaveTheCorrectSign(resultRows);
             EndTotalsAreTheSumOfAllSingleValues(resultRows);
             AllEndsUpInZero(resultRows, ageEnd);
+            TotalDepositsStayConstantDuringPhases(resultRows, ageCurrent, ageStopWork, ageRentStart, ageEnd);
         }
 
         private static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -106,6 +107,33 @@
                 {
                     throw new Exception($"ResultRowValidator: The sum of single values at age {resultRow.Age} does not sum up to total value.");
                 }
+            }
+        }
+
+        private static void TotalDepositsStayConstantDuringPhases(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageRentStart, int ageEnd)
+        {
+            bool stopWorkPhaseResult = resultRows
+                .Where(x => x.Age >= ageStopWork && x.Age < ageRentStart)
+                .Select(x => x.TotalDeposits)
+                .Distinct()
+                .Count() == 1;
+
+            if (!stopWorkPhaseResult)
+            {
+                throw new Exception($"{nameof(ResultRowValidator)}: The total deposits (which is the deposit rate) " +
+                    $"from age {ageStopWork} to age {ageRentStart} differs in some rows.");
+            }
+
+            bool rentPhaseResult = resultRows
+                .Where(x => x.Age >= ageRentStart && x.Age < ageEnd)
+                .Select(x => x.TotalDeposits)
+                .Distinct()
+                .Count() == 1;
+
+            if (!stopWorkPhaseResult)
+            {
+                throw new Exception($"{nameof(ResultRowValidator)}: The total deposits (which is the deposit rate) " +
+                    $"from age {ageRentStart} to age {ageEnd} differs in some rows.");
             }
         }
     }

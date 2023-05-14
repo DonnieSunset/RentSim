@@ -14,10 +14,47 @@ namespace PhaseIntegratorService
             IStopWorkPhaseClient stopWorkPhaseClient,
             IRentPhaseClient rentPhaseClient
             )
-        {
-            //todo: muss raus
-            int ageStopWork = 63;
+        { 
+            for (int assumedStopWorkAge = lifeAssumptions.ageCurrent; assumedStopWorkAge <= lifeAssumptions.ageRentStart; assumedStopWorkAge++) 
+            {
+                try
+                {
+                    PhaseIntegratorServiceResultDTO result = await SimulateGoodCaseWithAssumedStopWorkAge(
+                        lifeAssumptions,
+                        assumedStopWorkAge,
+                        financeMathClient,
+                        savingPhaseClient,
+                        stopWorkPhaseClient,
+                        rentPhaseClient
+                        );
 
+                    if (result.Result.Type == ResultDTO.ResultType.Success 
+                        && result.StopWorkPhaseServiceResult.MonthlyDepositRate >= result.LaterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerMonth
+                        )
+                    {
+                        return result;
+                    }
+                }
+                catch
+                { }
+            }
+
+            var badResult = new PhaseIntegratorServiceResultDTO();
+            badResult.Result.Type = ResultDTO.ResultType.Failure;
+            badResult.Result.Message = "Unable to calculate stopWorkAge.";
+
+            return badResult;
+        }
+
+        public async Task<PhaseIntegratorServiceResultDTO> SimulateGoodCaseWithAssumedStopWorkAge(
+            LifeAssumptions lifeAssumptions,
+            int assumedStopWorkAge,
+            IFinanceMathClient financeMathClient,
+            ISavingPhaseClient savingPhaseClient,
+            IStopWorkPhaseClient stopWorkPhaseClient,
+            IRentPhaseClient rentPhaseClient
+            )
+        {
             var result = new PhaseIntegratorServiceResultDTO();
             PhaseIntegratorServiceResultDTO errorResult;
 
@@ -27,7 +64,7 @@ namespace PhaseIntegratorService
             var savingPhaseInput = new SavingPhaseServiceInputDTO
             {
                 AgeFrom = lifeAssumptions.ageCurrent,
-                AgeTo = ageStopWork,
+                AgeTo = assumedStopWorkAge,
 
                 StartCapitalCash = new CAmount(lifeAssumptions.Cash),
                 StartCapitalStocks = new CAmount(lifeAssumptions.Stocks),
@@ -44,16 +81,14 @@ namespace PhaseIntegratorService
 
             var savingPhaseResult = await savingPhaseClient.GetSavingPhaseSimulationAsync(savingPhaseInput);
             ThrowIfNotSuccess(savingPhaseResult.Result, "Error in SavingPhase: ");
-
-            savingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
-
             result.SavingPhaseServiceResult = savingPhaseResult;
+            savingPhaseClient.LogSavingPhaseResult(savingPhaseResult, protocolWriter);
 
             // Later Needs
             var laterNeedsResult = new LaterNeedsResultDTO
             {
-                NeedsMinimum_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.NeedsCurrentAgeMinimal_perMonth, lifeAssumptions.InflationRate),
-                NeedsComfort_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.NeedsCurrentAgeComfort_perMonth, lifeAssumptions.InflationRate),
+                NeedsMinimum_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, assumedStopWorkAge, lifeAssumptions.NeedsCurrentAgeMinimal_perMonth, lifeAssumptions.InflationRate),
+                NeedsComfort_AgeStopWork_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, assumedStopWorkAge, lifeAssumptions.NeedsCurrentAgeComfort_perMonth, lifeAssumptions.InflationRate),
                 NeedsMinimum_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.NeedsCurrentAgeMinimal_perMonth, lifeAssumptions.InflationRate),
                 NeedsComfort_AgeRentStart_WithInflation_PerMonth = await financeMathClient.GetAmountWithInflationAsync(lifeAssumptions.ageCurrent, lifeAssumptions.ageRentStart, lifeAssumptions.NeedsCurrentAgeComfort_perMonth, lifeAssumptions.InflationRate)
             };
@@ -62,8 +97,8 @@ namespace PhaseIntegratorService
             // State Rent
             var stateRentResult = new StateRentResultDTO
             {
-                AssumedStateRent_Net_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.NetStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.NetStateRentFromRentStartAge_perMonth, ageStopWork),
-                AssumedStateRent_Gross_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.GrossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.GrossStateRentFromRentStartAge_perMonth, ageStopWork),
+                AssumedStateRent_Net_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.NetStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.NetStateRentFromRentStartAge_perMonth, assumedStopWorkAge),
+                AssumedStateRent_Gross_PerMonth = await rentPhaseClient.ApproxStateRent(lifeAssumptions.ageCurrent, lifeAssumptions.GrossStateRentFromCurrentAge_perMonth, lifeAssumptions.ageRentStart, lifeAssumptions.GrossStateRentFromRentStartAge_perMonth, assumedStopWorkAge),
             };
             result.StateRentResult = stateRentResult;
 
@@ -86,6 +121,7 @@ namespace PhaseIntegratorService
 
             var rentPhaseResult = await rentPhaseClient.GetRentPhaseSimulationAsync(rentPhaseInput);
             ThrowIfNotSuccess(rentPhaseResult.Result, "Error in RentPhase: ");
+            result.RentPhaseServiceResult = rentPhaseResult;
             rentPhaseClient.LogRentPhaseResult(rentPhaseResult, protocolWriter);
 
             // Stop Work Phase
@@ -95,7 +131,7 @@ namespace PhaseIntegratorService
 
             var stopWorkPhaseInput = new StopWorkPhaseServiceInputDTO
             {
-                AgeFrom = ageStopWork,
+                AgeFrom = assumedStopWorkAge,
                 AgeTo = lifeAssumptions.ageRentStart,
 
                 StartCapitalCash = new CAmount(savingPhaseResult.FinalSavingsCash),
@@ -111,6 +147,7 @@ namespace PhaseIntegratorService
 
             var stopWorkPhaseResult = await stopWorkPhaseClient.GetStopWorkPhaseSimulationAsync(stopWorkPhaseInput);
             ThrowIfNotSuccess(stopWorkPhaseResult.Result, "Error in StopWorkPhase: ");
+            result.StopWorkPhaseServiceResult = stopWorkPhaseResult;
             stopWorkPhaseClient.LogStopWorkPhaseResult(stopWorkPhaseResult, protocolWriter);
 
             // Re-balancing after Stop-Work phase
@@ -128,7 +165,7 @@ namespace PhaseIntegratorService
             protocolWriter.Log(lifeAssumptions.ageRentStart - 1, new TransactionDetails { metalDeposit = -metalsDiff });
 
             // validation
-            ResultRowValidator.ValidateAll(protocolWriter.Protocol, lifeAssumptions.ageCurrent, ageStopWork, lifeAssumptions.ageEnd);
+            ResultRowValidator.ValidateAll(protocolWriter.Protocol, lifeAssumptions.ageCurrent, assumedStopWorkAge, lifeAssumptions.ageRentStart, lifeAssumptions.ageEnd);
 
             result.Protocol = protocolWriter.Protocol;
             result.Result.Type = ResultDTO.ResultType.Success;

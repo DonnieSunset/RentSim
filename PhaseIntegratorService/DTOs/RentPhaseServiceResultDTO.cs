@@ -2,6 +2,7 @@
 {
     public class RentPhaseServiceResultDTO
     {
+        public decimal MonthlyDepositRate { get; set; }
         public record AssetsDTO
         {
             public decimal Cash { get; init; }

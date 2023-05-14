@@ -41,6 +41,11 @@ namespace PhaseIntegratorService.Clients
 
         public void LogStopWorkPhaseResult(StopWorkPhaseServiceResultDTO result, IProtocolWriter protocolWriter)
         {
+            if (!result.Entities.Any())
+            {
+                return;
+            }
+
             var firstEntry = result.Entities.First();
             protocolWriter.LogBalanceYearBegin(firstEntry.Age, result.FirstYearBeginValues.Cash, result.FirstYearBeginValues.Stocks, result.FirstYearBeginValues.Metals);
 

@@ -1,6 +1,6 @@
-﻿namespace FinanceMathService.DTOs
+﻿namespace RentSimS.DTOs
 {
-    public class SimulationResultDTO
+    public class RentPhaseServiceResultDTO
     {
         public decimal MonthlyDepositRate { get; set; }
 
@@ -12,7 +12,7 @@
         }
 
         public record Entity
-        { 
+        {
             public int Age { get; init; }
             public AssetsDTO Deposits { get; init; }
             public AssetsDTO Interests { get; init; }
@@ -23,7 +23,7 @@
         public AssetsDTO FirstYearBeginValues { get; set; }
         public ResultDTO Result { get; set; } = new ResultDTO();
 
-        public SimulationResultDTO()
+        public RentPhaseServiceResultDTO()
         {
             Entities = new List<Entity>();
             FirstYearBeginValues = new AssetsDTO();
