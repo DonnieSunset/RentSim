@@ -11,6 +11,6 @@ namespace PhaseIntegratorService.DTOs
         public LaterNeedsResultDTO LaterNeedsResult { get; set; }
         public List<ResultRow> Protocol { get; set; }
         public ResultDTO Result { get; set; } = new ResultDTO();
-        public int ageStopWork { get; set; }
+        public int AgeStopWork { get; set; }
     }
 }

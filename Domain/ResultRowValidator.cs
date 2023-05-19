@@ -114,7 +114,7 @@
         {
             bool stopWorkPhaseResult = resultRows
                 .Where(x => x.Age >= ageStopWork && x.Age < ageRentStart)
-                .Select(x => x.TotalDeposits)
+                .Select(x => Decimal.Round(x.TotalDeposits, roundingAccuracy))
                 .Distinct()
                 .Count() == 1;
 
@@ -126,7 +126,7 @@
 
             bool rentPhaseResult = resultRows
                 .Where(x => x.Age >= ageRentStart && x.Age < ageEnd)
-                .Select(x => x.TotalDeposits)
+                .Select(x => Decimal.Round(x.TotalDeposits, roundingAccuracy))
                 .Distinct()
                 .Count() == 1;
 

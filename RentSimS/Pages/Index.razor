@@ -24,7 +24,7 @@
  </Field>
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageCurrent" onchange="@Recalc" /> </FieldBody>
-    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true" @bind-Value="@ageStopWork" /> </FieldBody>
+    <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="true" @bind-Value="@result_ageStopWork" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageRentStart" onchange="@Recalc" /> </FieldBody>
     <FieldBody ColumnSize="ColumnSize.Is1"> <NumericEdit ReadOnly="false" @bind-Value="@lifeAssumptions.ageEnd" onchange="@Recalc" /> </FieldBody>
 </Field>
@@ -63,9 +63,9 @@
 <Divider DividerType="DividerType.TextContent" Text="Results"></Divider>
 
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
-    <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @ageStopWork:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Total Savings at @result_ageStopWork:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_totalSavings" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
-    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @ageStopWork:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @result_ageStopWork:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_MonthlyRateStopWorkPhase" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Rate from @lifeAssumptions.ageRentStart:</FieldLabel>
     <FieldBody ColumnSize="ColumnSize.Is2"> <NumericPicker ReadOnly="true" @bind-Value="@result_MonthlyRateRentPhase" CurrencySymbol=" €" CurrencySymbolPlacement="CurrencySymbolPlacement.Suffix" Decimals="0" DecimalSeparator="," GroupSeparator="." /> </FieldBody>
@@ -76,7 +76,7 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is2"></FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @lifeAssumptions.ageCurrent:</FieldLabel>
-    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @ageStopWork:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @result_ageStopWork:</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is2">Monthly Needs at age @lifeAssumptions.ageRentStart:</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is2"></FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is2">Inflation Rate (%):</FieldLabel>
@@ -102,7 +102,7 @@
 <Field Horizontal="true" ColumnSize="ColumnSize.Is10">
     <FieldLabel ColumnSize="ColumnSize.Is1">Approx. State Rent:</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is1">At age @lifeAssumptions.ageCurrent:</FieldLabel>
-    <FieldLabel ColumnSize="ColumnSize.Is1">At age @ageStopWork:</FieldLabel>
+    <FieldLabel ColumnSize="ColumnSize.Is1">At age @result_ageStopWork:</FieldLabel>
     <FieldLabel ColumnSize="ColumnSize.Is1">At age @lifeAssumptions.ageRentStart:</FieldLabel>
 </Field>
 
@@ -175,7 +175,7 @@
     IPhaseIntegratorClient myPhaseIntegratorClient;
 
     LifeAssumptions lifeAssumptions = new();
-    int ageStopWork = 63;
+    int result_ageStopWork;
 
     decimal result_totalSavings;
     decimal rentAtStopWork_gross;
@@ -233,6 +233,7 @@
             rentAtStopWork_gross = result.StateRentResult.AssumedStateRent_Gross_PerMonth;
             rentAtStopWork_net = result.StateRentResult.AssumedStateRent_Net_PerMonth;
             result_laterNeedsResult = result.LaterNeedsResult;
+            result_ageStopWork = result.AgeStopWork;
 
             result_MonthlyRateStopWorkPhase = result.StopWorkPhaseServiceResult.MonthlyDepositRate;
             result_MonthlyRateRentPhase = result.RentPhaseServiceResult.MonthlyDepositRate;

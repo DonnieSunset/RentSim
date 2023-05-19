@@ -29,14 +29,14 @@ namespace PhaseIntegratorService
                         );
 
                     if (result.Result.Type == ResultDTO.ResultType.Success 
-                        && result.StopWorkPhaseServiceResult.MonthlyDepositRate >= result.LaterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerMonth
+                        && Math.Abs(result.StopWorkPhaseServiceResult.MonthlyDepositRate) >= result.LaterNeedsResult.NeedsComfort_AgeStopWork_WithInflation_PerMonth
                         )
                     {
+                        result.AgeStopWork = assumedStopWorkAge;
                         return result;
                     }
                 }
-                catch
-                { }
+                catch { }
             }
 
             var badResult = new PhaseIntegratorServiceResultDTO();

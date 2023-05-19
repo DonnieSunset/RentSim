@@ -84,7 +84,7 @@ namespace FinanceMathService
                         Metals = input.StartCapitalMetals.Total,
                     },
 
-                    MonthlyDepositRate = angenommeneRate
+                    MonthlyDepositRate = angenommeneRate / 12m
                 };
 
                 restBetrag = gesamtBetrag;
