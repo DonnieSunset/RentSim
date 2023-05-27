@@ -60,6 +60,15 @@ namespace FinanceMathService
 
         public SimulationResultDTO RateByNumericalSparkassenformel(RateByNumericalSparkassenformelInputDTO input)
         {
+            SimulationResultDTO result = new SimulationResultDTO();
+
+            if (input.AgeFrom == input.AgeTo)
+            {
+                result.MonthlyDepositRate = 0;
+                result.Result.Type = ResultDTO.ResultType.Success;
+                return result;
+            }
+
             int numIterations = 0;
 
             decimal gesamtBetrag = input.StartCapitalCash.Total + input.StartCapitalStocks.Total + input.StartCapitalMetals.Total;
@@ -69,7 +78,6 @@ namespace FinanceMathService
             decimal restBetrag;
             
             decimal angenommeneRate;
-            SimulationResultDTO result;
 
             do
             {

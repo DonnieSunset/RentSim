@@ -11,7 +11,8 @@
             AllNumbersHaveTheCorrectSign(resultRows);
             EndTotalsAreTheSumOfAllSingleValues(resultRows);
             AllEndsUpInZero(resultRows, ageEnd);
-            TotalDepositsStayConstantDuringPhases(resultRows, ageCurrent, ageStopWork, ageRentStart, ageEnd);
+            TotalDepositsStayConstantDuringPhases(resultRows, ageStopWork, ageRentStart);
+            TotalDepositsStayConstantDuringPhases(resultRows, ageRentStart, ageEnd);
         }
 
         private static void AllAgesAvailable(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageEnd)
@@ -110,10 +111,13 @@
             }
         }
 
-        private static void TotalDepositsStayConstantDuringPhases(IEnumerable<ResultRow> resultRows, int ageCurrent, int ageStopWork, int ageRentStart, int ageEnd)
+        private static void TotalDepositsStayConstantDuringPhases(IEnumerable<ResultRow> resultRows, int ageFrom, int ageTo)
         {
+            if (ageFrom == ageTo)
+                return;
+
             bool stopWorkPhaseResult = resultRows
-                .Where(x => x.Age >= ageStopWork && x.Age < ageRentStart)
+                .Where(x => x.Age >= ageFrom && x.Age < ageTo)
                 .Select(x => Decimal.Round(x.TotalDeposits, roundingAccuracy))
                 .Distinct()
                 .Count() == 1;
@@ -121,19 +125,7 @@
             if (!stopWorkPhaseResult)
             {
                 throw new Exception($"{nameof(ResultRowValidator)}: The total deposits (which is the deposit rate) " +
-                    $"from age {ageStopWork} to age {ageRentStart} differs in some rows.");
-            }
-
-            bool rentPhaseResult = resultRows
-                .Where(x => x.Age >= ageRentStart && x.Age < ageEnd)
-                .Select(x => Decimal.Round(x.TotalDeposits, roundingAccuracy))
-                .Distinct()
-                .Count() == 1;
-
-            if (!stopWorkPhaseResult)
-            {
-                throw new Exception($"{nameof(ResultRowValidator)}: The total deposits (which is the deposit rate) " +
-                    $"from age {ageRentStart} to age {ageEnd} differs in some rows.");
+                    $"from age {ageFrom} to age {ageTo} differs in some rows.");
             }
         }
     }
